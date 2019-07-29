@@ -17,6 +17,11 @@
 #	limitations under the License.
 #
 
+# TODO
+# mips: mips-linux-gnu
+# mips64el: mips64el-linux-gnuabi64
+# mipsel: mipsel-linux-gnu
+
 version: "3.7"
 
 services:
@@ -28,6 +33,7 @@ services:
       dockerfile: Dockerfile
       args:
         METACALL_ARCH: amd64
+        METACALL_ARCH_PATH: x86_64-linux-gnu
 
   arm32v5:
     image: metacall/distributable:linux-base-arm32v5
@@ -37,6 +43,7 @@ services:
       dockerfile: Dockerfile
       args:
         METACALL_ARCH: arm32v5
+        METACALL_ARCH_PATH: arm-linux-gnueabi
 
   arm32v7:
     image: metacall/distributable:linux-base-arm32v7
@@ -46,6 +53,7 @@ services:
       dockerfile: Dockerfile
       args:
         METACALL_ARCH: arm32v7
+        METACALL_ARCH_PATH: arm-linux-gnueabihf
 
   arm64v8:
     image: metacall/distributable:linux-base-arm64v8
@@ -55,6 +63,7 @@ services:
       dockerfile: Dockerfile
       args:
         METACALL_ARCH: arm64v8
+        METACALL_ARCH_PATH: aarch64-linux-gnu
 
   i386:
     image: metacall/distributable:linux-base-i386
@@ -64,6 +73,7 @@ services:
       dockerfile: Dockerfile
       args:
         METACALL_ARCH: i386
+        METACALL_ARCH_PATH: i386-linux-gnu
 
   ppc64le:
     image: metacall/distributable:linux-base-ppc64le
@@ -73,6 +83,7 @@ services:
       dockerfile: Dockerfile
       args:
         METACALL_ARCH: ppc64le
+        METACALL_ARCH_PATH: powerpc64le-linux-gnu
 
   s390x:
     image: metacall/distributable:linux-base-s390x
@@ -82,3 +93,4 @@ services:
       dockerfile: Dockerfile
       args:
         METACALL_ARCH: s390x
+        METACALL_ARCH_PATH: s390x-linux-gnu
