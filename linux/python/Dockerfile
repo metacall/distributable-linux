@@ -50,7 +50,7 @@ RUN LIBS=" \
 	uuid \
 	history readline \
 	"; \
-	mkdir -p /python/lib \
+	mkdir -p /usr/local/metacall/python/lib \
 	&& for lib in $LIBS; do \
 		alias="lib${lib}.so" && \
 		link=$(ls -la /usr/lib/${METACALL_ARCH_PATH}/${alias} | awk '{ print $11 }' | tr " " "\n") && \
@@ -59,9 +59,9 @@ RUN LIBS=" \
 		else \
 			name=$(basename "${link}"); \
 		fi && \
-		cp /usr/lib/${METACALL_ARCH_PATH}/${alias} /python/lib/${name} && \
+		cp /usr/lib/${METACALL_ARCH_PATH}/${alias} /usr/local/metacall/python/lib/${name} && \
 		if [ "${name}" != "${alias}" ]; then \
-			ln -s /python/lib/${name} /python/lib/${alias}; \
+			ln -s /usr/local/metacall/python/lib/${name} /usr/local/metacall/python/lib/${alias}; \
 		fi && \
 		echo "${alias} -> ${name}"; \
 	done
@@ -71,12 +71,14 @@ FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 # Copy build dependencies
 COPY --from=deps /usr/include/ /usr/include/
 COPY --from=deps /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/ /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/
-COPY --from=deps /python/lib/ /usr/local/metacall/python/lib/
+COPY --from=deps /usr/local/metacall/python/lib/ /usr/local/metacall/python/lib/
 
 ARG METACALL_PYTHON_VERSION
 
-ENV LD_LIBRARY_PATH=/usr/local/metacall/python/lib \
-	SHLIB_PATH=/usr/local/metacall/python/lib
+ENV LD_LIBRARY_PATH=/usr/local/metacall/python/lib:$LD_LIBRARY_PATH \
+	SHLIB_PATH=/usr/local/metacall/python/lib:$SHLIB_PATH
+
+RUN ls -la /usr/local/metacall/python/lib
 
 # Build CPython (TODO: --enable-optimizations)
 RUN ldconfig -n -v /usr/local/metacall/python/lib \
