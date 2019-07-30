@@ -49,6 +49,7 @@ RUN LIBS=" \
 	tk \
 	uuid \
 	history readline \
+	tinfo \
 	"; \
 	mkdir -p ${METACALL_PATH}/python/lib && \
 	for lib in $LIBS; do \
@@ -75,10 +76,12 @@ RUN CONFIGS=" \
 	liblzma \
 	sqlite3 \
 	uuid \
+	tinfo \
 	"; \
 	mkdir -p ${METACALL_PATH}/python/pkgconfig && \
 	for cfg in $CONFIGS; do \
 		pkg="/usr/lib/${METACALL_ARCH_PATH}/pkgconfig/${cfg}.pc" && \
+		echo "${cfg}.pc -> ${pkg}"; \
 		sed "s#^libdir=.*#libdir=${METACALL_PATH}/python/lib#g" ${pkg} > ${METACALL_PATH}/python/pkgconfig/${cfg}.pc; \
 	done
 
