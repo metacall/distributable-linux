@@ -79,7 +79,7 @@ RUN CONFIGS=" \
 	mkdir -p ${METACALL_PATH}/python/pkgconfig && \
 	for cfg in $CONFIGS; do \
 		pkg="/usr/lib/${METACALL_ARCH_PATH}/pkgconfig/${cfg}.pc" && \
-		sed -i 's#libdir=.*#libdir=${METACALL_PATH}/python/lib#g' ${pkg} > ${METACALL_PATH}/python/pkgconfig/${cfg}.pc; \
+		sed "s#^libdir=.*#libdir=${METACALL_PATH}/python/lib#g" ${pkg} > ${METACALL_PATH}/python/pkgconfig/${cfg}.pc; \
 	done
 
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
@@ -95,7 +95,7 @@ ENV LD_LIBRARY_PATH=${METACALL_PATH}/python/lib:$LD_LIBRARY_PATH \
 	SHLIB_PATH=${METACALL_PATH}/python/lib:$SHLIB_PATH
 
 # Build CPython (TODO: --enable-optimizations)
-RUN ldconfig -n -v ${METACALL_PATH}/python/lib \
+RUN export LDFLAGS="-L${METACALL_PATH}/python/lib" \
 	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
 	&& cd cpython \
 	&& git checkout ${METACALL_PYTHON_VERSION} \
