@@ -32,17 +32,13 @@ RUN LIBS=" \
 	mkdir -p ${METACALL_PATH}/libc/lib && \
 	for lib in $LIBS; do \
 		alias="lib${lib}.so" && \
-		link=$(ls -la /usr/lib/${METACALL_ARCH_PATH}/${alias} | awk '{ print $11 }' | tr " " "\n") && \
-		if [ "${link}" = "" ]; then \
-			name="${alias}"; \
-		else \
-			name=$(basename "${link}"); \
-		fi && \
-		cp /usr/lib/${METACALL_ARCH_PATH}/${alias} ${METACALL_PATH}/libc/lib/${name} && \
+		name=$(ls -la /lib/${METACALL_ARCH_PATH} | grep "${alias}" | awk '{ print $9 }' | tr " " "\n") && \
+		target=$(ls -la /lib/${METACALL_ARCH_PATH} | grep "${alias}" | awk '{ print $11 }' | tr " " "\n") && \
+		cp /lib/${METACALL_ARCH_PATH}/${target} ${METACALL_PATH}/libc/lib/${target} && \
 		if [ "${name}" != "${alias}" ]; then \
-			ln -s ${METACALL_PATH}/libc/lib/${name} ${METACALL_PATH}/libc/lib/${alias}; \
+			ln -s ${METACALL_PATH}/libc/lib/${target} ${METACALL_PATH}/libc/lib/${name}; \
 		fi && \
-		echo "${alias} -> ${name}"; \
+		echo "${name} -> ${target}"; \
 	done
 
 FROM scratch AS libc
