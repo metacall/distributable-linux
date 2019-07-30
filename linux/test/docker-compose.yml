@@ -28,3 +28,4 @@ services:
       dockerfile: Dockerfile
       args:
         METACALL_ARCH: amd64
+        METACALL_PATH: $METACALL_PATH

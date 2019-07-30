@@ -103,6 +103,8 @@ RUN export LDFLAGS="-L${METACALL_PATH}/python/lib" \
 	&& make -j$(nproc) \
 	&& make install
 
-#FROM scratch AS python
+FROM scratch AS python
 
-#COPY --from=builder / /
+ARG METACALL_PATH
+
+COPY --from=builder ${METACALL_PATH}/python ${METACALL_PATH}/python

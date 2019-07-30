@@ -23,4 +23,6 @@ FROM metacall/distributable:linux-python-${METACALL_ARCH} AS python
 
 FROM ${METACALL_ARCH}/alpine:3.10.1 AS test
 
-COPY --from=python / /python/
+ARG METACALL_PATH
+
+COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python

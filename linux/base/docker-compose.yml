@@ -17,10 +17,10 @@
 #	limitations under the License.
 #
 
-# TODO
-# mips: mips-linux-gnu
-# mips64el: mips64el-linux-gnuabi64
-# mipsel: mipsel-linux-gnu
+# TODO (qemu?):
+#   mips: mips-linux-gnu
+#   mips64el: mips64el-linux-gnuabi64
+#   mipsel: mipsel-linux-gnu
 
 version: "3.7"
 
