@@ -99,10 +99,10 @@ RUN export LDFLAGS="-L${METACALL_PATH}/python/lib" \
 	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
 	&& cd cpython \
 	&& git checkout ${METACALL_PYTHON_VERSION} \
-	&& ./configure --prefix=/root/python --with-lto --enable-shared CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-z,relro" \
+	&& ./configure --prefix=${METACALL_PATH}/python --with-lto --enable-shared CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-z,relro" \
 	&& make -j$(nproc) \
 	&& make install
 
-FROM scratch AS python
+#FROM scratch AS python
 
-COPY --from=builder /root/python/ /
+#COPY --from=builder / /
