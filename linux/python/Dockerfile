@@ -19,7 +19,7 @@
 
 ARG METACALL_ARCH
 
-FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
+FROM metacall/distributable:linux-base-${METACALL_ARCH} AS deps
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
@@ -35,11 +35,52 @@ RUN apt-get update \
 		uuid-dev \
 		libreadline-dev
 
+# Copy libraries
+RUN LIBS=" \
+	crypt \
+	z \
+	ffi \
+	crypto ssl \
+	bz2 \
+	formw menuw ncursesw panelw \
+	gdbm gdbm_compat \
+	lzma \
+	sqlite3 \
+	tk \
+	uuid \
+	history readline \
+	"; \
+	mkdir -p /python/lib \
+	&& for lib in $LIBS; do \
+		alias="lib${lib}.so" && \
+		link=$(ls -la /usr/lib/${METACALL_ARCH_PATH}/${alias} | awk '{ print $11 }' | tr " " "\n") && \
+		if [ "${link}" = "" ]; then \
+			name="${alias}"; \
+		else \
+			name=$(basename "${link}"); \
+		fi && \
+		cp /usr/lib/${METACALL_ARCH_PATH}/${alias} /python/lib/${name} && \
+		if [ "${name}" != "${alias}" ]; then \
+			ln -s /python/lib/${name} /python/lib/${alias}; \
+		fi && \
+		echo "${alias} -> ${name}"; \
+	done
+
+FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
+
+# Copy build dependencies
+COPY --from=deps /usr/include/ /usr/include/
+COPY --from=deps /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/ /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/
+COPY --from=deps /python/lib/ /usr/local/metacall/python/lib/
+
 ARG METACALL_PYTHON_VERSION
 
-# TODO: --enable-optimizations
+ENV LD_LIBRARY_PATH=/usr/local/metacall/python/lib \
+	SHLIB_PATH=/usr/local/metacall/python/lib
 
-RUN git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
+# Build CPython (TODO: --enable-optimizations)
+RUN ldconfig -n -v /usr/local/metacall/python/lib \
+	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
 	&& cd cpython \
 	&& git checkout ${METACALL_PYTHON_VERSION} \
 	&& ./configure --prefix=/root/python --with-lto --enable-shared CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-z,relro" \
