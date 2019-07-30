@@ -50,8 +50,8 @@ RUN LIBS=" \
 	uuid \
 	history readline \
 	"; \
-	mkdir -p ${METACALL_PATH}/python/lib \
-	&& for lib in $LIBS; do \
+	mkdir -p ${METACALL_PATH}/python/lib && \
+	for lib in $LIBS; do \
 		alias="lib${lib}.so" && \
 		link=$(ls -la /usr/lib/${METACALL_ARCH_PATH}/${alias} | awk '{ print $11 }' | tr " " "\n") && \
 		if [ "${link}" = "" ]; then \
@@ -66,19 +66,33 @@ RUN LIBS=" \
 		echo "${alias} -> ${name}"; \
 	done
 
+# Copy package configs
+RUN CONFIGS=" \
+	zlib \
+	libffi \
+	libcrypto libssl \
+	formw menuw ncursesw panelw \
+	liblzma \
+	sqlite3 \
+	uuid \
+	"; \
+	mkdir -p ${METACALL_PATH}/python/pkgconfig && \
+	for cfg in $CONFIGS; do \
+		pkg="/usr/lib/${METACALL_ARCH_PATH}/pkgconfig/${cfg}.pc" && \
+		sed -i 's#libdir=.*#libdir=${METACALL_PATH}/python/lib#g' ${pkg} > ${METACALL_PATH}/python/pkgconfig/${cfg}.pc; \
+	done
+
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
 # Copy build dependencies
 COPY --from=deps /usr/include/ /usr/include/
-#COPY --from=deps /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/ /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/
+COPY --from=deps ${METACALL_PATH}/python/pkgconfig/ /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/
 COPY --from=deps ${METACALL_PATH}/python/lib/ ${METACALL_PATH}/python/lib/
 
 ARG METACALL_PYTHON_VERSION
 
 ENV LD_LIBRARY_PATH=${METACALL_PATH}/python/lib:$LD_LIBRARY_PATH \
 	SHLIB_PATH=${METACALL_PATH}/python/lib:$SHLIB_PATH
-
-RUN ls -la ${METACALL_PATH}/python/lib
 
 # Build CPython (TODO: --enable-optimizations)
 RUN ldconfig -n -v ${METACALL_PATH}/python/lib \
