@@ -25,4 +25,7 @@ FROM ${METACALL_ARCH}/alpine:3.10.1 AS test
 
 ARG METACALL_PATH
 
+ENV LD_LIBRARY_PATH=${METACALL_PATH}/python/lib \
+	SHLIB_PATH=${METACALL_PATH}/python/lib
+
 COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python
