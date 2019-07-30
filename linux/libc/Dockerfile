@@ -1,0 +1,52 @@
+#
+#	MetaCall Distributable by Parra Studios
+#	Distributable infrastructure for MetaCall.
+#
+#	Copyright (C) 2016 - 2019 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+#
+#	Licensed under the Apache License, Version 2.0 (the "License");
+#	you may not use this file except in compliance with the License.
+#	You may obtain a copy of the License at
+#
+#		http://www.apache.org/licenses/LICENSE-2.0
+#
+#	Unless required by applicable law or agreed to in writing, software
+#	distributed under the License is distributed on an "AS IS" BASIS,
+#	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#	See the License for the specific language governing permissions and
+#	limitations under the License.
+#
+
+ARG METACALL_ARCH
+
+FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS deps
+
+# Copy libraries
+RUN LIBS=" \
+	c \
+	pthread \
+	dl \
+	util \
+	m \
+	"; \
+	mkdir -p ${METACALL_PATH}/libc/lib && \
+	for lib in $LIBS; do \
+		alias="lib${lib}.so" && \
+		link=$(ls -la /usr/lib/${METACALL_ARCH_PATH}/${alias} | awk '{ print $11 }' | tr " " "\n") && \
+		if [ "${link}" = "" ]; then \
+			name="${alias}"; \
+		else \
+			name=$(basename "${link}"); \
+		fi && \
+		cp /usr/lib/${METACALL_ARCH_PATH}/${alias} ${METACALL_PATH}/libc/lib/${name} && \
+		if [ "${name}" != "${alias}" ]; then \
+			ln -s ${METACALL_PATH}/libc/lib/${name} ${METACALL_PATH}/libc/lib/${alias}; \
+		fi && \
+		echo "${alias} -> ${name}"; \
+	done
+
+FROM scratch AS libc
+
+ARG METACALL_PATH
+
+COPY --from=deps ${METACALL_PATH}/libc/lib ${METACALL_PATH}/libc/lib
