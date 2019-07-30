@@ -22,15 +22,7 @@
 # Default target
 default: all
 
-# TODO: Implement for all architectures
+# TODO
 
 # All targets
 all:
-#	Build base
-	@docker-compose -f base/docker-compose.yml build amd64
-
-#	Build python
-	@docker-compose -f python/docker-compose.yml build amd64
-
-#	Build test
-	@docker-compose -f test/docker-compose.yml build amd64
