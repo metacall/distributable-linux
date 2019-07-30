@@ -19,7 +19,7 @@
 
 ARG METACALL_ARCH
 
-FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS deps
+FROM metacall/distributable:linux-base-${METACALL_ARCH} AS deps
 
 # Copy libraries
 RUN LIBS=" \
