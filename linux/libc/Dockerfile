@@ -39,7 +39,15 @@ RUN LIBS=" \
 			ln -s ${METACALL_PATH}/libc/lib/${target} ${METACALL_PATH}/libc/lib/${name}; \
 		fi && \
 		echo "${name} -> ${target}"; \
-	done
+	done && \
+	alias="ld-linux.*\.so$" && \
+	name=$(ls -la /lib/${METACALL_ARCH_PATH} | grep -E "${alias}" | awk '{ print $9 }' | tr " " "\n") && \
+	target=$(ls -la /lib/${METACALL_ARCH_PATH} | grep -E "${alias}" | awk '{ print $11 }' | tr " " "\n") && \
+	cp /lib/${METACALL_ARCH_PATH}/${target} ${METACALL_PATH}/libc/lib/${target} && \
+	if [ "${name}" != "${alias}" ]; then \
+		ln -s ${METACALL_PATH}/libc/lib/${target} ${METACALL_PATH}/libc/lib/${name}; \
+	fi && \
+	echo "${name} -> ${target}"
 
 FROM scratch AS libc
 

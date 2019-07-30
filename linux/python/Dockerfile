@@ -19,6 +19,8 @@
 
 ARG METACALL_ARCH
 
+FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
+
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS deps
 
 RUN apt-get update \
@@ -88,14 +90,15 @@ RUN CONFIGS=" \
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
 # Copy build dependencies
+COPY --from=libc ${METACALL_PATH}/libc/lib/ ${METACALL_PATH}/libc/lib/
 COPY --from=deps /usr/include/ /usr/include/
 COPY --from=deps ${METACALL_PATH}/python/pkgconfig/ /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/
 COPY --from=deps ${METACALL_PATH}/python/lib/ ${METACALL_PATH}/python/lib/
 
 ARG METACALL_PYTHON_VERSION
 
-ENV LD_LIBRARY_PATH=${METACALL_PATH}/python/lib:$LD_LIBRARY_PATH \
-	SHLIB_PATH=${METACALL_PATH}/python/lib:$SHLIB_PATH
+ENV LD_LIBRARY_PATH=${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib \
+	SHLIB_PATH=${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib
 
 # Build CPython (TODO: --enable-optimizations)
 RUN export LDFLAGS="-L${METACALL_PATH}/python/lib" \
