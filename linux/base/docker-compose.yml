@@ -34,6 +34,7 @@ services:
       args:
         METACALL_ARCH: amd64
         METACALL_ARCH_PATH: x86_64-linux-gnu
+        METACALL_PATH: $METACALL_PATH
 
   arm32v5:
     image: metacall/distributable:linux-base-arm32v5
@@ -44,6 +45,7 @@ services:
       args:
         METACALL_ARCH: arm32v5
         METACALL_ARCH_PATH: arm-linux-gnueabi
+        METACALL_PATH: $METACALL_PATH
 
   arm32v7:
     image: metacall/distributable:linux-base-arm32v7
@@ -54,6 +56,7 @@ services:
       args:
         METACALL_ARCH: arm32v7
         METACALL_ARCH_PATH: arm-linux-gnueabihf
+        METACALL_PATH: $METACALL_PATH
 
   arm64v8:
     image: metacall/distributable:linux-base-arm64v8
@@ -64,6 +67,7 @@ services:
       args:
         METACALL_ARCH: arm64v8
         METACALL_ARCH_PATH: aarch64-linux-gnu
+        METACALL_PATH: $METACALL_PATH
 
   i386:
     image: metacall/distributable:linux-base-i386
@@ -74,6 +78,7 @@ services:
       args:
         METACALL_ARCH: i386
         METACALL_ARCH_PATH: i386-linux-gnu
+        METACALL_PATH: $METACALL_PATH
 
   ppc64le:
     image: metacall/distributable:linux-base-ppc64le
@@ -84,6 +89,7 @@ services:
       args:
         METACALL_ARCH: ppc64le
         METACALL_ARCH_PATH: powerpc64le-linux-gnu
+        METACALL_PATH: $METACALL_PATH
 
   s390x:
     image: metacall/distributable:linux-base-s390x
@@ -94,3 +100,4 @@ services:
       args:
         METACALL_ARCH: s390x
         METACALL_ARCH_PATH: s390x-linux-gnu
+        METACALL_PATH: $METACALL_PATH

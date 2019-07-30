@@ -50,7 +50,7 @@ RUN LIBS=" \
 	uuid \
 	history readline \
 	"; \
-	mkdir -p /usr/local/metacall/python/lib \
+	mkdir -p ${METACALL_PATH}/python/lib \
 	&& for lib in $LIBS; do \
 		alias="lib${lib}.so" && \
 		link=$(ls -la /usr/lib/${METACALL_ARCH_PATH}/${alias} | awk '{ print $11 }' | tr " " "\n") && \
@@ -59,9 +59,9 @@ RUN LIBS=" \
 		else \
 			name=$(basename "${link}"); \
 		fi && \
-		cp /usr/lib/${METACALL_ARCH_PATH}/${alias} /usr/local/metacall/python/lib/${name} && \
+		cp /usr/lib/${METACALL_ARCH_PATH}/${alias} ${METACALL_PATH}/python/lib/${name} && \
 		if [ "${name}" != "${alias}" ]; then \
-			ln -s /usr/local/metacall/python/lib/${name} /usr/local/metacall/python/lib/${alias}; \
+			ln -s ${METACALL_PATH}/python/lib/${name} ${METACALL_PATH}/python/lib/${alias}; \
 		fi && \
 		echo "${alias} -> ${name}"; \
 	done
@@ -70,18 +70,18 @@ FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
 # Copy build dependencies
 COPY --from=deps /usr/include/ /usr/include/
-COPY --from=deps /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/ /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/
-COPY --from=deps /usr/local/metacall/python/lib/ /usr/local/metacall/python/lib/
+#COPY --from=deps /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/ /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/
+COPY --from=deps ${METACALL_PATH}/python/lib/ ${METACALL_PATH}/python/lib/
 
 ARG METACALL_PYTHON_VERSION
 
-ENV LD_LIBRARY_PATH=/usr/local/metacall/python/lib:$LD_LIBRARY_PATH \
-	SHLIB_PATH=/usr/local/metacall/python/lib:$SHLIB_PATH
+ENV LD_LIBRARY_PATH=${METACALL_PATH}/python/lib:$LD_LIBRARY_PATH \
+	SHLIB_PATH=${METACALL_PATH}/python/lib:$SHLIB_PATH
 
-RUN ls -la /usr/local/metacall/python/lib
+RUN ls -la ${METACALL_PATH}/python/lib
 
 # Build CPython (TODO: --enable-optimizations)
-RUN ldconfig -n -v /usr/local/metacall/python/lib \
+RUN ldconfig -n -v ${METACALL_PATH}/python/lib \
 	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
 	&& cd cpython \
 	&& git checkout ${METACALL_PYTHON_VERSION} \
