@@ -36,39 +36,27 @@ RUN apt-get update \
 		libreadline-dev
 
 # Copy libraries
-RUN LIBS=" \
-	crypt \
-	z \
+RUN \
+	export RESOURCES=" \
 	ffi \
 	crypto ssl \
-	bz2 \
 	formw menuw ncursesw panelw \
 	gdbm gdbm_compat \
-	lzma \
 	sqlite3 \
 	tk \
+	"; \
+		metacall-distributable lib /usr/lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
+	export RESOURCES=" \
+	crypt \
+	z \
+	bz2 \
+	lzma \
 	uuid \
 	history readline \
 	tinfo \
 	"; \
-	mkdir -p ${METACALL_PATH}/python/lib && \
-	for lib in $LIBS; do \
-		alias="lib${lib}.so" && \
-		link=$(ls -la /usr/lib/${METACALL_ARCH_PATH}/${alias} | awk '{ print $11 }' | tr " " "\n") && \
-		if [ "${link}" = "" ]; then \
-			name="${alias}"; \
-		else \
-			name=$(basename "${link}"); \
-		fi && \
-		cp /usr/lib/${METACALL_ARCH_PATH}/${alias} ${METACALL_PATH}/python/lib/${name} && \
-		if [ "${name}" != "${alias}" ]; then \
-			ln -s ${METACALL_PATH}/python/lib/${name} ${METACALL_PATH}/python/lib/${alias}; \
-		fi && \
-		echo "${alias} -> ${name}"; \
-	done
-
-# Copy package configs
-RUN CONFIGS=" \
+		metacall-distributable lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
+	RESOURCES=" \
 	zlib \
 	libffi \
 	libcrypto libssl \
@@ -78,12 +66,25 @@ RUN CONFIGS=" \
 	uuid \
 	tinfo \
 	"; \
-	mkdir -p ${METACALL_PATH}/python/pkgconfig && \
-	for cfg in $CONFIGS; do \
-		pkg="/usr/lib/${METACALL_ARCH_PATH}/pkgconfig/${cfg}.pc" && \
-		echo "${cfg}.pc -> ${pkg}"; \
-		sed "s#^libdir=.*#libdir=${METACALL_PATH}/python/lib#g" ${pkg} > ${METACALL_PATH}/python/pkgconfig/${cfg}.pc; \
-	done
+		metacall-distributable pkg /usr/lib/${METACALL_ARCH_PATH}/pkgconfig ${METACALL_PATH}/python '${pkg}.pc'
+
+# Copy package configs
+#RUN CONFIGS=" \
+#	zlib \
+#	libffi \
+#	libcrypto libssl \
+#	formw menuw ncursesw panelw \
+#	liblzma \
+#	sqlite3 \
+#	uuid \
+#	tinfo \
+#	"; \
+#	mkdir -p ${METACALL_PATH}/python/pkgconfig && \
+#	for cfg in $CONFIGS; do \
+#		pkg="/usr/lib/${METACALL_ARCH_PATH}/pkgconfig/${cfg}.pc" && \
+#		echo "${cfg}.pc -> ${pkg}"; \
+#		sed "s#^libdir=.*#libdir=${METACALL_PATH}/python/lib#g" ${pkg} > ${METACALL_PATH}/python/pkgconfig/${cfg}.pc; \
+#	done
 
 FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 
@@ -103,16 +104,16 @@ ENV LD_LIBRARY_PATH=${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib \
 	SHLIB_PATH=${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib
 
 # Build CPython (TODO: --enable-optimizations)
-RUN export LDFLAGS="-L${METACALL_PATH}/python/lib" \
-	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
-	&& cd cpython \
-	&& git checkout ${METACALL_PYTHON_VERSION} \
-	&& ./configure --prefix=${METACALL_PATH}/python --with-lto --enable-shared CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-z,relro" \
-	&& make -j$(nproc) \
-	&& make install
+#RUN export LDFLAGS="-L${METACALL_PATH}/python/lib" \
+#	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
+#	&& cd cpython \
+#	&& git checkout ${METACALL_PYTHON_VERSION} \
+#	&& ./configure --prefix=${METACALL_PATH}/python --with-lto --enable-shared CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-z,relro" \
+#	&& make -j$(nproc) \
+#	&& make install
 
-FROM scratch AS python
+#FROM scratch AS python
 
-ARG METACALL_PATH
+#ARG METACALL_PATH
 
-COPY --from=builder ${METACALL_PATH}/python ${METACALL_PATH}/python
+#COPY --from=builder ${METACALL_PATH}/python ${METACALL_PATH}/python
