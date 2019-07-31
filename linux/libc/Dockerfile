@@ -23,10 +23,10 @@ FROM metacall/distributable:linux-base-${METACALL_ARCH} AS deps
 
 # Copy libraries
 RUN \
-	export RESOURCES="c pthread dl util m"; \
-	metacall-distributable lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/libc/lib 'lib${lib}\.so' && \
-	export RESOURCES="ld-linux"; \
-	metacall-distributable lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/libc/lib '${lib}.*\.so$'
+	export LIBS="c pthread dl util m"; \
+	metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/libc/lib 'lib${lib}\.so' && \
+	export LIBS="ld-linux"; \
+	metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/libc/lib '${lib}.*\.so$'
 
 FROM scratch AS libc
 

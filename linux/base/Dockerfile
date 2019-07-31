@@ -34,6 +34,6 @@ ENV LANG=en_US.utf8 \
 	METACALL_ARCH_PATH=${METACALL_ARCH_PATH} \
 	METACALL_PATH=${METACALL_PATH}
 
-COPY metacall-distributable.sh /bin/metacall-distributable
+COPY scripts/ /bin/
 
-RUN chmod +x /bin/metacall-distributable
+RUN chmod +x /bin/metacall-dist-lib /bin/metacall-dist-pkg

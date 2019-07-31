@@ -37,7 +37,7 @@ RUN apt-get update \
 
 # Copy libraries
 RUN \
-	export RESOURCES=" \
+	export LIBS=" \
 	ffi \
 	crypto ssl \
 	formw menuw ncursesw panelw \
@@ -45,8 +45,8 @@ RUN \
 	sqlite3 \
 	tk \
 	"; \
-		metacall-distributable lib /usr/lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
-	export RESOURCES=" \
+		metacall-dist-lib /usr/lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
+	export LIBS=" \
 	crypt \
 	z \
 	bz2 \
@@ -55,8 +55,8 @@ RUN \
 	history readline \
 	tinfo \
 	"; \
-		metacall-distributable lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
-	RESOURCES=" \
+		metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
+	export PKGS=" \
 	zlib \
 	libffi \
 	libcrypto libssl \
@@ -66,25 +66,7 @@ RUN \
 	uuid \
 	tinfo \
 	"; \
-		metacall-distributable pkg /usr/lib/${METACALL_ARCH_PATH}/pkgconfig ${METACALL_PATH}/python '${pkg}.pc'
-
-# Copy package configs
-#RUN CONFIGS=" \
-#	zlib \
-#	libffi \
-#	libcrypto libssl \
-#	formw menuw ncursesw panelw \
-#	liblzma \
-#	sqlite3 \
-#	uuid \
-#	tinfo \
-#	"; \
-#	mkdir -p ${METACALL_PATH}/python/pkgconfig && \
-#	for cfg in $CONFIGS; do \
-#		pkg="/usr/lib/${METACALL_ARCH_PATH}/pkgconfig/${cfg}.pc" && \
-#		echo "${cfg}.pc -> ${pkg}"; \
-#		sed "s#^libdir=.*#libdir=${METACALL_PATH}/python/lib#g" ${pkg} > ${METACALL_PATH}/python/pkgconfig/${cfg}.pc; \
-#	done
+		metacall-dist-pkg /usr/lib/${METACALL_ARCH_PATH}/pkgconfig ${METACALL_PATH}/python '${pkg}.pc'
 
 FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 
