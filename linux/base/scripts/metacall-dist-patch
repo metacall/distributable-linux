@@ -35,7 +35,6 @@ help() {
 	echo
 }
 
-
 main() {
 	# Check if source folder is defined
 	if [ -z ${1+x} ]; then
@@ -80,7 +79,7 @@ main() {
 		patchelf --shrink-rpath ${elf}
 
 		# Show new locations
-		echo "${elf} -> ${rpath} | ${interpreter}"
+		echo "${elf} -> ${rpath} ${interpreter}"
 	done
 }
 
