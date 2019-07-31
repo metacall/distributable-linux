@@ -80,7 +80,7 @@ main() {
 	mkdir -p ${dest}/pkgconfig
 
 	# Iterate through lib list
-	for pkg in ${LIBS}; do
+	for pkg in ${PKGS}; do
 		alias=`eval echo "${pattern}"`
 		pkg="${source}/${alias}"
 		sed "s#^libdir=.*#libdir=${dest}/lib#g" ${pkg} > ${dest}/pkgconfig/${alias}; \
