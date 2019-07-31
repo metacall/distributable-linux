@@ -19,79 +19,85 @@
 #	limitations under the License.
 #
 
-# Check if libs are defined
-if [ -z ${LIBS+x} ]; then
-	echo "Variable LIBS is unset, it must be declared in order to know what libs are going to be copied."
-	help
-	exit 1
-fi
-
-# Check if source path is defined
-if [ -z ${1+x} ]; then
-	echo "Source path is not defined."
-	help
-	exit 1
-fi
-
-# Check if destination path is defined
-if [ -z ${2+x} ]; then
-	echo "Destination path is not defined."
-	help
-	exit 1
-fi
-
-# Check if pattern is defined
-if [ -z ${3+x} ]; then
-	echo "Library name pattern is not defined."
-	help
-	exit 1
-fi
-
 # Help command
 help() {
+	echo
 	echo "Usage:"
 	echo
 	echo "LIBS=\"...\" `basename $0` source destination pattern"
 	echo "  source: folder where libs are located"
 	echo "  destination: folder where libs are going to be copied"
-	echo "  pattern: special pattern if any, use \${lib} to refer to the current lib being iterated"
+	echo "  pattern: special pattern if any, use \${lib} to refer to the current lib being iterated (it must be wrapped by simple commas)"
 	echo
 	echo "Example:"
-	echo "LIBS=\"ssl sqlite3\" `basename $0` /usr/lib/x86_64-linux-gnu /home/root/portable_libs \"lib\$\${lib}\\.so.*\""
+	echo
+	echo "  LIBS=\"ssl sqlite3\" `basename $0` /usr/lib/x86_64-linux-gnu /home/root/portable_libs 'lib\${lib}\\.so.*'"
+	echo
 }
 
+main() {
+# Check if libs are defined
+	if [ -z ${LIBS+x} ]; then
+		echo "Error: Variable LIBS is unset, it must be declared in order to know what libs are going to be copied."
+		help
+		exit 1
+	fi
+
+	# Check if source folder is defined
+	if [ -z ${1+x} ]; then
+		echo "Error: Source folder is not defined."
+		help
+		exit 1
+	fi
+
+	# Check if source folder exists
+	if [ ! -d "${1}" ]; then
+		echo "Error: Source folder does not exist."
+		help
+		exit 1
+	fi
+
+	# Check if destination folder is defined
+	if [ -z ${2+x} ]; then
+		echo "Error: Destination folder is not defined."
+		help
+		exit 1
+	fi
+
+	# Check if pattern is defined
+	if [ -z ${3+x} ]; then
+		echo "Error: Library name pattern is not defined."
+		help
+		exit 1
+	fi
+
+	# Define variable alias
+	source=${1}
+	dest=${2}
+	pattern=${3}
+
+	# Create destination folder if it is not created
+	mkdir -p ${dest}
+
+	# Iterate through lib list
+	for lib in ${LIBS}; do
+		alias=`eval echo "${pattern}"`
+		name=$(ls -la ${source} | grep -E "${alias}" | awk '{ print $9 }' | tr ' ' '\n')
+		target=$(ls -la ${source} | grep -E "${alias}" | awk '{ print $11 }' | tr ' ' '\n')
+
+		# Copy library
+		cp ${source}/${target} ${dest}/${target}
+
+		# Copy symlink to the new library
+		if [ "${name}" != "${target}" ]; then
+			ln -s ${dest}/${target} ${dest}/${name}
+		fi
+
+		# Show new locations
+		echo "${name} -> ${target}"
+	done
+}
+
+main "$@"
+
 exit 0
-
-# Copy libraries
-RUN LIBS=" \
-	c \
-	pthread \
-	dl \
-	util \
-	m \
-	"; \
-	mkdir -p ${METACALL_PATH}/libc/lib && \
-	for lib in $LIBS; do \
-		alias="lib${lib}.so" && \
-		name=$(ls -la /lib/${METACALL_ARCH_PATH} | grep "${alias}" | awk '{ print $9 }' | tr " " "\n") && \
-		target=$(ls -la /lib/${METACALL_ARCH_PATH} | grep "${alias}" | awk '{ print $11 }' | tr " " "\n") && \
-		cp /lib/${METACALL_ARCH_PATH}/${target} ${METACALL_PATH}/libc/lib/${target} && \
-		if [ "${name}" != "${alias}" ]; then \
-			ln -s ${METACALL_PATH}/libc/lib/${target} ${METACALL_PATH}/libc/lib/${name}; \
-		fi && \
-		echo "${name} -> ${target}"; \
-	done && \
-	alias="ld-linux.*\.so$" && \
-	name=$(ls -la /lib/${METACALL_ARCH_PATH} | grep -E "${alias}" | awk '{ print $9 }' | tr " " "\n") && \
-	target=$(ls -la /lib/${METACALL_ARCH_PATH} | grep -E "${alias}" | awk '{ print $11 }' | tr " " "\n") && \
-	cp /lib/${METACALL_ARCH_PATH}/${target} ${METACALL_PATH}/libc/lib/${target} && \
-	if [ "${name}" != "${alias}" ]; then \
-		ln -s ${METACALL_PATH}/libc/lib/${target} ${METACALL_PATH}/libc/lib/${name}; \
-	fi && \
-	echo "${name} -> ${target}"
-
-FROM scratch AS libc
-
-ARG METACALL_PATH
-
-COPY --from=deps ${METACALL_PATH}/libc/lib ${METACALL_PATH}/libc/lib

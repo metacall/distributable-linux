@@ -19,8 +19,6 @@
 
 ARG METACALL_ARCH
 
-FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
-
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS deps
 
 RUN apt-get update \
@@ -87,10 +85,14 @@ RUN CONFIGS=" \
 		sed "s#^libdir=.*#libdir=${METACALL_PATH}/python/lib#g" ${pkg} > ${METACALL_PATH}/python/pkgconfig/${cfg}.pc; \
 	done
 
+FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
+
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
-# Copy build dependencies
+# Copy libc dependencies
 COPY --from=libc ${METACALL_PATH}/libc/lib/ ${METACALL_PATH}/libc/lib/
+
+# Copy build dependencies
 COPY --from=deps /usr/include/ /usr/include/
 COPY --from=deps ${METACALL_PATH}/python/pkgconfig/ /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/
 COPY --from=deps ${METACALL_PATH}/python/lib/ ${METACALL_PATH}/python/lib/
