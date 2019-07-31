@@ -33,3 +33,7 @@ ENV LANG=en_US.utf8 \
 	DEBIAN_FRONTEND=noninteractive \
 	METACALL_ARCH_PATH=${METACALL_ARCH_PATH} \
 	METACALL_PATH=${METACALL_PATH}
+
+COPY metacall-distributable.sh /bin/metacall-distributable
+
+RUN chmod +x /bin/metacall-distributable
