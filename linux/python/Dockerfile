@@ -35,6 +35,8 @@ RUN apt-get update \
 		uuid-dev \
 		libreadline-dev
 
+ARG METACALL_PATH
+
 # Copy libraries
 RUN \
 	export LIBS=" \
@@ -72,6 +74,8 @@ FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
+ARG METACALL_PATH
+
 # Copy libc dependencies
 COPY --from=libc ${METACALL_PATH}/libc/lib/ ${METACALL_PATH}/libc/lib/
 
@@ -86,16 +90,16 @@ ENV LD_LIBRARY_PATH=${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib \
 	SHLIB_PATH=${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib
 
 # Build CPython (TODO: --enable-optimizations)
-#RUN export LDFLAGS="-L${METACALL_PATH}/python/lib" \
-#	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
-#	&& cd cpython \
-#	&& git checkout ${METACALL_PYTHON_VERSION} \
-#	&& ./configure --prefix=${METACALL_PATH}/python --with-lto --enable-shared CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-z,relro" \
-#	&& make -j$(nproc) \
-#	&& make install
+RUN export LDFLAGS="-L${METACALL_PATH}/python/lib" \
+	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
+	&& cd cpython \
+	&& git checkout ${METACALL_PYTHON_VERSION} \
+	&& ./configure --prefix=${METACALL_PATH}/python --with-lto --enable-shared CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-z,relro" \
+	&& make -j$(nproc) \
+	&& make install
 
-#FROM scratch AS python
+FROM scratch AS python
 
-#ARG METACALL_PATH
+ARG METACALL_PATH
 
-#COPY --from=builder ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder ${METACALL_PATH}/python ${METACALL_PATH}/python
