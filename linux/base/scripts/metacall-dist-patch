@@ -70,43 +70,20 @@ main() {
 	rpath=${2}
 	interpreter=`ls -la ${3}/ld-linux* | awk '{ print $9 }'`
 
+	# Retrieve all ELF files
+	ELFS=`find ${source} -type f -print0 | xargs -0 -n 10 file -i | grep -E "application\/x-sharedlib|application\/x-executable" | awk '{ print $1 }' | sed 's/://'`
+
+	# Iterate through elf list
+	for elf in ${ELFS}; do
 		patchelf --set-rpath ${rpath} ${elf}
 		patchelf --set-interpreter ${interpreter} ${elf}
 		patchelf --shrink-rpath ${elf}
 
-	# Iterate through lib list
-	for lib in ${LIBS}; do
-		alias=`eval echo "${pattern}"`
-		name=$(ls -la ${source} | grep -E "${alias}" | awk '{ print $9 }' | tr '\n' ' ' | awk '{ print $NF }' | xargs)
-		target=$(ls -la ${source} | grep -E "${alias}" | awk '{ print $11 }' | tr '\n' ' ' | awk '{ print $NF }' | xargs)
-
-		# Filter properly the name
-		if [ "${target}" = "" ]; then
-			target="${name}"
-		else
-			target=$(basename "${target}")
-		fi
-
-		# Copy library
-		cp ${source}/${target} ${dest}/${target}
-
-		# Copy symlink to the new library
-		if [ "${name}" != "${target}" ]; then
-			ln -s ${dest}/${target} ${dest}/${name}
-		fi
-
 		# Show new locations
-		echo "${name} -> ${target}"
+		echo "${elf} -> ${rpath} | ${interpreter}"
 	done
 }
 
 main "$@"
 
 exit 0
-
-
-
-
-
-
-	
