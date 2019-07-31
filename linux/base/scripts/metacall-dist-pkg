@@ -72,10 +72,9 @@ main() {
 	fi
 
 	# Define variable alias
-	type=${1}
-	source=${2}
-	dest=${3}
-	pattern=${4}
+	source=${1}
+	dest=${2}
+	pattern=${3}
 
 	# Create destination folder if it is not created
 	mkdir -p ${dest}/pkgconfig
