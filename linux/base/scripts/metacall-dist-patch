@@ -24,25 +24,19 @@ help() {
 	echo
 	echo "Usage:"
 	echo
-	echo "PKGS=\"...\" `basename $0` resource-type source destination pattern"
+	echo "`basename $0` source rpath interpreter"
 	echo "  source: folder where libs are located"
-	echo "  destination: parent folder of where libs are located"
-	echo "  pattern: special pattern if any, use \${pkg} to refer to the current resource being iterated (it must be wrapped by simple commas)"
+	echo "  rpath: new rpath to modify in the libs from source"
+	echo "  interpreter: path to where the interpreter ld-linux is located"
 	echo
 	echo "Example:"
 	echo
-	echo "  PKGS=\"zlib\" `basename $0` pkg /usr/lib/x86_64-linux-gnu/pkgconfig /home/root/pkgconfig '${pkg}.pc'"
+	echo "  `basename $0` /home/root/python/lib /home/root/python/lib:/home/root/libc/lib /home/root/libc/lib"
 	echo
 }
 
-main() {
-	# Check if pkgs are defined
-	if [ -z ${PKGS+x} ]; then
-		echo "Error: Variable RESOURCES is unset, it must be declared in order to know what resources are going to be copied."
-		help
-		exit 1
-	fi
 
+main() {
 	# Check if source folder is defined
 	if [ -z ${1+x} ]; then
 		echo "Error: Source folder is not defined."
@@ -57,39 +51,62 @@ main() {
 		exit 1
 	fi
 
-	# Check if destination folder is defined
+	# Check if rpath is defined
 	if [ -z ${2+x} ]; then
-		echo "Error: Destination folder is not defined."
+		echo "Error: Rpath is not defined."
 		help
 		exit 1
 	fi
 
-	# Check if pattern is defined
+	# Check if interpreter is defined
 	if [ -z ${3+x} ]; then
-		echo "Error: Library name pattern is not defined."
+		echo "Error: Interpreter is not defined."
 		help
 		exit 1
 	fi
 
 	# Define variable alias
 	source=${1}
-	dest=${2}
-	pattern=${3}
+	rpath=${2}
+	interpreter=`ls -la ${3}/ld-linux* | awk '{ print $9 }'`
 
-	# Create destination folder if it is not created
-	mkdir -p ${dest}/pkgconfig
+		patchelf --set-rpath ${rpath} ${elf}
+		patchelf --set-interpreter ${interpreter} ${elf}
+		patchelf --shrink-rpath ${elf}
 
 	# Iterate through lib list
-	for pkg in ${PKGS}; do
+	for lib in ${LIBS}; do
 		alias=`eval echo "${pattern}"`
-		pkg="${source}/${alias}"
-		sed "s#^libdir=.*#libdir=${dest}/lib#g" ${pkg} > ${dest}/pkgconfig/${alias}; \
+		name=$(ls -la ${source} | grep -E "${alias}" | awk '{ print $9 }' | tr '\n' ' ' | awk '{ print $NF }' | xargs)
+		target=$(ls -la ${source} | grep -E "${alias}" | awk '{ print $11 }' | tr '\n' ' ' | awk '{ print $NF }' | xargs)
+
+		# Filter properly the name
+		if [ "${target}" = "" ]; then
+			target="${name}"
+		else
+			target=$(basename "${target}")
+		fi
+
+		# Copy library
+		cp ${source}/${target} ${dest}/${target}
+
+		# Copy symlink to the new library
+		if [ "${name}" != "${target}" ]; then
+			ln -s ${dest}/${target} ${dest}/${name}
+		fi
 
 		# Show new locations
-		echo "${pkg} -> ${dest}/pkgconfig/${alias}"
+		echo "${name} -> ${target}"
 	done
 }
 
 main "$@"
 
 exit 0
+
+
+
+
+
+
+	

@@ -21,6 +21,7 @@ ARG METACALL_ARCH
 
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS deps
 
+# Install python dependencies
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		zlib1g-dev \
@@ -35,7 +36,16 @@ RUN apt-get update \
 		uuid-dev \
 		libreadline-dev
 
+ARG METACALL_PYTHON_VERSION
 ARG METACALL_PATH
+
+# Build CPython (TODO: --enable-optimizations)
+RUN git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
+	&& cd cpython \
+	&& git checkout ${METACALL_PYTHON_VERSION} \
+	&& ./configure --prefix=${METACALL_PATH}/python --with-lto --enable-shared CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-z,relro" \
+	&& make -j$(nproc) \
+	&& make install
 
 # Copy libraries
 RUN \
@@ -57,18 +67,7 @@ RUN \
 	history readline \
 	tinfo \
 	"; \
-		metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
-	export PKGS=" \
-	zlib \
-	libffi \
-	libcrypto libssl \
-	formw menuw ncursesw panelw \
-	liblzma \
-	sqlite3 \
-	uuid \
-	tinfo \
-	"; \
-		metacall-dist-pkg /usr/lib/${METACALL_ARCH_PATH}/pkgconfig ${METACALL_PATH}/python '${pkg}.pc'
+		metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so'
 
 FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 
@@ -76,27 +75,13 @@ FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
 ARG METACALL_PATH
 
-# Copy libc dependencies
-COPY --from=libc ${METACALL_PATH}/libc/lib/ ${METACALL_PATH}/libc/lib/
+# Copy dependencies
+COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
+COPY --from=deps ${METACALL_PATH}/python ${METACALL_PATH}/python
 
-# Copy build dependencies
-COPY --from=deps /usr/include/ /usr/include/
-COPY --from=deps ${METACALL_PATH}/python/pkgconfig/ /usr/lib/${METACALL_ARCH_PATH}/pkgconfig/
-COPY --from=deps ${METACALL_PATH}/python/lib/ ${METACALL_PATH}/python/lib/
-
-ARG METACALL_PYTHON_VERSION
-
-ENV LD_LIBRARY_PATH=${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib \
-	SHLIB_PATH=${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib
-
-# Build CPython (TODO: --enable-optimizations)
-RUN export LDFLAGS="-L${METACALL_PATH}/python/lib" \
-	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
-	&& cd cpython \
-	&& git checkout ${METACALL_PYTHON_VERSION} \
-	&& ./configure --prefix=${METACALL_PATH}/python --with-lto --enable-shared CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-z,relro" \
-	&& make -j$(nproc) \
-	&& make install
+# Patch libraries
+RUN metacall-dist-patch ${METACALL_PATH}/python/lib ${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64 ${METACALL_PATH}/libc/lib64 \
+	metacall-dist-patch ${METACALL_PATH}/python/bin ${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64 ${METACALL_PATH}/libc/lib64
 
 FROM scratch AS python
 

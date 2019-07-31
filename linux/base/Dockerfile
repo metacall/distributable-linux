@@ -36,4 +36,4 @@ ENV LANG=en_US.utf8 \
 
 COPY scripts/ /bin/
 
-RUN chmod +x /bin/metacall-dist-lib /bin/metacall-dist-pkg
+RUN chmod +x /bin/metacall-dist-lib /bin/metacall-dist-patch
