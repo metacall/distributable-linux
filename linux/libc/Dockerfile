@@ -22,32 +22,11 @@ ARG METACALL_ARCH
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS deps
 
 # Copy libraries
-RUN LIBS=" \
-	c \
-	pthread \
-	dl \
-	util \
-	m \
-	"; \
-	mkdir -p ${METACALL_PATH}/libc/lib && \
-	for lib in $LIBS; do \
-		alias="lib${lib}.so" && \
-		name=$(ls -la /lib/${METACALL_ARCH_PATH} | grep "${alias}" | awk '{ print $9 }' | tr " " "\n") && \
-		target=$(ls -la /lib/${METACALL_ARCH_PATH} | grep "${alias}" | awk '{ print $11 }' | tr " " "\n") && \
-		cp /lib/${METACALL_ARCH_PATH}/${target} ${METACALL_PATH}/libc/lib/${target} && \
-		if [ "${name}" != "${alias}" ]; then \
-			ln -s ${METACALL_PATH}/libc/lib/${target} ${METACALL_PATH}/libc/lib/${name}; \
-		fi && \
-		echo "${name} -> ${target}"; \
-	done && \
-	alias="ld-linux.*\.so$" && \
-	name=$(ls -la /lib/${METACALL_ARCH_PATH} | grep -E "${alias}" | awk '{ print $9 }' | tr " " "\n") && \
-	target=$(ls -la /lib/${METACALL_ARCH_PATH} | grep -E "${alias}" | awk '{ print $11 }' | tr " " "\n") && \
-	cp /lib/${METACALL_ARCH_PATH}/${target} ${METACALL_PATH}/libc/lib/${target} && \
-	if [ "${name}" != "${alias}" ]; then \
-		ln -s ${METACALL_PATH}/libc/lib/${target} ${METACALL_PATH}/libc/lib/${name}; \
-	fi && \
-	echo "${name} -> ${target}"
+RUN \
+	export LIBS="c pthread dl util m"; \
+	metacall-distributable /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/libc/lib 'lib${lib}.so' && \
+	export LIBS="ld-linux"; \
+	metacall-distributable /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/libc/lib '${lib}.*\.so$'
 
 FROM scratch AS libc
 
