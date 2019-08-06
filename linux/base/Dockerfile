@@ -22,9 +22,18 @@ ARG METACALL_ARCH
 FROM ${METACALL_ARCH}/debian:stretch-slim AS base
 
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends locales git build-essential ca-certificates file patchelf \
+	&& apt-get install -y --no-install-recommends locales git build-essential ca-certificates file dh-autoreconf \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
+RUN git clone https://github.com/NixOs/patchelf.git \
+	&& cd patchelf \
+	&& ./bootstrap.sh \
+	&& ./configure \
+	&& make \
+	&& make install \
+	&& cd .. \
+	&& rm -rf patchelf
 
 ARG METACALL_ARCH_PATH
 ARG METACALL_PATH
@@ -36,4 +45,5 @@ ENV LANG=en_US.utf8 \
 
 COPY scripts/ /bin/
 
-RUN chmod +x /bin/metacall-dist-lib /bin/metacall-dist-patch
+RUN chmod +x /bin/metacall-dist-lib /bin/metacall-dist-patch \
+	&& patchelf --version

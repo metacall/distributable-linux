@@ -25,10 +25,13 @@ FROM metacall/distributable:linux-python-${METACALL_ARCH} AS python
 
 FROM ${METACALL_ARCH}/alpine:3.10.1 AS test
 
+RUN apk update \
+	&& apk add binutils
+
 ARG METACALL_PATH
 
-ENV LD_LIBRARY_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib \
-	SHLIB_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib
+#ENV LD_LIBRARY_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib \
+#	SHLIB_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib
 
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python
