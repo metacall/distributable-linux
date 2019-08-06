@@ -19,6 +19,8 @@
 
 ARG METACALL_ARCH
 
+FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
+
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS deps
 
 # Install python dependencies
@@ -39,11 +41,22 @@ RUN apt-get update \
 ARG METACALL_PYTHON_VERSION
 ARG METACALL_PATH
 
+# Copy dependencies
+COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
+
 # Build CPython (TODO: --enable-optimizations)
-RUN git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
+RUN export LIBRARY_PATH="${LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
+	&& export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
+	&& export LD_LOADER=`${METACALL_PATH}/libc/lib64/ld-linux*?.so*?` \
+	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
 	&& cd cpython \
 	&& git checkout ${METACALL_PYTHON_VERSION} \
-	&& ./configure --prefix=${METACALL_PATH}/python --with-lto --enable-shared CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" LDFLAGS="-Wl,-z,relro" \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--with-lto \
+		--enable-shared \
+		CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" \
+		LDFLAGS="-Wl,-z,relro -Wl,--dynamic-linker=\"${LD_LOADER}\"" \
 	&& make -j$(nproc) \
 	&& make install
 
@@ -68,8 +81,6 @@ RUN \
 	tinfo \
 	"; \
 		metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so'
-
-FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
