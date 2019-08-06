@@ -35,3 +35,8 @@ ARG METACALL_PATH
 
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python
+
+# Test binaries
+RUN cd ${METACALL_PATH}/python/bin \
+	&& export ELFS=`ls python[0-9].[0-9]` \
+	&& for elf in $ELFS; do readelf -l ${elf} | grep interpreter; done
