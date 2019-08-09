@@ -23,9 +23,9 @@ FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
 # Install dependencies
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends bison python gawk \
+	&& apt-get install -y --no-install-recommends bison python3 python3-pip gawk gettext texinfo \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& pip install pexpect
+	&& pip3 install pexpect
 
 ARG METACALL_PATH
 ARG METACALL_GLIBC_VERSION
@@ -54,8 +54,8 @@ RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
 	&& cd ../.. \
 	&& rm -rf glibc-${METACALL_GLIBC_VERSION} glibc.tar.bz2 glibc.tar.bz2.sig gnu-keyring.gpg
 
-FROM scratch AS libc
+#FROM scratch AS libc
 
-ARG METACALL_PATH
+#ARG METACALL_PATH
 
-COPY --from=builder ${METACALL_PATH}/libc ${METACALL_PATH}/libc
+#COPY --from=builder ${METACALL_PATH}/libc ${METACALL_PATH}/libc
