@@ -27,12 +27,13 @@ ARG METACALL_GLIBC_VERSION
 ENV LC_ALL=POSIX \
 	PATH=${METACALL_PATH}/bin:/bin:/usr/bin:/sbin:/usr/sbin
 
-RUN curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2 --output glibc.tar.bz2 \
+RUN curl https://www.gnu.org/usenet/usenet-gpg-key.txt --output gnu-gpg-key.txt \
+	&& gpg --import gnu-gpg-key.txt \
+	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2 --output glibc.tar.bz2 \
 	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2.sig --output glibc.tar.bz2.sig \
-	&& gpg --verify glibc.tar.bz2.sig glibc.tar.bz2 
+	&& gpg --verify glibc.tar.bz2.sig glibc.tar.bz2
 #\
-
-#	&& exit 0 && tar -xvjf glibc.tar.bz2 -C glibc \
+#	&& tar -xvjf glibc.tar.bz2 -C glibc \
 #	&& mkdir -p glibc/build \
 #	&& cd glibc/build \
 #	&& ../configure \
@@ -45,7 +46,7 @@ RUN curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2 --
 #	&& make -j $(nproc) \
 #	&& make install \
 #	&& cd ../.. \
-#	&& rm -rf glibc glibc.tar.bz2 glibc.tar.bz2.sig
+#	&& rm -rf glibc glibc.tar.bz2 glibc.tar.bz2.sig gnu-gpg-key.txt
 
 FROM scratch AS libc
 
