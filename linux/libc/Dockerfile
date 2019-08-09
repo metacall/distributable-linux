@@ -54,6 +54,15 @@ RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
 	&& cd ../.. \
 	&& rm -rf glibc-${METACALL_GLIBC_VERSION} glibc.tar.bz2 glibc.tar.bz2.sig gnu-keyring.gpg
 
+
+RUN echo 'int main(){}' > main.c \
+	&& gcc main.c \
+		-L${METACALL_PATH}/libc/lib \
+		-Wl,-rpath=${METACALL_PATH}/libc/lib \
+		-Wl,--dynamic-linker=${METACALL_PATH}/lib/ld-linux-$(uname -m).so.2 \
+	&& readelf -l a.out | grep ": ${METACALL_PATH}" \
+	&& rm -v main.c a.out
+
 #FROM scratch AS libc
 
 #ARG METACALL_PATH
