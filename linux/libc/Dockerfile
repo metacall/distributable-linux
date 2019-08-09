@@ -27,7 +27,8 @@ ARG METACALL_GLIBC_VERSION
 ENV LC_ALL=POSIX \
 	PATH=${METACALL_PATH}/bin:/bin:/usr/bin:/sbin:/usr/sbin
 
-RUN git clone --single-branch --branch ${METACALL_GLIBC_VERSION} git://sourceware.org/git/glibc.git glibc \
+RUN wget http://ftp.gnu.org/gnu/glibc/glibc-2.30.tar.bz2 \
+	&& tar xjfC ./glibc glibc-2.30.tar.bz2 \
 	&& mkdir -p glibc/build \
 	&& cd glibc/build \
 	&& ../configure \
