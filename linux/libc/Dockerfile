@@ -28,10 +28,10 @@ ENV LC_ALL=POSIX \
 	PATH=${METACALL_PATH}/bin:/bin:/usr/bin:/sbin:/usr/sbin
 
 RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
+	&& gpg --import gnu-keyring.gpg \
 	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2 --output glibc.tar.bz2 \
 	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2.sig --output glibc.tar.bz2.sig \
-	&& gpg --verify --keyring gnu-keyring.gpg glibc.tar.bz2.sig
-	# glibc.tar.bz2
+	&& gpg --verify glibc.tar.bz2.sig glibc.tar.bz2
 #\
 #	&& tar -xvjf glibc.tar.bz2 -C glibc \
 #	&& mkdir -p glibc/build \
