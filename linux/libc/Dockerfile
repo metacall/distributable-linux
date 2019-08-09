@@ -31,22 +31,21 @@ RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
 	&& gpg --import gnu-keyring.gpg \
 	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2 --output glibc.tar.bz2 \
 	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2.sig --output glibc.tar.bz2.sig \
-	&& gpg --verify glibc.tar.bz2.sig glibc.tar.bz2
-#\
-#	&& tar -xvjf glibc.tar.bz2 -C glibc \
-#	&& mkdir -p glibc/build \
-#	&& cd glibc/build \
-#	&& ../configure \
-#		--prefix=${METACALL_PATH}/glibc \
-#		--host=$(uname -m)-metacall-linux-gnu \
-#		--build=$(../scripts/config.guess) \
-#		--enable-kernel=3.2 \
-#		libc_cv_forced_unwind=yes \
-#		libc_cv_c_cleanup=yes \
-#	&& make -j $(nproc) \
-#	&& make install \
-#	&& cd ../.. \
-#	&& rm -rf glibc glibc.tar.bz2 glibc.tar.bz2.sig gnu-gpg-key.txt
+	&& gpg --verify glibc.tar.bz2.sig glibc.tar.bz2 \
+	&& tar -xvjf glibc.tar.bz2 -C glibc \
+	&& mkdir -p glibc/build \
+	&& cd glibc/build \
+	&& ../configure \
+		--prefix=${METACALL_PATH}/glibc \
+		--host=$(uname -m)-metacall-linux-gnu \
+		--build=$(../scripts/config.guess) \
+		--enable-kernel=3.2 \
+		libc_cv_forced_unwind=yes \
+		libc_cv_c_cleanup=yes \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd ../.. \
+	&& rm -rf glibc glibc.tar.bz2 glibc.tar.bz2.sig gnu-keyring.gpg
 
 FROM scratch AS libc
 
