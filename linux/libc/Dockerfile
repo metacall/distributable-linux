@@ -21,12 +21,19 @@ ARG METACALL_ARCH
 
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
+# Install dependencies
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends bison python gawk \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& pip install pexpect
+
 ARG METACALL_PATH
 ARG METACALL_GLIBC_VERSION
 
 ENV LC_ALL=POSIX \
 	PATH=${METACALL_PATH}/bin:/bin:/usr/bin:/sbin:/usr/sbin
 
+# Build glibc
 RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
 	&& gpg --quiet --import gnu-keyring.gpg \
 	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2 --output glibc.tar.bz2 \
