@@ -33,7 +33,12 @@ ARG METACALL_ZLIB_VERSION
 # Install zlib
 RUN git clone --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git zlib \
 	&& cd zlib \
-	&& ./configure --prefix=${METACALL_PATH}/python \
+	&& export LDFLAGS=" \
+		-L${METACALL_PATH}/libc/lib \
+		-Wl,-rpath=${METACALL_PATH}/libc/lib \
+		-Wl,--dynamic-linker=${METACALL_PATH}/lib/ld-linux-$(uname -m).so.2" \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
 	&& make -j $(nproc) \
 	&& make install
 
