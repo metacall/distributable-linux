@@ -27,20 +27,19 @@ ARG METACALL_GLIBC_VERSION
 ENV LC_ALL=POSIX \
 	PATH=${METACALL_PATH}/bin:/bin:/usr/bin:/sbin:/usr/sbin
 
-RUN git clone --single-branch --branch release/${METACALL_GLIBC_VERSION}/master git://sourceware.org/git/glibc.git glibc \
-	&& pushd glibc
-	&& mkdir build \
-	&& cd build \
+RUN git clone --single-branch --branch ${METACALL_GLIBC_VERSION} git://sourceware.org/git/glibc.git glibc \
+	&& mkdir -p glibc/build \
+	&& cd glibc/build \
 	&& ../configure \
 		--prefix=${METACALL_PATH}/glibc \
-		--host=metacall \
+		--host=$(uname -m)-metacall-linux-gnu \
 		--build=$(../scripts/config.guess) \
 		--enable-kernel=3.2 \
 		libc_cv_forced_unwind=yes \
 		libc_cv_c_cleanup=yes \
-	&& make -j `nproc` \
+	&& make -j $(nproc) \
 	&& make install \
-	&& popd \
+	&& cd ../.. \
 	&& rm -rf glibc
 
 FROM scratch AS libc
