@@ -27,21 +27,25 @@ ARG METACALL_GLIBC_VERSION
 ENV LC_ALL=POSIX \
 	PATH=${METACALL_PATH}/bin:/bin:/usr/bin:/sbin:/usr/sbin
 
-RUN wget http://ftp.gnu.org/gnu/glibc/glibc-2.30.tar.bz2 \
-	&& tar xjfC ./glibc glibc-2.30.tar.bz2 \
-	&& mkdir -p glibc/build \
-	&& cd glibc/build \
-	&& ../configure \
-		--prefix=${METACALL_PATH}/glibc \
-		--host=$(uname -m)-metacall-linux-gnu \
-		--build=$(../scripts/config.guess) \
-		--enable-kernel=3.2 \
-		libc_cv_forced_unwind=yes \
-		libc_cv_c_cleanup=yes \
-	&& make -j $(nproc) \
-	&& make install \
-	&& cd ../.. \
-	&& rm -rf glibc
+RUN curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2 --output glibc.tar.bz2 \
+	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2.sig --output glibc.tar.bz2.sig \
+	&& gpg --verify glibc.tar.bz2.sig glibc.tar.bz2 
+#\
+
+#	&& exit 0 && tar -xvjf glibc.tar.bz2 -C glibc \
+#	&& mkdir -p glibc/build \
+#	&& cd glibc/build \
+#	&& ../configure \
+#		--prefix=${METACALL_PATH}/glibc \
+#		--host=$(uname -m)-metacall-linux-gnu \
+#		--build=$(../scripts/config.guess) \
+#		--enable-kernel=3.2 \
+#		libc_cv_forced_unwind=yes \
+#		libc_cv_c_cleanup=yes \
+#	&& make -j $(nproc) \
+#	&& make install \
+#	&& cd ../.. \
+#	&& rm -rf glibc glibc.tar.bz2 glibc.tar.bz2.sig
 
 FROM scratch AS libc
 
