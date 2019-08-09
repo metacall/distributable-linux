@@ -28,5 +28,6 @@ services:
       dockerfile: Dockerfile
       args:
         METACALL_ARCH: amd64
+        METACALL_ZLIB_VERSION: v1.2.11
         METACALL_PYTHON_VERSION: v3.7.3
         METACALL_PATH: $METACALL_PATH

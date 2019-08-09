@@ -26,10 +26,10 @@ FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 # Copy libc
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 
+ARG METACALL_ZLIB_VERSION
+
 # Install zlib
-RUN curl https://www.zlib.net/zlib-1.2.11.tar.gz --output zlib.tar.gz \
-	&& https://www.zlib.net/zlib-1.2.11.tar.gz.asc --output zlib.tar.gz.asc \
-	&& gpg --verify zlib.tar.gz.asc zlib.tar.gz
+RUN git clone --single-branch --branch tags/${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git
 
 
 
