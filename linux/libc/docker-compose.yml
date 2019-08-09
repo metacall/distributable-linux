@@ -29,4 +29,4 @@ services:
       args:
         METACALL_ARCH: amd64
         METACALL_PATH: $METACALL_PATH
-        METACALL_GLIBC_VERSION: 2.30
+        METACALL_GLIBC_VERSION: "2.30"
