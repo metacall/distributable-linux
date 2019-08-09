@@ -23,7 +23,7 @@ FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
 # Install dependencies
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends bison python3 python3-pip gawk gettext texinfo \
+	&& apt-get install -y --no-install-recommends curl gnupg bison python3 python3-pip gawk gettext texinfo \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& pip3 install pexpect
 
@@ -61,10 +61,10 @@ RUN echo 'int main(){}' > main.c \
 		-Wl,-rpath=${METACALL_PATH}/libc/lib \
 		-Wl,--dynamic-linker=${METACALL_PATH}/lib/ld-linux-$(uname -m).so.2 \
 	&& readelf -l a.out | grep ": ${METACALL_PATH}" \
-	&& rm -v main.c a.out
+	&& rm main.c a.out
 
-#FROM scratch AS libc
+FROM scratch AS libc
 
-#ARG METACALL_PATH
+ARG METACALL_PATH
 
-#COPY --from=builder ${METACALL_PATH}/libc ${METACALL_PATH}/libc
+COPY --from=builder ${METACALL_PATH}/libc ${METACALL_PATH}/libc
