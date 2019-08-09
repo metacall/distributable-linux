@@ -23,13 +23,19 @@ FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
+ARG METACALL_PATH
+
 # Copy libc
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 
 ARG METACALL_ZLIB_VERSION
 
 # Install zlib
-RUN git clone --single-branch --branch tags/${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git
+RUN git clone --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git zlib \
+	&& cd zlib \
+	&& ./configure --prefix=${METACALL_PATH}/python \
+	&& make -j $(nproc) \
+	&& make install
 
 
 
