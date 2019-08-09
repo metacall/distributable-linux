@@ -21,81 +21,91 @@ ARG METACALL_ARCH
 
 FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 
-FROM metacall/distributable:linux-base-${METACALL_ARCH} AS deps
-
-# Install python dependencies
-RUN apt-get update \
-	&& apt-get install -y --no-install-recommends \
-		zlib1g-dev \
-		libffi-dev \
-		libssl-dev \
-		libbz2-dev \
-		libncursesw5-dev \
-		libgdbm-dev \
-		liblzma-dev \
-		libsqlite3-dev \
-		tk-dev \
-		uuid-dev \
-		libreadline-dev
-
-ARG METACALL_PYTHON_VERSION
-ARG METACALL_PATH
-
-# Copy dependencies
-COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
-
-# Build CPython (TODO: --enable-optimizations)
-RUN export LIBRARY_PATH="${LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
-	&& export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
-	&& export LD_LOADER=`${METACALL_PATH}/libc/lib64/ld-linux*?.so*?` \
-	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
-	&& cd cpython \
-	&& git checkout ${METACALL_PYTHON_VERSION} \
-	&& ./configure \
-		--prefix=${METACALL_PATH}/python \
-		--with-lto \
-		--enable-shared \
-		CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" \
-		LDFLAGS="-Wl,-z,relro -Wl,--dynamic-linker=\"${LD_LOADER}\"" \
-	&& make -j$(nproc) \
-	&& make install
-
-# Copy libraries
-RUN \
-	export LIBS=" \
-	ffi \
-	crypto ssl \
-	formw menuw ncursesw panelw \
-	gdbm gdbm_compat \
-	sqlite3 \
-	tk \
-	"; \
-		metacall-dist-lib /usr/lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
-	export LIBS=" \
-	crypt \
-	z \
-	bz2 \
-	lzma \
-	uuid \
-	history readline \
-	tinfo \
-	"; \
-		metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so'
-
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
-ARG METACALL_PATH
-
-# Copy dependencies
+# Copy libc
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
-COPY --from=deps ${METACALL_PATH}/python ${METACALL_PATH}/python
 
-# Patch libraries
-RUN metacall-dist-patch ${METACALL_PATH}/python/lib ${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64 ${METACALL_PATH}/libc/lib64 \
-	metacall-dist-patch ${METACALL_PATH}/python/bin ${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64 ${METACALL_PATH}/libc/lib64
+# Install zlib
+RUN curl https://www.zlib.net/zlib-1.2.11.tar.gz --output zlib.tar.gz \
+	&& https://www.zlib.net/zlib-1.2.11.tar.gz.asc --output zlib.tar.gz.asc \
+	&& gpg --verify zlib.tar.gz.asc zlib.tar.gz
 
-FROM scratch AS python
 
-ARG METACALL_PATH
 
-COPY --from=builder ${METACALL_PATH}/python ${METACALL_PATH}/python
+# # Install python dependencies
+# RUN apt-get update \
+# 	&& apt-get install -y --no-install-recommends \
+# 		zlib1g-dev \
+# 		libffi-dev \
+# 		libssl-dev \
+# 		libbz2-dev \
+# 		libncursesw5-dev \
+# 		libgdbm-dev \
+# 		liblzma-dev \
+# 		libsqlite3-dev \
+# 		tk-dev \
+# 		uuid-dev \
+# 		libreadline-dev
+
+# ARG METACALL_PYTHON_VERSION
+# ARG METACALL_PATH
+
+# # Copy dependencies
+# COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
+
+# # Build CPython (TODO: --enable-optimizations)
+# RUN export LIBRARY_PATH="${LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
+# 	&& export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
+# 	&& export LD_LOADER=`${METACALL_PATH}/libc/lib64/ld-linux*?.so*?` \
+# 	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
+# 	&& cd cpython \
+# 	&& git checkout ${METACALL_PYTHON_VERSION} \
+# 	&& ./configure \
+# 		--prefix=${METACALL_PATH}/python \
+# 		--with-lto \
+# 		--enable-shared \
+# 		CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" \
+# 		LDFLAGS="-Wl,-z,relro -Wl,--dynamic-linker=\"${LD_LOADER}\"" \
+# 	&& make -j$(nproc) \
+# 	&& make install
+
+# # Copy libraries
+# RUN \
+# 	export LIBS=" \
+# 	ffi \
+# 	crypto ssl \
+# 	formw menuw ncursesw panelw \
+# 	gdbm gdbm_compat \
+# 	sqlite3 \
+# 	tk \
+# 	"; \
+# 		metacall-dist-lib /usr/lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
+# 	export LIBS=" \
+# 	crypt \
+# 	z \
+# 	bz2 \
+# 	lzma \
+# 	uuid \
+# 	history readline \
+# 	tinfo \
+# 	"; \
+# 		metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so'
+
+# FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
+
+# ARG METACALL_PATH
+
+# # Copy dependencies
+# COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
+# COPY --from=deps ${METACALL_PATH}/python ${METACALL_PATH}/python
+
+# # Patch libraries
+# RUN metacall-dist-patch ${METACALL_PATH}/python/lib ${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64 ${METACALL_PATH}/libc/lib64 \
+# 	metacall-dist-patch ${METACALL_PATH}/python/bin ${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64 ${METACALL_PATH}/libc/lib64
+
+# FROM scratch AS python
+
+# ARG METACALL_PATH
+
+# COPY --from=builder ${METACALL_PATH}/python ${METACALL_PATH}/python
