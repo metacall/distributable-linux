@@ -43,7 +43,7 @@ RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
 	&& mkdir -p glibc-${METACALL_GLIBC_VERSION}/build \
 	&& cd glibc-${METACALL_GLIBC_VERSION}/build \
 	&& ../configure \
-		--prefix=${METACALL_PATH}/glibc \
+		--prefix=${METACALL_PATH}/libc \
 		--host=$(uname -m)-metacall-linux-gnu \
 		--build=$(../scripts/config.guess) \
 		--enable-kernel=3.2 \
