@@ -28,13 +28,13 @@ ENV LC_ALL=POSIX \
 	PATH=${METACALL_PATH}/bin:/bin:/usr/bin:/sbin:/usr/sbin
 
 RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
-	&& gpg --import gnu-keyring.gpg \
+	&& gpg --quiet --import gnu-keyring.gpg \
 	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2 --output glibc.tar.bz2 \
 	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2.sig --output glibc.tar.bz2.sig \
 	&& gpg --verify glibc.tar.bz2.sig glibc.tar.bz2 \
-	&& tar -xvjf glibc.tar.bz2 -C glibc \
-	&& mkdir -p glibc/build \
-	&& cd glibc/build \
+	&& tar -xjf glibc.tar.bz2 \
+	&& mkdir -p glibc-${METACALL_GLIBC_VERSION}/build \
+	&& cd glibc-${METACALL_GLIBC_VERSION}/build \
 	&& ../configure \
 		--prefix=${METACALL_PATH}/glibc \
 		--host=$(uname -m)-metacall-linux-gnu \
@@ -45,7 +45,7 @@ RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
 	&& make -j $(nproc) \
 	&& make install \
 	&& cd ../.. \
-	&& rm -rf glibc glibc.tar.bz2 glibc.tar.bz2.sig gnu-keyring.gpg
+	&& rm -rf glibc-${METACALL_GLIBC_VERSION} glibc.tar.bz2 glibc.tar.bz2.sig gnu-keyring.gpg
 
 FROM scratch AS libc
 
