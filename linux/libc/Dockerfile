@@ -19,18 +19,32 @@
 
 ARG METACALL_ARCH
 
-FROM metacall/distributable:linux-base-${METACALL_ARCH} AS deps
+FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
-# Copy libraries
-RUN \
-	export LIBS="ld-linux"; \
-	metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/libc/lib64 '${lib}.*\.so$' && \
-	export LIBS="c pthread dl util m"; \
-	metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/libc/lib 'lib${lib}\.so' && \
-	metacall-dist-patch ${METACALL_PATH}/libc/lib ${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64 ${METACALL_PATH}/libc/lib64
+ARG METACALL_PATH
+ARG METACALL_GLIBC_VERSION
+
+ENV LC_ALL=POSIX \
+	PATH=${METACALL_PATH}/bin:/bin:/usr/bin:/sbin:/usr/sbin
+
+RUN git clone --single-branch --branch release/${METACALL_GLIBC_VERSION}/master git://sourceware.org/git/glibc.git glibc \
+	&& pushd glibc
+	&& mkdir build \
+	&& cd build \
+	&& ../configure \
+		--prefix=${METACALL_PATH}/glibc \
+		--host=metacall \
+		--build=$(../scripts/config.guess) \
+		--enable-kernel=3.2 \
+		libc_cv_forced_unwind=yes \
+		libc_cv_c_cleanup=yes \
+	&& make -j `nproc` \
+	&& make install \
+	&& popd \
+	&& rm -rf glibc
 
 FROM scratch AS libc
 
 ARG METACALL_PATH
 
-COPY --from=deps ${METACALL_PATH}/libc ${METACALL_PATH}/libc
+COPY --from=builder ${METACALL_PATH}/libc ${METACALL_PATH}/libc
