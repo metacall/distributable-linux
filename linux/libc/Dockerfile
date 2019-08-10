@@ -23,7 +23,7 @@ FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
 # Install glibc build dependencies
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends bison python3 python3-pip gawk gettext texinfo \
+	&& apt-get install -y --no-install-recommends bison python3 python3-pip gawk gettext texinfo curl gnupg \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& pip3 install pexpect
 
@@ -32,6 +32,9 @@ ARG METACALL_GLIBC_VERSION
 
 ENV LC_ALL=POSIX \
 	PATH=${METACALL_PATH}/bin:/bin:/usr/bin:/sbin:/usr/sbin
+
+# Create output path
+RUN mkdir -p ${METACALL_PATH}/libc
 
 # Build glibc
 RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
@@ -44,7 +47,7 @@ RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
 	&& cd glibc-${METACALL_GLIBC_VERSION}/build \
 	&& ../configure \
 		--prefix=${METACALL_PATH}/libc \
-		--host=$(uname -m)-metacall-linux-gnu \
+		--host=${METACALL_ARCH_HOST} \
 		--build=$(../scripts/config.guess) \
 		--enable-kernel=3.2 \
 		libc_cv_forced_unwind=yes \
@@ -59,7 +62,7 @@ RUN echo 'int main(){}' > main.c \
 	&& gcc main.c \
 		-L${METACALL_PATH}/libc/lib \
 		-Wl,-rpath=${METACALL_PATH}/libc/lib \
-		-Wl,--dynamic-linker=${METACALL_PATH}/lib/ld-linux-$(uname -m).so.2 \
+		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld-linux-$(uname -m).so.2 \
 	&& readelf -l a.out | grep ": ${METACALL_PATH}" \
 	&& rm main.c a.out
 

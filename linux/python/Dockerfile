@@ -28,21 +28,42 @@ ARG METACALL_PATH
 # Copy libc
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 
-ARG METACALL_ZLIB_VERSION
-
-# Install zlib
-RUN git clone --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git zlib \
-	&& cd zlib \
-	&& export LDFLAGS=" \
+# Set linker flags
+ENV LDFLAGS=" \
 		-L${METACALL_PATH}/libc/lib \
 		-Wl,-rpath=${METACALL_PATH}/libc/lib \
-		-Wl,--dynamic-linker=${METACALL_PATH}/lib/ld-linux-$(uname -m).so.2" \
+		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld-linux-$(uname -m).so.2"
+
+# Create output path
+RUN mkdir -p ${METACALL_PATH}/python
+
+# Install zlib
+ARG METACALL_ZLIB_VERSION
+
+RUN git clone --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git zlib \
+	&& cd zlib \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
 	&& make -j $(nproc) \
-	&& make install
+	&& make install \
+	&& cd .. \
+	&& rm -rf zlib
 
+# Install libffi
+RUN git clone --single-branch --branch ${METACALL_LIBFFI_VERSION} https://github.com/libffi/libffi.git libffi \
+	&& cd libffi \
+	&& sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' -i include/Makefile.in \
+	&& sed -e '/^includedir/ s/=.*$/=@includedir@/' -e 's/^Cflags: -I${includedir}/Cflags:/' -i libffi.pc.in \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--disable-static \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf libffi
 
+# Install libssl
+# https://github.com/openssl/openssl.git
 
 # # Install python dependencies
 # RUN apt-get update \
@@ -91,7 +112,7 @@ RUN git clone --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.c
 # 	sqlite3 \
 # 	tk \
 # 	"; \
-# 		metacall-dist-lib /usr/lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
+# 		metacall-dist-lib /usr/lib/${METACALL_ARCH_HOST} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
 # 	export LIBS=" \
 # 	crypt \
 # 	z \
@@ -101,7 +122,7 @@ RUN git clone --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.c
 # 	history readline \
 # 	tinfo \
 # 	"; \
-# 		metacall-dist-lib /lib/${METACALL_ARCH_PATH} ${METACALL_PATH}/python/lib 'lib${lib}\.so'
+# 		metacall-dist-lib /lib/${METACALL_ARCH_HOST} ${METACALL_PATH}/python/lib 'lib${lib}\.so'
 
 # FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
