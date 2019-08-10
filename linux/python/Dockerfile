@@ -80,6 +80,28 @@ RUN git clone --single-branch --branch ${METACALL_LIBSSL_VERSION} https://github
 	&& cd .. \
 	&& rm -rf libssl
 
+# Install ncurses
+ARG METACALL_LIBNCURSES_VERSION
+
+RUN curl https://ftp.gnu.org/gnu/ncurses/ncurses-${METACALL_LIBNCURSES_VERSION}.tar.gz --output ncurses.tar.gz \
+	&& curl https://ftp.gnu.org/gnu/ncurses/ncurses-${METACALL_LIBNCURSES_VERSION}.tar.gz.sig --output ncurses.tar.gz.sig \
+	&& gpg --verify ncurses.tar.gz.sig ncurses.tar.gz \
+	&& tar -xzf ncurses.tar.gz \
+	&& cd ncurses-${METACALL_LIBNCURSES_VERSION} \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/libc \
+		--with-shared \
+		--without-debug \
+		--without-normal \
+		--without-manpages \
+		--without-ada \
+		--enable-widec \
+		--enable-pc-files \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf ncurses-${METACALL_LIBNCURSES_VERSION}
+
 # # Install python dependencies
 # RUN apt-get update \
 # 	&& apt-get install -y --no-install-recommends \

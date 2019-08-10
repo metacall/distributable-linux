@@ -37,7 +37,10 @@ RUN apt-get update \
 		gnupg \
 		ca-certificates \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+	&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+	&& curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
+	&& gpg --quiet --import gnu-keyring.gpg \
+	&& rm gnu-keyring.gpg
 
 ARG METACALL_ARCH_HOST
 ARG METACALL_PATH

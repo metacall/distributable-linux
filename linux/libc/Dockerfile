@@ -37,10 +37,8 @@ ENV LC_ALL=POSIX \
 RUN mkdir -p ${METACALL_PATH}/libc
 
 # Build glibc
-RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
-	&& gpg --quiet --import gnu-keyring.gpg \
-	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2 --output glibc.tar.bz2 \
-	&& curl http://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2.sig --output glibc.tar.bz2.sig \
+RUN curl https://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2 --output glibc.tar.bz2 \
+	&& curl https://ftp.gnu.org/gnu/glibc/glibc-${METACALL_GLIBC_VERSION}.tar.bz2.sig --output glibc.tar.bz2.sig \
 	&& gpg --verify glibc.tar.bz2.sig glibc.tar.bz2 \
 	&& tar -xjf glibc.tar.bz2 \
 	&& mkdir -p glibc-${METACALL_GLIBC_VERSION}/build \
@@ -55,7 +53,7 @@ RUN curl https://ftp.gnu.org/gnu/gnu-keyring.gpg --output gnu-keyring.gpg \
 	&& make -j $(nproc) \
 	&& make install \
 	&& cd ../.. \
-	&& rm -rf glibc-${METACALL_GLIBC_VERSION} glibc.tar.bz2 glibc.tar.bz2.sig gnu-keyring.gpg
+	&& rm -rf glibc-${METACALL_GLIBC_VERSION} glibc.tar.bz2 glibc.tar.bz2.sig
 
 # Create a common link for any glibc version
 RUN ln -s ${METACALL_PATH}/libc/lib/ld-${METACALL_GLIBC_VERSION}.so ${METACALL_PATH}/libc/lib/ld.so
