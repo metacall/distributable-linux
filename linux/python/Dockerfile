@@ -80,6 +80,9 @@ RUN git clone --recursive -j8 --single-branch --branch ${METACALL_LIBSSL_VERSION
 	&& cd .. \
 	&& rm -rf libssl
 
+# TODO: Install libbz2
+ARG METACALL_LIBBZ2_VERESION
+
 # Install ncurses
 ARG METACALL_LIBNCURSES_VERSION
 
@@ -90,7 +93,7 @@ RUN curl https://ftp.gnu.org/gnu/ncurses/ncurses-${METACALL_LIBNCURSES_VERSION}.
 	&& cd ncurses-${METACALL_LIBNCURSES_VERSION} \
 	&& sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in \
 	&& ./configure \
-		--prefix=${METACALL_PATH}/libc \
+		--prefix=${METACALL_PATH}/python \
 		--with-shared \
 		--without-debug \
 		--without-normal \
