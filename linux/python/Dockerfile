@@ -69,7 +69,7 @@ RUN git clone --single-branch --branch ${METACALL_LIBFFI_VERSION} https://github
 # Install libssl
 ARG METACALL_LIBSSL_VERSION
 
-RUN exit 0 && git clone --single-branch --branch ${METACALL_LIBSSL_VERSION} https://github.com/openssl/openssl.git libssl \
+RUN git clone --single-branch --branch ${METACALL_LIBSSL_VERSION} https://github.com/openssl/openssl.git libssl \
 	&& cd libssl \
 	&& ./config \
 		--prefix=${METACALL_PATH}/python \
@@ -79,8 +79,6 @@ RUN exit 0 && git clone --single-branch --branch ${METACALL_LIBSSL_VERSION} http
 	&& make install \
 	&& cd .. \
 	&& rm -rf libssl
-
-
 
 # # Install python dependencies
 # RUN apt-get update \
