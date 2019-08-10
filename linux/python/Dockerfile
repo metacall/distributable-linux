@@ -32,7 +32,7 @@ COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 ENV LDFLAGS=" \
 		-L${METACALL_PATH}/libc/lib \
 		-Wl,-rpath=${METACALL_PATH}/libc/lib \
-		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld-linux-$(uname -m).so.2"
+		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld.so"
 
 # Create output path
 RUN mkdir -p ${METACALL_PATH}/python
@@ -50,20 +50,26 @@ RUN git clone --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.c
 	&& rm -rf zlib
 
 # Install libffi
+ARG METACALL_LIBFFI_VERSION
+
 RUN git clone --single-branch --branch ${METACALL_LIBFFI_VERSION} https://github.com/libffi/libffi.git libffi \
 	&& cd libffi \
+	&& ./autogen.sh \
 	&& sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' -i include/Makefile.in \
 	&& sed -e '/^includedir/ s/=.*$/=@includedir@/' -e 's/^Cflags: -I${includedir}/Cflags:/' -i libffi.pc.in \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
 		--disable-static \
+		--disable-docs \
 	&& make -j $(nproc) \
 	&& make install \
 	&& cd .. \
 	&& rm -rf libffi
 
 # Install libssl
-RUN git clone --single-branch --branch ${METACALL_LIBSSL_VERSION} https://github.com/openssl/openssl.git libssl \
+ARG METACALL_LIBSSL_VERSION
+
+RUN exit 0 && git clone --single-branch --branch ${METACALL_LIBSSL_VERSION} https://github.com/openssl/openssl.git libssl \
 	&& cd libssl \
 	&& ./config \
 		--prefix=${METACALL_PATH}/python \
