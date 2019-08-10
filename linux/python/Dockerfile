@@ -63,7 +63,18 @@ RUN git clone --single-branch --branch ${METACALL_LIBFFI_VERSION} https://github
 	&& rm -rf libffi
 
 # Install libssl
-# https://github.com/openssl/openssl.git
+RUN git clone --single-branch --branch ${METACALL_LIBSSL_VERSION} https://github.com/openssl/openssl.git libssl \
+	&& cd libssl \
+	&& ./config \
+		--prefix=${METACALL_PATH}/python \
+		--openssldir=${METACALL_PATH}/python \
+		shared \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf libssl
+
+
 
 # # Install python dependencies
 # RUN apt-get update \
