@@ -88,6 +88,7 @@ RUN curl https://ftp.gnu.org/gnu/ncurses/ncurses-${METACALL_LIBNCURSES_VERSION}.
 	&& gpg --verify ncurses.tar.gz.sig ncurses.tar.gz \
 	&& tar -xzf ncurses.tar.gz \
 	&& cd ncurses-${METACALL_LIBNCURSES_VERSION} \
+	&& sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/libc \
 		--with-shared \
