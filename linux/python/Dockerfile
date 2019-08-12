@@ -40,7 +40,7 @@ RUN mkdir -p ${METACALL_PATH}/python
 # Install zlib
 ARG METACALL_ZLIB_VERSION
 
-RUN git clone -j8 --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git zlib \
+RUN git clone -j8 --single-branch --branch v${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git zlib \
 	&& cd zlib \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
@@ -52,7 +52,7 @@ RUN git clone -j8 --single-branch --branch ${METACALL_ZLIB_VERSION} https://gith
 # Install libffi
 ARG METACALL_LIBFFI_VERSION
 
-RUN git clone -j8 --single-branch --branch ${METACALL_LIBFFI_VERSION} https://github.com/libffi/libffi.git libffi \
+RUN git clone -j8 --single-branch --branch v${METACALL_LIBFFI_VERSION} https://github.com/libffi/libffi.git libffi \
 	&& cd libffi \
 	&& ./autogen.sh \
 	&& sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' -i include/Makefile.in \
@@ -135,6 +135,25 @@ RUN curl https://ftp.gnu.org/gnu/gdbm/gdbm-${METACALL_LIBGDBM_VERSION}.tar.gz --
 	&& cd .. \
 	&& rm -rf gdbm-${METACALL_LIBGDBM_VERSION}
 
+# Install liblzma
+ARG METACALL_LIBLZMA_VERSION
+
+RUN RUN git clone -j8 --single-branch --branch v${METACALL_LIBLZMA_VERSION} https://git.tukaani.org/xz.git xz \
+	&& cd xz \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--disable-xz \
+		--disable-xzdec \
+		--disable-lzmadec \
+		--disable-lzmainfo \
+		--disable-scripts \
+		--disable-doc \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf xz
+
+
 # # Install python dependencies
 # RUN apt-get update \
 # 	&& apt-get install -y --no-install-recommends \
@@ -160,9 +179,9 @@ RUN curl https://ftp.gnu.org/gnu/gdbm/gdbm-${METACALL_LIBGDBM_VERSION}.tar.gz --
 # RUN export LIBRARY_PATH="${LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
 # 	&& export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
 # 	&& export LD_LOADER=`${METACALL_PATH}/libc/lib64/ld-linux*?.so*?` \
-# 	&& git clone --branch ${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
+# 	&& git clone --branch v${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
 # 	&& cd cpython \
-# 	&& git checkout ${METACALL_PYTHON_VERSION} \
+# 	&& git checkout v${METACALL_PYTHON_VERSION} \
 # 	&& ./configure \
 # 		--prefix=${METACALL_PATH}/python \
 # 		--with-lto \
