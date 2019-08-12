@@ -100,6 +100,8 @@ ARG METACALL_LIBBZ2_VERESION
 
 RUN git clone -j8 --single-branch --branch bzip2-${METACALL_LIBBZ2_VERESION} https://sourceware.org/git/bzip2.git bzip2 \
 	&& cd bzip2 \
+	&& sed -i 's@CFLAGS=@LDFLAGS=\nCFLAGS=@' Makefile-libbz2_so \
+	&& sed -i 's@-shared@-shared \$\(LDFLAGS\)@' Makefile-libbz2_so \
 	&& sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile \
 	&& make -j $(nproc) -f Makefile-libbz2_so \
 	&& mkdir -p ${METACALL_PATH}/python/lib \
@@ -204,6 +206,13 @@ RUN export METACALL_LIBSQLITE3_VERSION=$(printf '%s' ${METACALL_LIBSQLITE3_VERSI
 	&& make install \
 	&& cd .. \
 	&& rm -rf sqlite3.tar.gz sqlite3.sha1 sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION}
+
+# Install libtk
+FROM builder AS builder_libtk
+
+ARG METACALL_LIBTK_VERSION
+
+
 
 # # Install python dependencies
 # RUN apt-get update \
