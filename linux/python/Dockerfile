@@ -143,7 +143,7 @@ RUN curl https://ftp.gnu.org/gnu/gdbm/gdbm-${METACALL_LIBGDBM_VERSION}.tar.gz --
 # Install liblzma
 ARG METACALL_LIBLZMA_VERSION
 
-RUN RUN git clone -j8 --single-branch --branch v${METACALL_LIBLZMA_VERSION} https://git.tukaani.org/xz.git xz \
+RUN git clone -j8 --single-branch --branch v${METACALL_LIBLZMA_VERSION} https://git.tukaani.org/xz.git xz \
 	&& cd xz \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
