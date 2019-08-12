@@ -86,10 +86,9 @@ ARG METACALL_LIBBZ2_VERESION
 RUN git clone -j8 --single-branch --branch bzip2-${METACALL_LIBBZ2_VERESION} https://sourceware.org/git/bzip2.git bzip2 \
 	&& cd bzip2 \
 	&& sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile \
-	&& make -f Makefile-libbz2_so \
-	&& make clean
-	&& make -j $(nproc) \
-	&& make PREFIX=${METACALL_PATH}/python install \
+	&& make -j $(nproc) -f Makefile-libbz2_so \
+	&& cp libbz2.so.${METACALL_LIBBZ2_VERESION} ${METACALL_PATH}/python/lib/libbz2.so.${METACALL_LIBBZ2_VERESION} \
+	&& ln -rs ${METACALL_PATH}/python/lib/libbz2.so.${METACALL_LIBBZ2_VERESION} ${METACALL_PATH}/python/lib/libbz2.so \
 	&& cd .. \
 	&& rm -rf bzip2
 
