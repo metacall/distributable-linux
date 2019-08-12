@@ -164,11 +164,11 @@ ARG METACALL_LIBSQLITE3_VERSION
 ARG METACALL_LIBSQLITE3_SHA1
 
 RUN export METACALL_LIBSQLITE_VERSION=$(printf "%01g%02d%02d%02d" ${METACALL_LIBSQLITE3_VERSION//./ }) \
-	&& curl https://sqlite.org/2019/sqlite-autoconf-${METACALL_LIBSQLITE_VERSION}.tar.gz --output sqlite3.tar.gz \
-	&& echo "${METACALL_LIBSQLITE3_SHA1} sqlite3.tar.gz" > sqlite3.sha1 \
+	&& curl https://sqlite.org/2019/sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION}.tar.gz --output sqlite3.tar.gz \
+	&& echo "${METACALL_LIBSQLITE3_SHA1}  sqlite3.tar.gz" > sqlite3.sha1 \
 	&& sha1sum -c sqlite3.sha1 \
 	&& tar -xzf sqlite3.tar.gz \
-	&& cd sqlite-autoconf-${METACALL_LIBSQLITE_VERSION} \
+	&& cd sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION} \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
 		--disable-static \
@@ -184,7 +184,7 @@ RUN export METACALL_LIBSQLITE_VERSION=$(printf "%01g%02d%02d%02d" ${METACALL_LIB
 	&& make -j $(nproc) \
 	&& make install \
 	&& cd .. \
-	&& rm -rf sqlite3.tar.gz sqlite3.md5 sqlite-autoconf-${METACALL_LIBSQLITE_VERSION}
+	&& rm -rf sqlite3.tar.gz sqlite3.sha1 sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION}
 
 # # Install python dependencies
 # RUN apt-get update \
