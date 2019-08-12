@@ -73,6 +73,8 @@ RUN git clone -j8 --single-branch --branch v${METACALL_LIBFFI_VERSION} https://g
 # Install libssl
 FROM builder AS builder_libssl
 
+COPY --from=builder_zlib ${METACALL_PATH}/python ${METACALL_PATH}/python
+
 ARG METACALL_LIBSSL_VERSION
 
 RUN git clone -j8 --recursive --single-branch --branch ${METACALL_LIBSSL_VERSION} https://github.com/openssl/openssl.git libssl \
