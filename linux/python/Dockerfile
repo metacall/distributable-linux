@@ -102,6 +102,7 @@ RUN git clone -j8 --single-branch --branch bzip2-${METACALL_LIBBZ2_VERESION} htt
 	&& cd bzip2 \
 	&& sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile \
 	&& make -j $(nproc) -f Makefile-libbz2_so \
+	&& mkdir -p ${METACALL_PATH}/python/lib \
 	&& cp libbz2.so.${METACALL_LIBBZ2_VERESION} ${METACALL_PATH}/python/lib/libbz2.so.${METACALL_LIBBZ2_VERESION} \
 	&& ln -rs ${METACALL_PATH}/python/lib/libbz2.so.${METACALL_LIBBZ2_VERESION} ${METACALL_PATH}/python/lib/libbz2.so \
 	&& make clean \
