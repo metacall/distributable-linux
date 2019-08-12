@@ -40,7 +40,7 @@ RUN mkdir -p ${METACALL_PATH}/python
 # Install zlib
 ARG METACALL_ZLIB_VERSION
 
-RUN git clone --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git zlib \
+RUN git clone -j8 --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git zlib \
 	&& cd zlib \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
@@ -52,7 +52,7 @@ RUN git clone --single-branch --branch ${METACALL_ZLIB_VERSION} https://github.c
 # Install libffi
 ARG METACALL_LIBFFI_VERSION
 
-RUN git clone --single-branch --branch ${METACALL_LIBFFI_VERSION} https://github.com/libffi/libffi.git libffi \
+RUN git clone -j8 --single-branch --branch ${METACALL_LIBFFI_VERSION} https://github.com/libffi/libffi.git libffi \
 	&& cd libffi \
 	&& ./autogen.sh \
 	&& sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' -i include/Makefile.in \
@@ -69,7 +69,7 @@ RUN git clone --single-branch --branch ${METACALL_LIBFFI_VERSION} https://github
 # Install libssl
 ARG METACALL_LIBSSL_VERSION
 
-RUN git clone --recursive -j8 --single-branch --branch ${METACALL_LIBSSL_VERSION} https://github.com/openssl/openssl.git libssl \
+RUN git clone -j8 --recursive --single-branch --branch ${METACALL_LIBSSL_VERSION} https://github.com/openssl/openssl.git libssl \
 	&& cd libssl \
 	&& ./config \
 		--prefix=${METACALL_PATH}/python \
@@ -80,8 +80,18 @@ RUN git clone --recursive -j8 --single-branch --branch ${METACALL_LIBSSL_VERSION
 	&& cd .. \
 	&& rm -rf libssl
 
-# TODO: Install libbz2
+# Install libbz2
 ARG METACALL_LIBBZ2_VERESION
+
+RUN git clone -j8 --single-branch --branch bzip2-${METACALL_LIBBZ2_VERESION} https://sourceware.org/git/bzip2.git bzip2 \
+	&& cd bzip2 \
+	&& sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile \
+	&& make -f Makefile-libbz2_so \
+	&& make clean
+	&& make -j $(nproc) \
+	&& make PREFIX=${METACALL_PATH}/python install \
+	&& cd .. \
+	&& rm -rf bzip2
 
 # Install ncurses
 ARG METACALL_LIBNCURSES_VERSION
