@@ -89,10 +89,13 @@ RUN git clone -j8 --single-branch --branch bzip2-${METACALL_LIBBZ2_VERESION} htt
 	&& make -j $(nproc) -f Makefile-libbz2_so \
 	&& cp libbz2.so.${METACALL_LIBBZ2_VERESION} ${METACALL_PATH}/python/lib/libbz2.so.${METACALL_LIBBZ2_VERESION} \
 	&& ln -rs ${METACALL_PATH}/python/lib/libbz2.so.${METACALL_LIBBZ2_VERESION} ${METACALL_PATH}/python/lib/libbz2.so \
+	&& make clean \
+	&& make -j $(nproc) \
+	&& make install PREFIX=${METACALL_PATH}/python \
 	&& cd .. \
 	&& rm -rf bzip2
 
-# Install ncurses
+# Install libncurses
 ARG METACALL_LIBNCURSES_VERSION
 
 RUN curl https://ftp.gnu.org/gnu/ncurses/ncurses-${METACALL_LIBNCURSES_VERSION}.tar.gz --output ncurses.tar.gz \
@@ -114,6 +117,23 @@ RUN curl https://ftp.gnu.org/gnu/ncurses/ncurses-${METACALL_LIBNCURSES_VERSION}.
 	&& make install \
 	&& cd .. \
 	&& rm -rf ncurses-${METACALL_LIBNCURSES_VERSION}
+
+# Install libgdbm
+ARG METACALL_LIBGDBM_VERSION
+
+RUN curl https://ftp.gnu.org/gnu/gdbm/gdbm-${METACALL_LIBGDBM_VERSION}.tar.gz --output gdbm.tar.gz \
+	&& curl https://ftp.gnu.org/gnu/gdbm/gdbm-${METACALL_LIBGDBM_VERSION}.tar.gz.sig --output gdbm.tar.gz.sig \
+	&& gpg --verify gdbm.tar.gz.sig gdbm.tar.gz \
+	&& tar -xzf gdbm.tar.gz \
+	&& cd gdbm-${METACALL_LIBGDBM_VERSION} \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--disable-static \
+		--enable-libgdbm-compat \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf gdbm-${METACALL_LIBGDBM_VERSION}
 
 # # Install python dependencies
 # RUN apt-get update \
