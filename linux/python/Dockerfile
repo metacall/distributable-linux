@@ -38,6 +38,8 @@ ENV LDFLAGS=" \
 RUN mkdir -p ${METACALL_PATH}/python
 
 # Install zlib
+FROM builder AS builder_zlib
+
 ARG METACALL_ZLIB_VERSION
 
 RUN git clone -j8 --single-branch --branch v${METACALL_ZLIB_VERSION} https://github.com/madler/zlib.git zlib \
@@ -50,6 +52,8 @@ RUN git clone -j8 --single-branch --branch v${METACALL_ZLIB_VERSION} https://git
 	&& rm -rf zlib
 
 # Install libffi
+FROM builder AS builder_libffi
+
 ARG METACALL_LIBFFI_VERSION
 
 RUN git clone -j8 --single-branch --branch v${METACALL_LIBFFI_VERSION} https://github.com/libffi/libffi.git libffi \
@@ -67,6 +71,8 @@ RUN git clone -j8 --single-branch --branch v${METACALL_LIBFFI_VERSION} https://g
 	&& rm -rf libffi
 
 # Install libssl
+FROM builder AS builder_libssl
+
 ARG METACALL_LIBSSL_VERSION
 
 RUN git clone -j8 --recursive --single-branch --branch ${METACALL_LIBSSL_VERSION} https://github.com/openssl/openssl.git libssl \
@@ -86,6 +92,8 @@ RUN git clone -j8 --recursive --single-branch --branch ${METACALL_LIBSSL_VERSION
 	&& rm -rf libssl
 
 # Install libbz2
+FROM builder AS builder_libbz2
+
 ARG METACALL_LIBBZ2_VERESION
 
 RUN git clone -j8 --single-branch --branch bzip2-${METACALL_LIBBZ2_VERESION} https://sourceware.org/git/bzip2.git bzip2 \
@@ -101,6 +109,8 @@ RUN git clone -j8 --single-branch --branch bzip2-${METACALL_LIBBZ2_VERESION} htt
 	&& rm -rf bzip2
 
 # Install libncurses
+FROM builder AS builder_libncurses
+
 ARG METACALL_LIBNCURSES_VERSION
 
 RUN curl https://ftp.gnu.org/gnu/ncurses/ncurses-${METACALL_LIBNCURSES_VERSION}.tar.gz --output ncurses.tar.gz \
@@ -124,6 +134,8 @@ RUN curl https://ftp.gnu.org/gnu/ncurses/ncurses-${METACALL_LIBNCURSES_VERSION}.
 	&& rm -rf ncurses-${METACALL_LIBNCURSES_VERSION}
 
 # Install libgdbm
+FROM builder AS builder_libgdbm
+
 ARG METACALL_LIBGDBM_VERSION
 
 RUN curl https://ftp.gnu.org/gnu/gdbm/gdbm-${METACALL_LIBGDBM_VERSION}.tar.gz --output gdbm.tar.gz \
@@ -141,6 +153,8 @@ RUN curl https://ftp.gnu.org/gnu/gdbm/gdbm-${METACALL_LIBGDBM_VERSION}.tar.gz --
 	&& rm -rf gdbm-${METACALL_LIBGDBM_VERSION}
 
 # Install liblzma
+FROM builder AS builder_liblzma
+
 ARG METACALL_LIBLZMA_VERSION
 
 RUN git clone -j8 --single-branch --branch v${METACALL_LIBLZMA_VERSION} https://git.tukaani.org/xz.git xz \
@@ -160,6 +174,8 @@ RUN git clone -j8 --single-branch --branch v${METACALL_LIBLZMA_VERSION} https://
 	&& rm -rf xz
 
 # Install libsqlite3
+FROM builder AS builder_libsqlite3
+
 ARG METACALL_LIBSQLITE3_VERSION
 ARG METACALL_LIBSQLITE3_SHA1
 
@@ -201,11 +217,20 @@ RUN export METACALL_LIBSQLITE3_VERSION=$(printf '%s' ${METACALL_LIBSQLITE3_VERSI
 # 		uuid-dev \
 # 		libreadline-dev
 
-# ARG METACALL_PYTHON_VERSION
-# ARG METACALL_PATH
+FROM builder AS builder_python
 
-# # Copy dependencies
-# COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
+# Copy all dependencies
+COPY --from=builder_zlib ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libffi ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libssl ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libbz2 ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libncurses ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libgdbm ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_liblzma ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libsqlite3 ${METACALL_PATH}/python ${METACALL_PATH}/python
+# TODO: tk uuid libreadline
+
+ARG METACALL_PYTHON_VERSION
 
 # # Build CPython (TODO: --enable-optimizations)
 # RUN export LIBRARY_PATH="${LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
@@ -223,42 +248,8 @@ RUN export METACALL_LIBSQLITE3_VERSION=$(printf '%s' ${METACALL_LIBSQLITE3_VERSI
 # 	&& make -j$(nproc) \
 # 	&& make install
 
-# # Copy libraries
-# RUN \
-# 	export LIBS=" \
-# 	ffi \
-# 	crypto ssl \
-# 	formw menuw ncursesw panelw \
-# 	gdbm gdbm_compat \
-# 	sqlite3 \
-# 	tk \
-# 	"; \
-# 		metacall-dist-lib /usr/lib/${METACALL_ARCH_HOST} ${METACALL_PATH}/python/lib 'lib${lib}\.so' && \
-# 	export LIBS=" \
-# 	crypt \
-# 	z \
-# 	bz2 \
-# 	lzma \
-# 	uuid \
-# 	history readline \
-# 	tinfo \
-# 	"; \
-# 		metacall-dist-lib /lib/${METACALL_ARCH_HOST} ${METACALL_PATH}/python/lib 'lib${lib}\.so'
-
-# FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
-
-# ARG METACALL_PATH
-
-# # Copy dependencies
-# COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
-# COPY --from=deps ${METACALL_PATH}/python ${METACALL_PATH}/python
-
-# # Patch libraries
-# RUN metacall-dist-patch ${METACALL_PATH}/python/lib ${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64 ${METACALL_PATH}/libc/lib64 \
-# 	metacall-dist-patch ${METACALL_PATH}/python/bin ${METACALL_PATH}/python/lib:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64 ${METACALL_PATH}/libc/lib64
-
 # FROM scratch AS python
 
 # ARG METACALL_PATH
 
-# COPY --from=builder ${METACALL_PATH}/python ${METACALL_PATH}/python
+# COPY --from=builder_python ${METACALL_PATH}/python ${METACALL_PATH}/python
