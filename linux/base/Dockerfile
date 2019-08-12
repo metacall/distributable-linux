@@ -34,6 +34,7 @@ RUN apt-get update \
 		automake \
 		autopoint \
 		libtool \
+		libedit2 \
 		curl \
 		gnupg \
 		ca-certificates \

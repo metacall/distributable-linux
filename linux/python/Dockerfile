@@ -159,6 +159,33 @@ RUN git clone -j8 --single-branch --branch v${METACALL_LIBLZMA_VERSION} https://
 	&& cd .. \
 	&& rm -rf xz
 
+# Install libsqlite3
+ARG METACALL_LIBSQLITE3_VERSION
+ARG METACALL_LIBSQLITE3_MD5SUM
+
+RUN export METACALL_LIBSQLITE_VERSION=$(printf "%01g%02d%02d%02d" ${METACALL_LIBSQLITE3_VERSION//./ }) \
+	&& curl https://sqlite.org/2019/sqlite-autoconf-${METACALL_LIBSQLITE_VERSION}.tar.gz --output sqlite.tar.gz \
+	&& echo "${METACALL_LIBSQLITE3_MD5SUM} sqlite.tar.gz" > sqlite.md5 \
+	&& md5sum -c sqlite3.md5 \
+	&& tar -xzf sqlite3.tar.gz \
+	&& cd sqlite-autoconf-${METACALL_LIBSQLITE_VERSION} \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--disable-static \
+		--enable-fts5 \
+		CFLAGS="-g -O2 \
+		-DSQLITE_ENABLE_FTS3=1 \
+		-DSQLITE_ENABLE_FTS4=1 \
+		-DSQLITE_ENABLE_COLUMN_METADATA=1 \
+		-DSQLITE_ENABLE_UNLOCK_NOTIFY=1 \
+		-DSQLITE_ENABLE_DBSTAT_VTAB=1 \
+		-DSQLITE_SECURE_DELETE=1 \
+		-DSQLITE_ENABLE_FTS3_TOKENIZER=1" \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf sqlite3.md5 sqlite-autoconf-${METACALL_LIBSQLITE_VERSION}
+
 # # Install python dependencies
 # RUN apt-get update \
 # 	&& apt-get install -y --no-install-recommends \
