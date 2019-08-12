@@ -26,13 +26,14 @@ RUN apt-get update \
 		locales \
 		git \
 		build-essential \
-		autoconf \
-		automake \
-		libtool \
 		libltdl-dev \
 		gawk \
 		gettext \
 		texinfo \
+		autoconf \
+		automake \
+		autopoint \
+		libtool \
 		curl \
 		gnupg \
 		ca-certificates \

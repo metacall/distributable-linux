@@ -145,6 +145,7 @@ ARG METACALL_LIBLZMA_VERSION
 
 RUN git clone -j8 --single-branch --branch v${METACALL_LIBLZMA_VERSION} https://git.tukaani.org/xz.git xz \
 	&& cd xz \
+	&& ./autogen.sh \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
 		--disable-xz \
