@@ -163,7 +163,7 @@ RUN git clone -j8 --single-branch --branch v${METACALL_LIBLZMA_VERSION} https://
 ARG METACALL_LIBSQLITE3_VERSION
 ARG METACALL_LIBSQLITE3_SHA1
 
-RUN export METACALL_LIBSQLITE3_VERSION=$(printf "%s" $METACALL_LIBSQLITE3_VERSION | tr '.' ' ' | xargs printf "%01g%02d%02d%02d") \
+RUN export METACALL_LIBSQLITE3_VERSION=$(printf '%s' ${METACALL_LIBSQLITE3_VERSION} | tr '.' ' ' | xargs printf '%01g%02d%02d%02d') \
 	&& curl https://sqlite.org/2019/sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION}.tar.gz --output sqlite3.tar.gz \
 	&& echo "${METACALL_LIBSQLITE3_SHA1}  sqlite3.tar.gz" > sqlite3.sha1 \
 	&& sha1sum -c sqlite3.sha1 \
