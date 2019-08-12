@@ -74,9 +74,14 @@ RUN git clone -j8 --recursive --single-branch --branch ${METACALL_LIBSSL_VERSION
 	&& ./config \
 		--prefix=${METACALL_PATH}/python \
 		--openssldir=${METACALL_PATH}/python \
+		--with-zlib-include=${METACALL_PATH}/python/include \
+		--with-zlib-lib=${METACALL_PATH}/python/lib \
 		shared \
+		no-tests \
+		zlib \
+		zlib-dynamic \
 	&& make -j $(nproc) \
-	&& make install \
+	&& make install_sw \
 	&& cd .. \
 	&& rm -rf libssl
 
@@ -152,7 +157,6 @@ RUN RUN git clone -j8 --single-branch --branch v${METACALL_LIBLZMA_VERSION} http
 	&& make install \
 	&& cd .. \
 	&& rm -rf xz
-
 
 # # Install python dependencies
 # RUN apt-get update \
