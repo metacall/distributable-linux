@@ -35,6 +35,7 @@ RUN apt-get update \
 		autopoint \
 		automake \
 		autopoint \
+		pkg-config \
 		libtool \
 		libedit2 \
 		curl \
