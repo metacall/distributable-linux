@@ -100,7 +100,7 @@ ARG METACALL_LIBBZ2_VERESION
 
 RUN git clone -j8 --single-branch --branch bzip2-${METACALL_LIBBZ2_VERESION} https://sourceware.org/git/bzip2.git bzip2 \
 	&& cd bzip2 \
-	&& sed -i 's@CFLAGS=@LDFLAGS=\nCFLAGS=@' Makefile-libbz2_so \
+	&& sed -i "s@CFLAGS=@LDFLAGS=${LDFLAGS}\nCFLAGS=@" Makefile-libbz2_so \
 	&& sed -i 's@-shared@-shared \$\(LDFLAGS\)@' Makefile-libbz2_so \
 	&& sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile \
 	&& make -j $(nproc) -f Makefile-libbz2_so \
