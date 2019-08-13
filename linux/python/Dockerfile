@@ -217,11 +217,8 @@ FROM builder AS builder_libuuid
 
 ARG METACALL_LIBUUID_VERSION
 
-RUN curl https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${METACALL_LIBUUID_VERSION}/util-linux-${METACALL_LIBUUID_VERSION}.tar.gz --output util-linux.tar.gz \
-	&& curl https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${METACALL_LIBUUID_VERSION}/util-linux-${METACALL_LIBUUID_VERSION}.tar.gz.sign --output util-linux.tar.gz.sign \
-	&& gpg --verify util-linux.tar.gz.sign util-linux.tar.gz \
-	&& tar -xzf util-linux.tar.gz \
-	&& cd util-linux-${METACALL_LIBUUID_VERSION} \
+RUN git clone -j8 --single-branch --branch v${METACALL_LIBUUID_VERSION} https://github.com/karelzak/util-linux util-linux \
+	&& cd util-linux \
 	&& mkdir -p /var/lib/hwclock \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
@@ -231,7 +228,7 @@ RUN curl https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${METACALL_
 	&& make -j $(nproc) \
 	&& make install \
 	&& cd .. \
-	&& rm -rf util-linux.tar.gz.sign util-linux.tar.gz util-linux-${METACALL_LIBUUID_VERSION}
+	&& rm -rf util-linux
 
 # Install libreadline
 FROM builder AS builder_libreadline
