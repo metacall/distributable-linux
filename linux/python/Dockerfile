@@ -234,8 +234,11 @@ RUN curl https://ftp.gnu.org/gnu/readline/readline-${METACALL_LIBREADLINE_VERSIO
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
 		--disable-static \
+		--enable-shared \
+		--enable-multibyte \
+		--with-curses \
 	&& make SHLIB_LIBS="-L${METACALL_PATH}/python/lib -lncursesw" -j $(nproc) \
-	&& make install \
+	&& make SHLIB_LIBS="-L${METACALL_PATH}/python/lib -lncursesw" install \
 	&& cd .. \
 	&& rm -rf readline-${METACALL_LIBREADLINE_VERSION}
 
