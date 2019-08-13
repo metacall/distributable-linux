@@ -26,11 +26,13 @@ RUN apt-get update \
 		locales \
 		git \
 		build-essential \
+		bison \
 		libltdl-dev \
 		gawk \
 		gettext \
 		texinfo \
 		autoconf \
+		autopoint \
 		automake \
 		autopoint \
 		libtool \
