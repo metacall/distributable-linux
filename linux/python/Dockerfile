@@ -207,12 +207,37 @@ RUN export METACALL_LIBSQLITE3_VERSION=$(printf '%s' ${METACALL_LIBSQLITE3_VERSI
 	&& cd .. \
 	&& rm -rf sqlite3.tar.gz sqlite3.sha1 sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION}
 
-# Install libtk
+# TODO: Install libtk
 FROM builder AS builder_libtk
 
 ARG METACALL_LIBTK_VERSION
 
+# TODO: Install libuuid
+FROM builder AS builder_libuuid
 
+ARG METACALL_LIBUUID_VERSION
+
+# Install libreadline
+FROM builder AS builder_libreadline
+
+COPY --from=builder_libncurses ${METACALL_PATH}/python ${METACALL_PATH}/python
+
+ARG METACALL_LIBREADLINE_VERSION
+
+RUN curl https://ftp.gnu.org/gnu/readline/readline-${METACALL_LIBREADLINE_VERSION}.tar.gz --output readline.tar.gz \
+	&& curl https://ftp.gnu.org/gnu/readline/readline-${METACALL_LIBREADLINE_VERSION}.tar.gz.sig --output readline.tar.gz.sig \
+	&& gpg --verify readline.tar.gz.sig readline.tar.gz \
+	&& tar -xzf readline.tar.gz \
+	&& cd readline-${METACALL_LIBREADLINE_VERSION} \
+	&& sed -i '/MV.*old/d' Makefile.in \
+	&& sed -i '/{OLDSUFF}/c:' support/shlib-install \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--disable-static \
+	&& make SHLIB_LIBS="-L${METACALL_PATH}/python/lib -lncursesw" -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf readline-${METACALL_LIBREADLINE_VERSION}
 
 # # Install python dependencies
 # RUN apt-get update \
@@ -240,6 +265,9 @@ COPY --from=builder_libncurses ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libgdbm ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_liblzma ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libsqlite3 ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libtk ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libuuid ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libreadline ${METACALL_PATH}/python ${METACALL_PATH}/python
 # TODO: tk uuid libreadline
 
 ARG METACALL_PYTHON_VERSION
