@@ -136,7 +136,7 @@ RUN curl https://ftp.gnu.org/gnu/ncurses/ncurses-${METACALL_LIBNCURSES_VERSION}.
 	&& make -j $(nproc) \
 	&& make install \
 	&& cd .. \
-	&& rm -rf ncurses-${METACALL_LIBNCURSES_VERSION}
+	&& rm -rf ncurses.tar.gz ncurses.tar.gz.sig ncurses-${METACALL_LIBNCURSES_VERSION}
 
 # Install libgdbm
 FROM builder AS builder_libgdbm
@@ -155,7 +155,7 @@ RUN curl https://ftp.gnu.org/gnu/gdbm/gdbm-${METACALL_LIBGDBM_VERSION}.tar.gz --
 	&& make -j $(nproc) \
 	&& make install \
 	&& cd .. \
-	&& rm -rf gdbm-${METACALL_LIBGDBM_VERSION}
+	&& rm -rf gdbm.tar.gz.sig gdbm.tar.gz gdbm-${METACALL_LIBGDBM_VERSION}
 
 # Install liblzma
 FROM builder AS builder_liblzma
@@ -212,10 +212,26 @@ FROM builder AS builder_libtk
 
 ARG METACALL_LIBTK_VERSION
 
-# TODO: Install libuuid
+# Install libuuid
 FROM builder AS builder_libuuid
 
 ARG METACALL_LIBUUID_VERSION
+
+RUN curl https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${METACALL_LIBUUID_VERSION}/util-linux-${METACALL_LIBUUID_VERSION}.tar.gz --output util-linux.tar.gz \
+	&& curl https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${METACALL_LIBUUID_VERSION}/util-linux-${METACALL_LIBUUID_VERSION}.tar.gz.sign --output util-linux.tar.gz.sign \
+	&& gpg --verify util-linux.tar.gz.sign util-linux.tar.gz \
+	&& tar -xzf util-linux.tar.gz \
+	&& cd util-linux-${METACALL_LIBUUID_VERSION} \
+	&& mkdir -p /var/lib/hwclock \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--disable-all-programs \
+		--disable-static \
+		--enable-libuuid \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf util-linux.tar.gz.sign util-linux.tar.gz util-linux-${METACALL_LIBUUID_VERSION}
 
 # Install libreadline
 FROM builder AS builder_libreadline
@@ -271,7 +287,6 @@ COPY --from=builder_libsqlite3 ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libtk ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libuuid ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libreadline ${METACALL_PATH}/python ${METACALL_PATH}/python
-# TODO: tk uuid libreadline
 
 ARG METACALL_PYTHON_VERSION
 
