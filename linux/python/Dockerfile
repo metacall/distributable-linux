@@ -215,9 +215,9 @@ ARG METACALL_LIBTK_VERSION
 # Install libuuid
 FROM builder AS builder_libuuid
 
-ARG METACALL_LIBUUID_VERSION
+ARG METACALL_UTIL_LINUX_VERSION
 
-RUN git clone -j8 --single-branch --branch v${METACALL_LIBUUID_VERSION} https://github.com/karelzak/util-linux util-linux \
+RUN git clone -j8 --single-branch --branch v${METACALL_UTIL_LINUX_VERSION} https://github.com/karelzak/util-linux util-linux \
 	&& cd util-linux \
 	&& mkdir -p /var/lib/hwclock \
 	&& ./autogen.sh \
