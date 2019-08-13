@@ -220,6 +220,7 @@ ARG METACALL_LIBUUID_VERSION
 RUN git clone -j8 --single-branch --branch v${METACALL_LIBUUID_VERSION} https://github.com/karelzak/util-linux util-linux \
 	&& cd util-linux \
 	&& mkdir -p /var/lib/hwclock \
+	&& ./autogen.sh \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
 		--disable-all-programs \
