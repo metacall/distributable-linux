@@ -184,12 +184,12 @@ FROM builder AS builder_libsqlite3
 ARG METACALL_LIBSQLITE3_VERSION
 ARG METACALL_LIBSQLITE3_SHA1
 
-RUN export METACALL_LIBSQLITE3_VERSION=$(printf '%s' ${METACALL_LIBSQLITE3_VERSION} | tr '.' ' ' | xargs printf '%01g%02d%02d%02d') \
-	&& curl https://sqlite.org/2019/sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION}.tar.gz --output sqlite3.tar.gz \
+RUN export METACALL_LIBSQLITE3_VERSION_HEX=$(printf '%s' ${METACALL_LIBSQLITE3_VERSION} | tr '.' ' ' | xargs printf '%01g%02d%02d%02d') \
+	&& curl https://sqlite.org/2019/sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION_HEX}.tar.gz --output sqlite3.tar.gz \
 	&& echo "${METACALL_LIBSQLITE3_SHA1}  sqlite3.tar.gz" > sqlite3.sha1 \
 	&& sha1sum -c sqlite3.sha1 \
 	&& tar -xzf sqlite3.tar.gz \
-	&& cd sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION} \
+	&& cd sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION_HEX} \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
 		--disable-static \
@@ -205,12 +205,43 @@ RUN export METACALL_LIBSQLITE3_VERSION=$(printf '%s' ${METACALL_LIBSQLITE3_VERSI
 	&& make -j $(nproc) \
 	&& make install \
 	&& cd .. \
-	&& rm -rf sqlite3.tar.gz sqlite3.sha1 sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION}
+	&& rm -rf sqlite3.tar.gz sqlite3.sha1 sqlite-autoconf-${METACALL_LIBSQLITE3_VERSION_HEX}
 
-# TODO: Install libtk
+# Install libtcl
+FROM builder AS builder_libtcl
+
+COPY --from=builder_zlib ${METACALL_PATH}/python ${METACALL_PATH}/python
+
+ARG METACALL_LIBTCL_VERSION
+
+RUN export METACALL_LIBTCL_VERSION_BRANCH=$(printf '%s' "${METACALL_LIBTCL_VERSION}" | tr '.' '-') \
+	&& git clone -j8 --single-branch --branch core-${METACALL_LIBTCL_VERSION_BRANCH} https://github.com/tcltk/tcl.git tcl \
+	&& cd tcl \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--exec-prefix=${METACALL_PATH}/python \
+		--enable-shared \
+		--enable-threads \
+	&& make -j $(nproc) \
+	&& sed -i \
+		-e "s@^\(TCL_SRC_DIR='\).*@\1${METACALL_PATH}/python/include'@" \
+		-e "/TCL_B/s@='\(-L\)\?.*unix@='\1${METACALL_PATH}/python/lib@" \
+		-e "/SEARCH/s/=.*/=''/" \
+		tclConfig.sh \
+	&& make install \
+	&& make install-private-headers \
+	&& ln -rs ${METACALL_PATH}/python/bin/tclsh ${METACALL_PATH}/python/bin/$(expr substr "${METACALL_LIBTCL_VERSION}" 1 3) \
+	&& cd .. \
+	&& rm -rf tcl
+
+# Install libtk
 FROM builder AS builder_libtk
 
+COPY --from=builder_libtcl ${METACALL_PATH}/python ${METACALL_PATH}/python
+
 ARG METACALL_LIBTK_VERSION
+
+# TODO
 
 # Install libuuid
 FROM builder AS builder_libuuid
@@ -218,7 +249,7 @@ FROM builder AS builder_libuuid
 ARG METACALL_UTIL_LINUX_VERSION
 
 RUN export CFLAGS="-I${METACALL_PATH}/libc/include" \
-	&& git clone -j8 --single-branch --branch v${METACALL_UTIL_LINUX_VERSION} https://github.com/karelzak/util-linux util-linux \
+	&& git clone -j8 --single-branch --branch v${METACALL_UTIL_LINUX_VERSION} https://github.com/karelzak/util-linux.git util-linux \
 	&& cd util-linux \
 	&& mkdir -p /var/lib/hwclock \
 	&& ./autogen.sh \
@@ -257,21 +288,6 @@ RUN curl https://ftp.gnu.org/gnu/readline/readline-${METACALL_LIBREADLINE_VERSIO
 	&& cd .. \
 	&& rm -rf readline-${METACALL_LIBREADLINE_VERSION}
 
-# # Install python dependencies
-# RUN apt-get update \
-# 	&& apt-get install -y --no-install-recommends \
-# 		zlib1g-dev \
-# 		libffi-dev \
-# 		libssl-dev \
-# 		libbz2-dev \
-# 		libncursesw5-dev \
-# 		libgdbm-dev \
-# 		liblzma-dev \
-# 		libsqlite3-dev \
-# 		tk-dev \
-# 		uuid-dev \
-# 		libreadline-dev
-
 FROM builder AS builder_python
 
 # Copy all dependencies
@@ -287,21 +303,17 @@ COPY --from=builder_libtk ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libuuid ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libreadline ${METACALL_PATH}/python ${METACALL_PATH}/python
 
+# Build CPython (TODO: --enable-optimizations)
 ARG METACALL_PYTHON_VERSION
 
-# # Build CPython (TODO: --enable-optimizations)
-# RUN export LIBRARY_PATH="${LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
-# 	&& export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${METACALL_PATH}/libc/lib:${METACALL_PATH}/libc/lib64" \
-# 	&& export LD_LOADER=`${METACALL_PATH}/libc/lib64/ld-linux*?.so*?` \
-# 	&& git clone --branch v${METACALL_PYTHON_VERSION} --single-branch https://github.com/python/cpython.git \
+# RUN git clone -j8 --single-branch --branch v${METACALL_PYTHON_VERSION} https://github.com/python/cpython.git \
 # 	&& cd cpython \
-# 	&& git checkout v${METACALL_PYTHON_VERSION} \
 # 	&& ./configure \
 # 		--prefix=${METACALL_PATH}/python \
 # 		--with-lto \
 # 		--enable-shared \
 # 		CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" \
-# 		LDFLAGS="-Wl,-z,relro -Wl,--dynamic-linker=\"${LD_LOADER}\"" \
+# 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
 # 	&& make -j$(nproc) \
 # 	&& make install
 
