@@ -216,7 +216,7 @@ ARG METACALL_LIBTCL_VERSION
 
 RUN export METACALL_LIBTCL_VERSION_BRANCH=$(printf '%s' "${METACALL_LIBTCL_VERSION}" | tr '.' '-') \
 	&& git clone -j8 --single-branch --branch core-${METACALL_LIBTCL_VERSION_BRANCH} https://github.com/tcltk/tcl.git tcl \
-	&& cd tcl \
+	&& cd tcl/unix \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
 		--exec-prefix=${METACALL_PATH}/python \
@@ -231,7 +231,7 @@ RUN export METACALL_LIBTCL_VERSION_BRANCH=$(printf '%s' "${METACALL_LIBTCL_VERSI
 	&& make install \
 	&& make install-private-headers \
 	&& ln -rs ${METACALL_PATH}/python/bin/tclsh ${METACALL_PATH}/python/bin/$(expr substr "${METACALL_LIBTCL_VERSION}" 1 3) \
-	&& cd .. \
+	&& cd ../.. \
 	&& rm -rf tcl
 
 # Install libtk
