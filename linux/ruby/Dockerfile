@@ -168,7 +168,7 @@ FROM builder AS builder_libgmp
 ARG METACALL_LIBGMP_VERSION
 
 RUN apt-get update \
-	&& apt-install xz-utils -y --no-install-recommends \
+	&& apt-get install xz-utils -y --no-install-recommends \
 	&& curl https://gmplib.org/download/gmp/gmp-${METACALL_LIBGMP_VERSION}.tar.xz --output libgmp.tar.xz \
 	&& curl https://gmplib.org/download/gmp/gmp-${METACALL_LIBGMP_VERSION}.tar.xz.sig --output libgmp.tar.xz.sig \
 	&& gpg --verify libgmp.tar.xz.sig libgmp.tar.xz \
