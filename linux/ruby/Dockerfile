@@ -169,9 +169,9 @@ ARG METACALL_LIBGMP_VERSION
 
 RUN apt-get update \
 	&& apt-get install xz-utils -y --no-install-recommends \
-	&& curl https://gmplib.org/download/gmp/gmp-${METACALL_LIBGMP_VERSION}.tar.xz --output libgmp.tar.xz \
-	&& curl https://gmplib.org/download/gmp/gmp-${METACALL_LIBGMP_VERSION}.tar.xz.sig --output libgmp.tar.xz.sig \
-	&& gpg --verify libgmp.tar.xz.sig libgmp.tar.xz \
+	&& curl https://gmplib.org/download/gmp/gmp-${METACALL_LIBGMP_VERSION}.tar.xz --output gmp.tar.xz \
+	&& curl https://gmplib.org/download/gmp/gmp-${METACALL_LIBGMP_VERSION}.tar.xz.sig --output gmp.tar.xz.sig \
+	&& gpg --verify gmp.tar.xz.sig gmp.tar.xz \
 	&& tar -xf gmp.tar.xz \
 	&& cd gmp-${METACALL_LIBGMP_VERSION} \
 	&& cp configfsf.guess config.guess \
