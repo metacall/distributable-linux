@@ -228,6 +228,7 @@ COPY --from=builder_libyaml ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 # Build Ruby
 ARG METACALL_RUBY_VERSION
 
+# TODO: Remove --without-x11 and --with-out-ext=tk,tk/* and add x11/tk dependencies
 RUN apt-get update \
 	&& apt-get install ruby -y --no-install-recommends \
 	&& git clone -j8 --single-branch --branch v${METACALL_RUBY_VERSION} https://github.com/ruby/ruby.git ruby \
@@ -235,6 +236,13 @@ RUN apt-get update \
 	&& autoconf \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/ruby \
+		--enable-shared \
+		--with-gmp \
+		--disable-install-doc \
+		--with-readline-dir=${METACALL_PATH}/ruby \
+		--with-openssl-dir=${METACALL_PATH}/ruby \
+		--with-out-ext=tk,tk/* \
+		--without-x11 \
 		CFLAGS="-D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
 	&& make -j$(nproc) \
