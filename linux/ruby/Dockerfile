@@ -172,8 +172,8 @@ RUN apt-get update \
 	&& curl https://gmplib.org/download/gmp/gmp-${METACALL_LIBGMP_VERSION}.tar.xz --output libgmp.tar.xz \
 	&& curl https://gmplib.org/download/gmp/gmp-${METACALL_LIBGMP_VERSION}.tar.xz.sig --output libgmp.tar.xz.sig \
 	&& gpg --verify libgmp.tar.xz.sig libgmp.tar.xz \
-	&& tar -xf libgmp.tar.xz \
-	&& cd libgmp-${METACALL_LIBGMP_VERSION} \
+	&& tar -xf gmp.tar.xz \
+	&& cd gmp-${METACALL_LIBGMP_VERSION} \
 	&& cp configfsf.guess config.guess \
 	&& cp configfsf.sub config.sub \
 	&& ./configure \
@@ -184,7 +184,7 @@ RUN apt-get update \
 	&& make -j $(nproc) \
 	&& make install \
 	&& cd .. \
-	&& rm -rf libgmp-${METACALL_LIBGMP_VERSION}
+	&& rm -rf gmp-${METACALL_LIBGMP_VERSION}
 
 # Install libtinfo
 FROM builder AS builder_libtinfo
