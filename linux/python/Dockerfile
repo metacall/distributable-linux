@@ -28,10 +28,16 @@ ARG METACALL_PATH
 # Copy libc
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 
+# Set c flags
+ENV CFLAGS=" \
+	-I${METACALL_PATH}/python/include"
+
 # Set linker flags
 ENV LDFLAGS=" \
 		-L${METACALL_PATH}/libc/lib \
+		-L${METACALL_PATH}/python/lib \
 		-Wl,-rpath=${METACALL_PATH}/libc/lib \
+		-Wl,-rpath=${METACALL_PATH}/python/lib \
 		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld.so"
 
 # Create output path
@@ -312,7 +318,7 @@ ARG METACALL_PYTHON_VERSION
 # 		--prefix=${METACALL_PATH}/python \
 # 		--with-lto \
 # 		--enable-shared \
-# 		CFLAGS="-D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
+# 		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
 # 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
 # 	&& make -j$(nproc) \
 # 	&& make install

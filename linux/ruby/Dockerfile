@@ -28,10 +28,16 @@ ARG METACALL_PATH
 # Copy libc
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 
+# Set c flags
+ENV CFLAGS=" \
+	-I${METACALL_PATH}/ruby/include"
+
 # Set linker flags
 ENV LDFLAGS=" \
 		-L${METACALL_PATH}/libc/lib \
+		-L${METACALL_PATH}/ruby/lib \
 		-Wl,-rpath=${METACALL_PATH}/libc/lib \
+		-Wl,-rpath=${METACALL_PATH}/python/lib \
 		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld.so"
 
 # Create output path
@@ -241,9 +247,9 @@ RUN apt-get update \
 		--disable-install-doc \
 		--with-readline-dir=${METACALL_PATH}/ruby \
 		--with-openssl-dir=${METACALL_PATH}/ruby \
-		--with-out-ext=tk,tk/* \
 		--without-x11 \
-		CFLAGS="-D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
+		--with-out-ext=win32,win32ole,tk,tk/* \
+		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
 	&& make -j$(nproc) \
 	&& make update-gems \
