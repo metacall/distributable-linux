@@ -194,7 +194,7 @@ RUN export METACALL_LIBSQLITE3_VERSION_HEX=$(printf '%s' ${METACALL_LIBSQLITE3_V
 		--prefix=${METACALL_PATH}/python \
 		--disable-static \
 		--enable-fts5 \
-		CFLAGS="-g -O2 \
+		CFLAGS="-O2 \
 		-DSQLITE_ENABLE_FTS3=1 \
 		-DSQLITE_ENABLE_FTS4=1 \
 		-DSQLITE_ENABLE_COLUMN_METADATA=1 \
@@ -312,7 +312,7 @@ ARG METACALL_PYTHON_VERSION
 # 		--prefix=${METACALL_PATH}/python \
 # 		--with-lto \
 # 		--enable-shared \
-# 		CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" \
+# 		CFLAGS="-D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
 # 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
 # 	&& make -j$(nproc) \
 # 	&& make install

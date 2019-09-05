@@ -194,8 +194,8 @@ COPY --from=builder_libncurses ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 ARG METACALL_LIBNCURSES_VERSION
 ARG METACALL_LIBTINFO_VERSION
 
-RUN ln -s ${METACALL_PATH}/ruby/libncursesw.so.${METACALL_LIBNCURSES_VERSION} ${METACALL_PATH}/ruby/libtinfo.so.${METACALL_LIBTINFO_VERSION} \
-	&& ln -s ${METACALL_PATH}/ruby/libtinfo.so.${METACALL_LIBTINFO_VERSION} ${METACALL_PATH}/ruby/libtinfo.so
+RUN ln -s ${METACALL_PATH}/ruby/lib/libncursesw.so.${METACALL_LIBNCURSES_VERSION} ${METACALL_PATH}/ruby/lib/libtinfo.so.${METACALL_LIBTINFO_VERSION} \
+	&& ln -s ${METACALL_PATH}/ruby/lib/libtinfo.so.${METACALL_LIBTINFO_VERSION} ${METACALL_PATH}/ruby/lib/libtinfo.so
 
 # Install libyaml
 FROM builder AS builder_libyaml
@@ -225,19 +225,20 @@ COPY --from=builder_libgmp ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 COPY --from=builder_libtinfo ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 COPY --from=builder_libyaml ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 
-# # Build Ruby
-# ARG METACALL_RUBY_VERSION
+# Build Ruby
+ARG METACALL_RUBY_VERSION
 
-# RUN git clone -j8 --single-branch --branch v${METACALL_RUBY_VERSION} https://github.com/ruby/ruby.git ruby \
-# 	&& cd ruby \
-# 	&& ./configure \
-# 		--prefix=${METACALL_PATH}/ruby \
-# 		--with-lto \
-# 		--enable-shared \
-# 		CFLAGS="-D_FORTIFY_SOURCE=2 -g -fstack-protector-strong -Wformat -Werror=format-security" \
-# 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
-# 	&& make -j$(nproc) \
-# 	&& make install
+RUN git clone -j8 --single-branch --branch v${METACALL_RUBY_VERSION} https://github.com/ruby/ruby.git ruby \
+	&& cd ruby \
+	&& autoconf \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/ruby \
+		CFLAGS="-D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
+		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
+	&& make -j$(nproc) \
+	&& make update-gems \
+	&& make extract-gems \
+	&& make install
 
 # FROM scratch AS ruby
 
