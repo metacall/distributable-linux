@@ -228,7 +228,9 @@ COPY --from=builder_libyaml ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 # Build Ruby
 ARG METACALL_RUBY_VERSION
 
-RUN git clone -j8 --single-branch --branch v${METACALL_RUBY_VERSION} https://github.com/ruby/ruby.git ruby \
+RUN apt-get update \
+	&& apt-get install ruby -y --no-install-recommends \
+	&& git clone -j8 --single-branch --branch v${METACALL_RUBY_VERSION} https://github.com/ruby/ruby.git ruby \
 	&& cd ruby \
 	&& autoconf \
 	&& ./configure \
