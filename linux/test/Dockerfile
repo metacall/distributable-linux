@@ -22,6 +22,7 @@ ARG METACALL_ARCH
 FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 
 FROM metacall/distributable:linux-python-${METACALL_ARCH} AS python
+FROM metacall/distributable:linux-ruby-${METACALL_ARCH} AS ruby
 
 FROM ${METACALL_ARCH}/alpine:3.10.1 AS test
 
@@ -30,8 +31,8 @@ RUN apk update \
 
 ARG METACALL_PATH
 
-#ENV LD_LIBRARY_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib \
-#	SHLIB_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib
+ENV LD_LIBRARY_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib:${METACALL_PATH}/ruby/lib \
+	SHLIB_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib:${METACALL_PATH}/ruby/lib
 
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python
@@ -39,4 +40,7 @@ COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python
 # Test binaries
 RUN cd ${METACALL_PATH}/python/bin \
 	&& export ELFS=`ls python[0-9].[0-9]` \
+	&& for elf in $ELFS; do readelf -l ${elf} | grep interpreter; done \
+	&& cd ${METACALL_PATH}/ruby/bin \
+	&& export ELFS=`ls ruby` \
 	&& for elf in $ELFS; do readelf -l ${elf} | grep interpreter; done

@@ -257,8 +257,8 @@ RUN apt-get update \
 	&& make extract-gems \
 	&& make install
 
-# FROM scratch AS ruby
+FROM scratch AS ruby
 
-# ARG METACALL_PATH
+ARG METACALL_PATH
 
-# COPY --from=builder_ruby ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
+COPY --from=builder_ruby ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby

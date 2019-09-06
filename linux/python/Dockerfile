@@ -313,19 +313,19 @@ COPY --from=builder_libreadline ${METACALL_PATH}/python ${METACALL_PATH}/python
 # Build CPython (TODO: --enable-optimizations)
 ARG METACALL_PYTHON_VERSION
 
-# RUN git clone -j8 --single-branch --branch v${METACALL_PYTHON_VERSION} https://github.com/python/cpython.git \
-# 	&& cd cpython \
-# 	&& ./configure \
-# 		--prefix=${METACALL_PATH}/python \
-# 		--with-lto \
-# 		--enable-shared \
-# 		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
-# 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
-# 	&& make -j$(nproc) \
-# 	&& make install
+RUN git clone -j8 --single-branch --branch v${METACALL_PYTHON_VERSION} https://github.com/python/cpython.git \
+	&& cd cpython \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--with-lto \
+		--enable-shared \
+		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
+		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
+	&& make -j$(nproc) \
+	&& make install
 
-# FROM scratch AS python
+FROM scratch AS python
 
-# ARG METACALL_PATH
+ARG METACALL_PATH
 
-# COPY --from=builder_python ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_python ${METACALL_PATH}/python ${METACALL_PATH}/python
