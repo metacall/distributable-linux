@@ -34,6 +34,7 @@ ENV CFLAGS=" \
 
 # Set linker flags
 ENV LDFLAGS=" \
+		-fPIC \
 		-L${METACALL_PATH}/libc/lib \
 		-L${METACALL_PATH}/python/lib \
 		-Wl,-rpath=${METACALL_PATH}/libc/lib \
