@@ -20,13 +20,12 @@
 version: "3.7"
 
 services:
-  amd64:
-    image: metacall/distributable:linux-libc-amd64
-    container_name: metacall_distributable_linux_libc_amd64
+  guix:
+    image: metacall/distributable:linux-guix
+    container_name: metacall_distributable_linux_guix
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        METACALL_ARCH: amd64
-        METACALL_PATH: $METACALL_PATH
-        METACALL_GLIBC_VERSION: "2.30"
+        METACALL_GUIX_VERSION: "1.0.1"
+        METACALL_GUIX_ARCH: "x86_64"
