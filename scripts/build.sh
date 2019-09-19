@@ -1,10 +1,12 @@
+#!/bin/sh
+
 #
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
 #
 #	Copyright (C) 2016 - 2019 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 #
-#	Licensed under the Apache License, Version 2.0 (the "License");
+#	Licensed under the Apache License, Version 2.0 (the "License")#
 #	you may not use this file except in compliance with the License.
 #	You may obtain a copy of the License at
 #
@@ -17,15 +19,18 @@
 #	limitations under the License.
 #
 
-version: "3.7"
 
-services:
-  guix:
-    image: metacall/distributable:linux-guix
-    container_name: metacall_distributable_linux_guix
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        METACALL_GUIX_VERSION: "1.0.1"
-        METACALL_GUIX_ARCH: "x86_64"
+export GUIX_LOCPATH=~/.guix-profile/lib/locale/
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export GIT_SSL_CAINFO="${GUIX_PROFILE}/etc/ssl/certs/ca-certificates.crt${GIT_SSL_CAINFO:+:}$GIT_SSL_CAINFO"
+export SSL_CERT_DIR="${GUIX_PROFILE}/etc/ssl/certs${SSL_CERT_DIR:+:}$SSL_CERT_DIR"
+
+guix package -i glibc-utf8-locales
+guix package -i glibc-locales
+guix package -A locale
+guix package -i glibc-locales@2.23
+guix package -i nss-certs
+guix download https://github.com/metacall/core/
+#guix package --install-from-file=/metacall.scm

@@ -37,14 +37,9 @@ help:
 
 # Build all images
 build:
-#	Build linux
-	@cd linux && $(MAKE) -f Makefile
-
-#	Build windows
-	@cd windows && $(MAKE) -f Makefile
-
-#	Build macos
-	@cd macos && $(MAKE) -f Makefile
+	@docker rm metacall_distributable || true
+	@docker build -t metacall/distributable .
+	@docker run --privileged --name metacall_distributable metacall/distributable
 
 # Empty target do nothing
 %:
