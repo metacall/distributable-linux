@@ -17,31 +17,26 @@
 ;	limitations under the License.
 ;
 
-(define-module (gnu packages metacall)
-  #:use-module (guix packages)
-  #:use-module (guix git-download)
-  #:use-module (guix utils)
-  #:use-module (guix build-system cmake)
-  #:use-module ((guix licenses) #:select (asl2.0))
-  #:use-module (gnu packages))
+(use-modules (guix packages)
+       (guix download)
+       (guix build-system gnu)
+       (guix licenses))
 
-; deps, core, cli
-
-(define-public metacall
-  (package
-    (name "core")
-    (version "0.1.12")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                   (url (string-append "https://github.com/metacall/core/"))
-                   (commit (string-append "v" version))))))
-              (file-name (git-file-name name version))
-              (sha256
-                (base32
-                "0h32z15sa8sbq276j0iib0n707m8bs4p5ji9z2ah411446paad9q"))
-    (build-system cmake-build-system)
-    (synopsis "MetaCall Core.")
-    (description "Library for calling functions between programming languages.")
-    (home-page "https://metacall.io/")
-    (license asl2.0)))
+(package
+  (name "my-hello")
+  (version "2.10")
+  (source (origin
+      (method url-fetch)
+      (uri (string-append "mirror://gnu/hello/hello-" version
+        ".tar.gz"))
+      (sha256
+       (base32
+        "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
+  (build-system gnu-build-system)
+  (synopsis "Hello, Guix world: An example custom Guix package")
+  (description
+   "GNU Hello prints the message \"Hello, world!\" and then exits.  It
+serves as an example of standard GNU coding practices.  As such, it supports
+command-line arguments, multiple languages, and so on.")
+  (home-page "https://www.gnu.org/software/hello/")
+  (license gpl3+))

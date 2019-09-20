@@ -19,5 +19,5 @@
 #	limitations under the License.
 #
 
-guix download https://github.com/metacall/core
-#guix package --install-from-file=/metacall.scm
+#guix download https://github.com/metacall/core
+guix package --install-from-file=/metacall.scm
