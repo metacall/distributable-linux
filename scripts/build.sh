@@ -19,22 +19,5 @@
 #	limitations under the License.
 #
 
-
-export GUIX_LOCPATH="~/.guix-profile/lib/locale/"
-# export LANG=en_US.UTF-8
-# export LANGUAGE=en_US.UTF-8
-# export LC_ALL=en_US.UTF-8
-
-# guix package -i glibc-utf8-locales
-# guix package -i glibc-locales
-# guix package -A locale
-# guix package -i glibc-locales@2.23
-
-guix package -i nss-certs
-
-export SSL_CERT_DIR="$HOME/.guix-profile/etc/ssl/certs${SSL_CERT_DIR:+:}$SSL_CERT_DIR"
-export GIT_SSL_FILE="$HOME/.guix-profile/etc/ssl/certs/ca-certificates.crt${GIT_SSL_CAINFO:+:}$GIT_SSL_CAINFO"
-export GIT_SSL_CAINFO="$GIT_SSL_FILE"
-
-guix download https://github.com/metacall/core/
+guix download https://github.com/metacall/core
 #guix package --install-from-file=/metacall.scm
