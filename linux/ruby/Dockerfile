@@ -288,7 +288,7 @@ RUN export METACALL_RUBY_VERSION_BRANCH=$(printf '%s' "${METACALL_RUBY_VERSION}"
 		--with-openssl-dir=${METACALL_PATH}/ruby \
 		--without-x11 \
 		--with-out-ext=win32,win32ole,tk,tk/* \
-		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat" \
+		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong" \
 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
 	&& make -j$(nproc) \
 	&& make update-gems \
