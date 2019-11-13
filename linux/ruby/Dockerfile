@@ -38,7 +38,7 @@ ENV LDFLAGS=" \
 		-L${METACALL_PATH}/libc/lib \
 		-L${METACALL_PATH}/ruby/lib \
 		-Wl,-rpath=${METACALL_PATH}/libc/lib \
-		-Wl,-rpath=${METACALL_PATH}/python/lib \
+		-Wl,-rpath=${METACALL_PATH}/ruby/lib \
 		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld.so"
 
 # Create output path
@@ -219,6 +219,42 @@ RUN git clone -j8 --recursive --single-branch --branch ${METACALL_LIBYAML_VERSIO
 	&& cd .. \
 	&& rm -rf libyaml
 
+# Install libtcl
+FROM builder AS builder_libtcl
+
+COPY --from=builder_zlib ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
+
+ARG METACALL_LIBTCL_VERSION
+
+RUN export METACALL_LIBTCL_VERSION_BRANCH=$(printf '%s' "${METACALL_LIBTCL_VERSION}" | tr '.' '-') \
+	&& git clone -j8 --single-branch --branch core-${METACALL_LIBTCL_VERSION_BRANCH} https://github.com/tcltk/tcl.git tcl \
+	&& cd tcl/unix \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/ruby \
+		--exec-prefix=${METACALL_PATH}/ruby \
+		--enable-shared \
+		--enable-threads \
+	&& make -j $(nproc) \
+	&& sed -i \
+		-e "s@^\(TCL_SRC_DIR='\).*@\1${METACALL_PATH}/ruby/include'@" \
+		-e "/TCL_B/s@='\(-L\)\?.*unix@='\1${METACALL_PATH}/ruby/lib@" \
+		-e "/SEARCH/s/=.*/=''/" \
+		tclConfig.sh \
+	&& make install \
+	&& make install-private-headers \
+	&& ln -rs ${METACALL_PATH}/ruby/bin/tclsh ${METACALL_PATH}/ruby/bin/$(expr substr "${METACALL_LIBTCL_VERSION}" 1 3) \
+	&& cd ../.. \
+	&& rm -rf tcl
+
+# Install libtk
+FROM builder AS builder_libtk
+
+COPY --from=builder_libtcl ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
+
+ARG METACALL_LIBTK_VERSION
+
+# TODO
+
 FROM builder AS builder_ruby
 
 # Copy all dependencies
@@ -231,11 +267,13 @@ COPY --from=builder_libreadline ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 COPY --from=builder_libgmp ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 COPY --from=builder_libtinfo ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 COPY --from=builder_libyaml ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
+COPY --from=builder_libtk ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 
 # Build Ruby
 ARG METACALL_RUBY_VERSION
 
-# TODO: Remove --without-gmp --without-x11 and --with-out-ext=gmp,tk,tk/* and add gmp/x11/tk dependencies
+# Build CRuby
+# TODO: Remove --without-x11 and --with-out-ext=tk,tk/* and add x11/tk dependencies
 RUN apt-get update \
 	&& apt-get install ruby -y --no-install-recommends \
 	&& git clone -j8 --single-branch --branch v${METACALL_RUBY_VERSION} https://github.com/ruby/ruby.git ruby \
@@ -244,12 +282,11 @@ RUN apt-get update \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/ruby \
 		--enable-shared \
-		--without-gmp \
 		--disable-install-doc \
 		--with-readline-dir=${METACALL_PATH}/ruby \
 		--with-openssl-dir=${METACALL_PATH}/ruby \
 		--without-x11 \
-		--with-out-ext=win32,win32ole,gmp,tk,tk/* \
+		--with-out-ext=win32,win32ole,tk,tk/* \
 		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
 	&& make -j$(nproc) \

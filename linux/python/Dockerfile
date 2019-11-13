@@ -310,7 +310,9 @@ COPY --from=builder_libtk ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libuuid ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libreadline ${METACALL_PATH}/python ${METACALL_PATH}/python
 
-# Build CPython (TODO: --enable-optimizations)
+# Build CPython
+# TODO: Add --enable-optimizations and --with-lto
+# TODO: Remove --without-x11 and --with-out-ext=tk,tk/* and add x11/tk dependencies
 ARG METACALL_PYTHON_VERSION
 
 RUN git clone -j8 --single-branch --branch v${METACALL_PYTHON_VERSION} https://github.com/python/cpython.git \
