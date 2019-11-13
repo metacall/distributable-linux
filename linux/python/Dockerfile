@@ -469,7 +469,7 @@ RUN git clone -j8 --single-branch --branch v${METACALL_PYTHON_VERSION} https://g
 		--with-lto \
 		--enable-shared \
 		--with-system-libmpdec \
-		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
+		CFLAGS="${CFLAGS} -DHAVE_MEMMOVE=1 -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
 		LDFLAGS="-Wl,-z,relro ${LDFLAGS} -lm" \
 	&& make -j$(nproc) \
 	&& make install \
