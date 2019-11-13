@@ -319,11 +319,36 @@ RUN apt-get update \
 	&& cd .. \
 	&& rm -rf gmp-${METACALL_LIBGMP_VERSION}
 
+# Install libmpfr
+FROM builder AS builder_libmpfr
+
+ARG METACALL_LIBMPFR_VERSION
+
+# TODO: Move this to base image
+RUN curl https://www.vinc17.net/key.asc --output mpfr-keyring.asc \
+	&& gpg --quiet --import mpfr-keyring.asc \
+	&& rm mpfr-keyring.asc
+
+RUN curl https://www.mpfr.org/mpfr-current/mpfr-${METACALL_LIBMPFR_VERSION}.tar.gz --output mpfr.tar.gz \
+	&& curl https://www.mpfr.org/mpfr-current/mpfr-${METACALL_LIBMPFR_VERSION}.tar.asc --output mpfr.tar.gz \
+	&& gpg --verify mpfr.tar.gz.asc mpfr.tar.gz \
+	&& tar -xzf mpfr.tar.gz \
+	&& cd mpfr-${METACALL_LIBMPFR_VERSION} \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--disable-static \
+		--enable-thread-safe \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf mpfr-${METACALL_LIBMPFR_VERSION}
+
 # Install libgcc
 FROM builder AS builder_libgcc
 
 COPY --from=builder_zlib ${METACALL_PATH}/python ${METACALL_PATH}/python
 # COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
+# COPY --from=builder_libmpfr ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 ARG METACALL_LIBGCC_VERSION
 
@@ -335,8 +360,9 @@ RUN curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACA
 #	&& tar -xzf gcc.tar.gz \
 #	&& cd gcc-${METACALL_LIBGCC_VERSION} \
 
-# TODO: Delete this line
+# TODO: Delete these lines
 COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libmpfr ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 RUN cd gcc-${METACALL_LIBGCC_VERSION} \
 	&& case $(uname -m) in \
