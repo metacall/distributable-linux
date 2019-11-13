@@ -295,10 +295,35 @@ RUN curl https://ftp.gnu.org/gnu/readline/readline-${METACALL_LIBREADLINE_VERSIO
 	&& cd .. \
 	&& rm -rf readline-${METACALL_LIBREADLINE_VERSION}
 
+# Install libgmp
+FROM builder AS builder_libgmp
+
+ARG METACALL_LIBGMP_VERSION
+
+RUN apt-get update \
+	&& apt-get install xz-utils -y --no-install-recommends \
+	&& curl https://gmplib.org/download/gmp/gmp-${METACALL_LIBGMP_VERSION}.tar.xz --output gmp.tar.xz \
+	&& curl https://gmplib.org/download/gmp/gmp-${METACALL_LIBGMP_VERSION}.tar.xz.sig --output gmp.tar.xz.sig \
+	&& gpg --verify gmp.tar.xz.sig gmp.tar.xz \
+	&& tar -xf gmp.tar.xz \
+	&& cd gmp-${METACALL_LIBGMP_VERSION} \
+	&& cp configfsf.guess config.guess \
+	&& cp configfsf.sub config.sub \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/ruby \
+		--disable-static \
+		--enable-shared \
+		--disable-cxx \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf gmp-${METACALL_LIBGMP_VERSION}
+
 # Install libgcc
 FROM builder AS builder_libgcc
 
 COPY --from=builder_zlib ${METACALL_PATH}/python ${METACALL_PATH}/python
+# COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 ARG METACALL_LIBGCC_VERSION
 
@@ -309,6 +334,9 @@ RUN curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACA
 
 #	&& tar -xzf gcc.tar.gz \
 #	&& cd gcc-${METACALL_LIBGCC_VERSION} \
+
+# TODO: Delete this line
+COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 RUN cd gcc-${METACALL_LIBGCC_VERSION} \
 	&& case $(uname -m) in \
