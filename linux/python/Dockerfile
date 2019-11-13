@@ -305,21 +305,26 @@ ARG METACALL_LIBGCC_VERSION
 RUN curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACALL_LIBGCC_VERSION}.tar.gz --output gcc.tar.gz \
 	&& curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACALL_LIBGCC_VERSION}.tar.gz.sig --output gcc.tar.gz.sig \
 	&& gpg --verify gcc.tar.gz.sig gcc.tar.gz \
-	&& tar -xzf gcc.tar.gz \
-	&& cd gcc-${METACALL_LIBGCC_VERSION} \
+	&& tar -xzf gcc.tar.gz
+
+#	&& tar -xzf gcc.tar.gz \
+#	&& cd gcc-${METACALL_LIBGCC_VERSION} \
+
+RUN cd gcc-${METACALL_LIBGCC_VERSION} \
 	&& case $(uname -m) in \
-			x86_64)
-				sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64
-			;;
+			x86_64) \
+				sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64 \
+			;; \
 		esac \
 	&& mkdir build \
 	&& cd build \
 	&& export SED=sed \
-	&& ./configure \
+	&& ../configure \
 		--prefix=${METACALL_PATH}/python \
 		--enable-languages=c,c++ \
 		--disable-multilib \
 		--disable-bootstrap \
+		--with-gmp=${METACALL_PATH}/python \
 		--with-system-zlib \
 	&& make -j $(nproc) all-target-libgcc \
 	&& make install-target-libgcc \
@@ -327,9 +332,6 @@ RUN curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACA
 	&& rm -rf gcc.tar.gz gcc.tar.gz.sig gcc-${METACALL_LIBGCC_VERSION}
 
 RUN ls -la ${METACALL_PATH}/python/lib \
-	&& echo "----------------------------------------" \
-	&& echo "----------------------------------------" \
-	&& echo "----------------------------------------" \
 	&& echo "----------------------------------------"
 
 FROM builder AS builder_python
