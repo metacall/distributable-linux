@@ -350,6 +350,8 @@ FROM builder AS builder_libmpc
 
 ARG METACALL_LIBMPC_VERSION
 
+COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
+
 RUN curl https://ftp.gnu.org/gnu/mpc/mpc-${METACALL_LIBMPC_VERSION}.tar.gz --output mpc.tar.gz \
 	&& curl https://ftp.gnu.org/gnu/mpc/mpc-${METACALL_LIBMPC_VERSION}.tar.gz.sig --output mpc.tar.gz.sig \
 	&& gpg --verify mpc.tar.gz.sig mpc.tar.gz \
