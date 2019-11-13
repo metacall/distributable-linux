@@ -345,11 +345,30 @@ RUN curl https://www.mpfr.org/mpfr-current/mpfr-${METACALL_LIBMPFR_VERSION}.tar.
 	&& cd .. \
 	&& rm -rf mpfr-${METACALL_LIBMPFR_VERSION}
 
+# Install libmpc
+FROM builder AS builder_libmpc
+
+ARG METACALL_LIBMPC_VERSION
+
+RUN curl https://ftp.gnu.org/gnu/mpc/mpc-${METACALL_LIBMPC_VERSION}.tar.gz --output mpc.tar.gz \
+	&& curl https://ftp.gnu.org/gnu/mpc/mpc-${METACALL_LIBMPC_VERSION}.tar.gz.sig --output mpc.tar.gz.sig \
+	&& gpg --verify mpc.tar.gz.sig mpc.tar.gz \
+	&& tar -xzf mpc.tar.gz \
+	&& cd mpc-${METACALL_LIBMPC_VERSION} \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+		--disable-static \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf mpc-${METACALL_LIBMPC_VERSION}
+
 # Install libgcc
 FROM builder AS builder_libgcc
 
 COPY --from=builder_zlib ${METACALL_PATH}/python ${METACALL_PATH}/python
 # COPY --from=builder_libmpfr ${METACALL_PATH}/python ${METACALL_PATH}/python
+# COPY --from=builder_libmpc ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 ARG METACALL_LIBGCC_VERSION
 
@@ -360,6 +379,10 @@ RUN curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACA
 
 #	&& tar -xzf gcc.tar.gz \
 #	&& cd gcc-${METACALL_LIBGCC_VERSION} \
+
+# TODO: Delete these lines
+COPY --from=builder_libmpfr ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libmpc ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 RUN cd gcc-${METACALL_LIBGCC_VERSION} \
 	&& case $(uname -m) in \
