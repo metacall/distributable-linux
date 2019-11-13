@@ -322,14 +322,14 @@ RUN apt-get update \
 # Install libmpfr
 FROM builder AS builder_libmpfr
 
+COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
+
 ARG METACALL_LIBMPFR_VERSION
 
 # TODO: Move this to base image
 RUN curl https://www.vinc17.net/key.asc --output mpfr-keyring.asc \
 	&& gpg --quiet --import mpfr-keyring.asc \
 	&& rm mpfr-keyring.asc
-
-COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 RUN curl https://www.mpfr.org/mpfr-current/mpfr-${METACALL_LIBMPFR_VERSION}.tar.gz --output mpfr.tar.gz \
 	&& curl https://www.mpfr.org/mpfr-current/mpfr-${METACALL_LIBMPFR_VERSION}.tar.gz.asc --output mpfr.tar.gz.asc \
@@ -348,9 +348,9 @@ RUN curl https://www.mpfr.org/mpfr-current/mpfr-${METACALL_LIBMPFR_VERSION}.tar.
 # Install libmpc
 FROM builder AS builder_libmpc
 
-ARG METACALL_LIBMPC_VERSION
+COPY --from=builder_libmpfr ${METACALL_PATH}/python ${METACALL_PATH}/python
 
-COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
+ARG METACALL_LIBMPC_VERSION
 
 RUN curl https://ftp.gnu.org/gnu/mpc/mpc-${METACALL_LIBMPC_VERSION}.tar.gz --output mpc.tar.gz \
 	&& curl https://ftp.gnu.org/gnu/mpc/mpc-${METACALL_LIBMPC_VERSION}.tar.gz.sig --output mpc.tar.gz.sig \
@@ -369,7 +369,6 @@ RUN curl https://ftp.gnu.org/gnu/mpc/mpc-${METACALL_LIBMPC_VERSION}.tar.gz --out
 FROM builder AS builder_libgcc
 
 COPY --from=builder_zlib ${METACALL_PATH}/python ${METACALL_PATH}/python
-# COPY --from=builder_libmpfr ${METACALL_PATH}/python ${METACALL_PATH}/python
 # COPY --from=builder_libmpc ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 ARG METACALL_LIBGCC_VERSION
@@ -382,8 +381,7 @@ RUN curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACA
 #	&& tar -xzf gcc.tar.gz \
 #	&& cd gcc-${METACALL_LIBGCC_VERSION} \
 
-# TODO: Delete these lines
-COPY --from=builder_libmpfr ${METACALL_PATH}/python ${METACALL_PATH}/python
+# TODO: Delete this line
 COPY --from=builder_libmpc ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 RUN cd gcc-${METACALL_LIBGCC_VERSION} \
