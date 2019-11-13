@@ -321,7 +321,7 @@ RUN git clone -j8 --single-branch --branch v${METACALL_PYTHON_VERSION} https://g
 		--prefix=${METACALL_PATH}/python \
 		--with-lto \
 		--enable-shared \
-		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong" \
+		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wno-error" \
 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
 	&& make -j$(nproc) \
 	&& make install
