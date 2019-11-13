@@ -428,14 +428,14 @@ FROM builder AS builder_libexpat
 ARG METACALL_LIBEXPAT_VERSION
 
 RUN export METACALL_LIBEXPAT_VERSION_BRANCH=$(printf '%s' "${METACALL_LIBEXPAT_VERSION}" | tr '.' '_') \
-	&& git clone -j8 --single-branch --branch R_${METACALL_LIBEXPAT_VERSION} https://github.com/libexpat/libexpat.git \
-	&& cd libexpat \
+	&& git clone -j8 --single-branch --branch R_${METACALL_LIBEXPAT_VERSION_BRANCH} https://github.com/libexpat/libexpat.git \
+	&& cd libexpat/expat \
 	&& ./buildconf.sh \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
 	&& make -j$(nproc) \
 	&& make install \
-	&& cd .. \
+	&& cd ../.. \
 	&& rm -rf libexpat
 
 FROM builder AS builder_python
