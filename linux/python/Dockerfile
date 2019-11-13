@@ -369,22 +369,15 @@ RUN curl https://ftp.gnu.org/gnu/mpc/mpc-${METACALL_LIBMPC_VERSION}.tar.gz --out
 FROM builder AS builder_libgcc
 
 COPY --from=builder_zlib ${METACALL_PATH}/python ${METACALL_PATH}/python
-# COPY --from=builder_libmpc ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libmpc ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 ARG METACALL_LIBGCC_VERSION
 
 RUN curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACALL_LIBGCC_VERSION}.tar.gz --output gcc.tar.gz \
 	&& curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACALL_LIBGCC_VERSION}.tar.gz.sig --output gcc.tar.gz.sig \
 	&& gpg --verify gcc.tar.gz.sig gcc.tar.gz \
-	&& tar -xzf gcc.tar.gz
-
-#	&& tar -xzf gcc.tar.gz \
-#	&& cd gcc-${METACALL_LIBGCC_VERSION} \
-
-# TODO: Delete this line
-COPY --from=builder_libmpc ${METACALL_PATH}/python ${METACALL_PATH}/python
-
-RUN cd gcc-${METACALL_LIBGCC_VERSION} \
+	&& tar -xzf gcc.tar.gz \
+	&& cd gcc-${METACALL_LIBGCC_VERSION} \
 	&& case $(uname -m) in \
 			x86_64) \
 				sed -e '/m64=/s/lib64/lib/' -i.orig gcc/config/i386/t-linux64 \
@@ -406,10 +399,6 @@ RUN cd gcc-${METACALL_LIBGCC_VERSION} \
 	&& cd .. \
 	&& rm -rf gcc.tar.gz gcc.tar.gz.sig gcc-${METACALL_LIBGCC_VERSION}
 
-RUN ls -la ${METACALL_PATH}/python/lib \
-	&& echo "-------------------------------------------------" \
-	&& sleep 10
-
 FROM builder AS builder_python
 
 # Copy all dependencies
@@ -424,9 +413,10 @@ COPY --from=builder_libsqlite3 ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libtk ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libuuid ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libreadline ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libgcc ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 # Build CPython
-# TODO: Add --enable-optimizations and --with-lto
+# TODO: Add --enable-optimizations
 # TODO: Remove --without-x11 and --with-out-ext=tk,tk/* and add x11/tk dependencies
 ARG METACALL_PYTHON_VERSION
 
