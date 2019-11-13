@@ -422,6 +422,22 @@ RUN curl https://www.bytereef.org/software/mpdecimal/releases/mpdecimal-${METACA
 	&& cd .. \
 	&& rm -rf mpdecimal.tar.gz mpdecimal-${METACALL_LIBMPDEC_VERSION}
 
+# Install libexpat
+FROM builder AS builder_libexpat
+
+ARG METACALL_LIBEXPAT_VERSION
+
+RUN export METACALL_LIBEXPAT_VERSION_BRANCH=$(printf '%s' "${METACALL_LIBEXPAT_VERSION}" | tr '.' '_') \
+	&& git clone -j8 --single-branch --branch R_${METACALL_LIBEXPAT_VERSION} https://github.com/libexpat/libexpat.git \
+	&& cd libexpat \
+	&& ./buildconf.sh \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+	&& make -j$(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf libexpat
+
 FROM builder AS builder_python
 
 # Copy all dependencies
@@ -438,6 +454,7 @@ COPY --from=builder_libuuid ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libreadline ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libgcc ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libmpdec ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libexpat ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 # Build CPython
 # TODO: Add --enable-optimizations
@@ -454,7 +471,9 @@ RUN git clone -j8 --single-branch --branch v${METACALL_PYTHON_VERSION} https://g
 		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
 	&& make -j$(nproc) \
-	&& make install
+	&& make install \
+	&& cd .. \
+	&& rm -rf cpython
 
 FROM scratch AS python
 
