@@ -329,8 +329,10 @@ RUN curl https://www.vinc17.net/key.asc --output mpfr-keyring.asc \
 	&& gpg --quiet --import mpfr-keyring.asc \
 	&& rm mpfr-keyring.asc
 
+COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
+
 RUN curl https://www.mpfr.org/mpfr-current/mpfr-${METACALL_LIBMPFR_VERSION}.tar.gz --output mpfr.tar.gz \
-	&& curl https://www.mpfr.org/mpfr-current/mpfr-${METACALL_LIBMPFR_VERSION}.tar.asc --output mpfr.tar.gz \
+	&& curl https://www.mpfr.org/mpfr-current/mpfr-${METACALL_LIBMPFR_VERSION}.tar.gz.asc --output mpfr.tar.gz.asc \
 	&& gpg --verify mpfr.tar.gz.asc mpfr.tar.gz \
 	&& tar -xzf mpfr.tar.gz \
 	&& cd mpfr-${METACALL_LIBMPFR_VERSION} \
@@ -347,7 +349,6 @@ RUN curl https://www.mpfr.org/mpfr-current/mpfr-${METACALL_LIBMPFR_VERSION}.tar.
 FROM builder AS builder_libgcc
 
 COPY --from=builder_zlib ${METACALL_PATH}/python ${METACALL_PATH}/python
-# COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
 # COPY --from=builder_libmpfr ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 ARG METACALL_LIBGCC_VERSION
@@ -359,10 +360,6 @@ RUN curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACA
 
 #	&& tar -xzf gcc.tar.gz \
 #	&& cd gcc-${METACALL_LIBGCC_VERSION} \
-
-# TODO: Delete these lines
-COPY --from=builder_libgmp ${METACALL_PATH}/python ${METACALL_PATH}/python
-COPY --from=builder_libmpfr ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 RUN cd gcc-${METACALL_LIBGCC_VERSION} \
 	&& case $(uname -m) in \
@@ -378,8 +375,8 @@ RUN cd gcc-${METACALL_LIBGCC_VERSION} \
 		--enable-languages=c,c++ \
 		--disable-multilib \
 		--disable-bootstrap \
-		--with-gmp-include=${METACALL_PATH}/python/include \
-		--with-gmp-lib=${METACALL_PATH}/python/lib \
+		--with-gmp=${METACALL_PATH}/python \
+		--with-mpfr=${METACALL_PATH}/python \
 		--with-system-zlib \
 	&& make -j $(nproc) all-target-libgcc \
 	&& make install-target-libgcc \
