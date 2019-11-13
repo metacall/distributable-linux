@@ -399,6 +399,27 @@ RUN curl https://ftp.gnu.org/gnu/gcc/gcc-${METACALL_LIBGCC_VERSION}/gcc-${METACA
 	&& cd .. \
 	&& rm -rf gcc.tar.gz gcc.tar.gz.sig gcc-${METACALL_LIBGCC_VERSION}
 
+# TODO: Review rpath and ldpath are not set correctly in output library libgcc_s.so.1
+#	They point to the system libc and ld instead of our own versions in ${METACALL_PATH}/python/lib
+RUN ls -la ${METACALL_PATH}/python/lib/libgcc_s.so.1 \
+	&& ldd ${METACALL_PATH}/python/lib/libgcc_s.so.1
+
+# Install libmpdec
+FROM builder AS builder_libmpdec
+
+ARG METACALL_LIBMPDEC_VERSION
+
+RUN curl https://www.bytereef.org/software/mpdecimal/releases/mpdecimal-${METACALL_LIBMPDEC_VERSION}.tar.gz --output mpdecimal.tar.gz \
+	&& echo "83c628b90f009470981cf084c5418329c88b19835d8af3691b930afccb7d79c7  mpdecimal.tar.gz" | sha256sum --check \
+	&& tar -xzf mpdecimal.tar.gz \
+	&& cd mpdecimal-${METACALL_LIBMPDEC_VERSION} \
+	&& ./configure \
+		--prefix=${METACALL_PATH}/python \
+	&& make -j $(nproc) \
+	&& make install \
+	&& cd .. \
+	&& rm -rf mpdecimal.tar.gz mpdecimal-${METACALL_LIBMPDEC_VERSION}
+
 FROM builder AS builder_python
 
 # Copy all dependencies
@@ -414,6 +435,7 @@ COPY --from=builder_libtk ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libuuid ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libreadline ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=builder_libgcc ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=builder_libmpdec ${METACALL_PATH}/python ${METACALL_PATH}/python
 
 # Build CPython
 # TODO: Add --enable-optimizations
