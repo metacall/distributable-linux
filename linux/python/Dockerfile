@@ -310,7 +310,7 @@ RUN apt-get update \
 	&& cp configfsf.guess config.guess \
 	&& cp configfsf.sub config.sub \
 	&& ./configure \
-		--prefix=${METACALL_PATH}/ruby \
+		--prefix=${METACALL_PATH}/python \
 		--disable-static \
 		--enable-shared \
 		--disable-cxx \
@@ -352,7 +352,8 @@ RUN cd gcc-${METACALL_LIBGCC_VERSION} \
 		--enable-languages=c,c++ \
 		--disable-multilib \
 		--disable-bootstrap \
-		--with-gmp=${METACALL_PATH}/python \
+		--with-gmp-include=${METACALL_PATH}/python/include \
+		--with-gmp-lib=${METACALL_PATH}/python/lib \
 		--with-system-zlib \
 	&& make -j $(nproc) all-target-libgcc \
 	&& make install-target-libgcc \
@@ -360,7 +361,8 @@ RUN cd gcc-${METACALL_LIBGCC_VERSION} \
 	&& rm -rf gcc.tar.gz gcc.tar.gz.sig gcc-${METACALL_LIBGCC_VERSION}
 
 RUN ls -la ${METACALL_PATH}/python/lib \
-	&& echo "----------------------------------------"
+	&& echo "-------------------------------------------------" \
+	&& sleep 10
 
 FROM builder AS builder_python
 
