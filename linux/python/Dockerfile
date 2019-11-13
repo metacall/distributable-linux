@@ -407,6 +407,8 @@ RUN ls -la ${METACALL_PATH}/python/lib/libgcc_s.so.1 \
 # Install libmpdec
 FROM builder AS builder_libmpdec
 
+COPY --from=builder_libgcc ${METACALL_PATH}/python ${METACALL_PATH}/python
+
 ARG METACALL_LIBMPDEC_VERSION
 
 RUN curl https://www.bytereef.org/software/mpdecimal/releases/mpdecimal-${METACALL_LIBMPDEC_VERSION}.tar.gz --output mpdecimal.tar.gz \
