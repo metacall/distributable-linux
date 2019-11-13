@@ -433,6 +433,7 @@ RUN export METACALL_LIBEXPAT_VERSION_BRANCH=$(printf '%s' "${METACALL_LIBEXPAT_V
 	&& ./buildconf.sh \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
+		--disable-static \
 	&& make -j$(nproc) \
 	&& make install \
 	&& cd ../.. \
