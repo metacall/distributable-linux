@@ -274,9 +274,10 @@ ARG METACALL_RUBY_VERSION
 
 # Build CRuby
 # TODO: Remove --without-x11 and --with-out-ext=tk,tk/* and add x11/tk dependencies
-RUN apt-get update \
+RUN export METACALL_RUBY_VERSION_BRANCH=$(printf '%s' "${METACALL_RUBY_VERSION}" | tr '.' '_') \
+	apt-get update \
 	&& apt-get install ruby -y --no-install-recommends \
-	&& git clone -j8 --single-branch --branch v${METACALL_RUBY_VERSION} https://github.com/ruby/ruby.git ruby \
+	&& git clone -j8 --single-branch --branch v${METACALL_RUBY_VERSION_BRANCH} https://github.com/ruby/ruby.git ruby \
 	&& cd ruby \
 	&& autoconf \
 	&& ./configure \
