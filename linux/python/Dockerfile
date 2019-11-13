@@ -450,7 +450,6 @@ RUN git clone -j8 --single-branch --branch v${METACALL_PYTHON_VERSION} https://g
 		--prefix=${METACALL_PATH}/python \
 		--with-lto \
 		--enable-shared \
-		--with-system-ffi \
 		--with-system-libmpdec \
 		CFLAGS="${CFLAGS} -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
 		LDFLAGS="-Wl,-z,relro ${LDFLAGS}" \
