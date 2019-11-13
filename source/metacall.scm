@@ -19,24 +19,54 @@
 
 (use-modules (guix packages)
        (guix download)
-       (guix build-system gnu)
+       (guix build-system cmake)
        (guix licenses))
 
 (package
-  (name "my-hello")
-  (version "2.10")
+  (name "metacall")
+  (version "0.1.12")
   (source (origin
       (method url-fetch)
-      (uri (string-append "mirror://gnu/hello/hello-" version
+      (uri (string-append "https://github.com/metacall/core/archive/v" version
         ".tar.gz"))
       (sha256
        (base32
-        "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
-  (build-system gnu-build-system)
-  (synopsis "Hello, Guix world: An example custom Guix package")
-  (description
-   "GNU Hello prints the message \"Hello, world!\" and then exits.  It
-serves as an example of standard GNU coding practices.  As such, it supports
-command-line arguments, multiple languages, and so on.")
-  (home-page "https://www.gnu.org/software/hello/")
-  (license gpl3+))
+        "1dr3ka4rvg63k4vlhn2f5idxfpl41wq5lxvwsr4rbb89ig75x09k"))))
+  (build-system cmake-build-system)
+    (home-page "https://metacall.io/")
+    (synopsis "Inter-language foreign function interface call library")
+    (description "METACALL is a library that allows calling functions,
+methods or procedures between programming languages.
+With METACALL you can transparently execute code from / to any
+programming language, for example, call Python code from JavaScript code")
+  (license asl2.0))
+
+
+; (use-modules (guix packages)
+;        (guix git-download)
+;        (guix build-system cmake)
+;        (guix licenses))
+
+; (define-public metacall
+;   (package
+;     (name "metacall")
+;     (version "0.1.12")
+;     (source (origin
+;               (method git-fetch)
+;               (uri (git-reference
+;                     (url "https://github.com/metacall/core.git")
+;                     (commit (string-append "v" version))))
+;               (file-name (git-file-name name version))
+;               (sha256
+;                (base32
+;                 "08mp4sxzbm65ws70ca2f4brdnymwmlalbi61w44g36fmi0jvx9v0"))))
+;     (build-system cmake-build-system)
+;     (inputs
+;      `(("zlib" ,zlib)))
+;     (home-page "https://metacall.io/")
+;     (synopsis "Inter-language foreign function interface call library")
+;     (description "METACALL is a library that allows calling functions,
+; methods or procedures between programming languages.
+; With METACALL you can transparently execute code from / to any
+; programming language, for example, call Python code from JavaScript code")
+;     (license asl2.0)))
