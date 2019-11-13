@@ -409,16 +409,16 @@ FROM builder AS builder_libmpdec
 
 ARG METACALL_LIBMPDEC_VERSION
 
-RUN curl https://www.bytereef.org/software/mpdecimal/releases/mpdecimal-${METACALL_LIBMPDEC_VERSION}.tar.gz --output mpdecimal.tar.gz \
-	&& echo "83c628b90f009470981cf084c5418329c88b19835d8af3691b930afccb7d79c7  mpdecimal.tar.gz" | sha256sum --check \
-	&& tar -xzf mpdecimal.tar.gz \
+RUN curl https://www.bytereef.org/software/mpdecimal/releases/mpdecimal-${METACALL_LIBMPDEC_VERSION}.tar.gz --output mpdecimal-${METACALL_LIBMPDEC_VERSION}.tar.gz \
+	&& echo "83c628b90f009470981cf084c5418329c88b19835d8af3691b930afccb7d79c7  mpdecimal-${METACALL_LIBMPDEC_VERSION}.tar.gz" | sha256sum --check \
+	&& tar -xzf mpdecimal-${METACALL_LIBMPDEC_VERSION}.tar.gz \
 	&& cd mpdecimal-${METACALL_LIBMPDEC_VERSION} \
 	&& ./configure \
 		--prefix=${METACALL_PATH}/python \
 	&& make -j $(nproc) \
 	&& make install \
 	&& cd .. \
-	&& rm -rf mpdecimal.tar.gz mpdecimal-${METACALL_LIBMPDEC_VERSION}
+	&& rm -rf mpdecimal-${METACALL_LIBMPDEC_VERSION}.tar.gz mpdecimal-${METACALL_LIBMPDEC_VERSION}
 
 FROM builder AS builder_python
 
