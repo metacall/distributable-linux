@@ -49,6 +49,10 @@ ENV LANG=en_US.utf8 \
 	DEBIAN_FRONTEND=noninteractive \
 	METACALL_PATH=${METACALL_PATH}
 
+FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
+FROM metacall/distributable:linux-python-${METACALL_ARCH} AS python
+FROM metacall/distributable:linux-ruby-${METACALL_ARCH} AS ruby
+
 FROM builder_base AS builder
 
 # Copy dependencies
