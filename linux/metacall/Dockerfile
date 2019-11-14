@@ -96,8 +96,9 @@ RUN git clone -j8 --single-branch --branch v${METACALL_VERSION} https://github.c
 		-DCMAKE_BUILD_TYPE=${METACALL_BUILD_TYPE} \
 		-DOPTION_BUILD_DIST_LIBS=ON \
 		-DOPTION_BUILD_EXAMPLES=ON \
+		-DOPTION_BUILD_TESTS=OFF `# TODO: Enable tests?` \
 		-DOPTION_BUILD_LOADERS=ON \
-		-DOPTION_BUILD_SCRIPTS=ON \
+		-DOPTION_BUILD_SCRIPTS=OFF `# TODO: Enable scripts?` \
 		-DOPTION_BUILD_LOADERS_MOCK=ON \
 		-DPYTHON_EXECUTABLE=${METACALL_PATH}/python/bin/python${METACALL_PYTHON_VERSION} \
 		-DOPTION_BUILD_LOADERS_PY=ON \
@@ -122,7 +123,7 @@ RUN git clone -j8 --single-branch --branch v${METACALL_VERSION} https://github.c
 		-DOPTION_BUILD_PORTS=ON \
 		-DOPTION_COVERAGE=OFF \
 	&& make -j$(nproc) \
-	&& ctest -VV -C ${METACALL_BUILD_TYPE} \
+	`# TODO: && ctest -VV -C ${METACALL_BUILD_TYPE}` \
 	&& make install \
 	&& cd ../.. \
 	&& rm -rf core
