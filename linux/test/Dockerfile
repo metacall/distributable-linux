@@ -20,7 +20,6 @@
 ARG METACALL_ARCH
 
 FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
-
 FROM metacall/distributable:linux-python-${METACALL_ARCH} AS python
 FROM metacall/distributable:linux-ruby-${METACALL_ARCH} AS ruby
 
@@ -36,6 +35,7 @@ ENV LD_LIBRARY_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib:${META
 
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python
+COPY --from=ruby ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 
 # Test binaries
 RUN cd ${METACALL_PATH}/python/bin \
