@@ -30,17 +30,17 @@ COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 
 # Set c flags
 ENV CFLAGS=" \
+	-fPIC \
 	-I${METACALL_PATH}/libc/include \
 	-I${METACALL_PATH}/ruby/include"
 
 # Set linker flags
 ENV LDFLAGS=" \
-		-fPIC \
-		-L${METACALL_PATH}/libc/lib \
-		-L${METACALL_PATH}/ruby/lib \
-		-Wl,-rpath=${METACALL_PATH}/libc/lib \
-		-Wl,-rpath=${METACALL_PATH}/ruby/lib \
-		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld.so"
+	-L${METACALL_PATH}/libc/lib \
+	-L${METACALL_PATH}/ruby/lib \
+	-Wl,-rpath=${METACALL_PATH}/libc/lib \
+	-Wl,-rpath=${METACALL_PATH}/ruby/lib \
+	-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld.so"
 
 # Create output path
 RUN mkdir -p ${METACALL_PATH}/ruby

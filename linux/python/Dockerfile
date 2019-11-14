@@ -30,17 +30,17 @@ COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 
 # Set c flags
 ENV CFLAGS=" \
+	-fPIC \
 	-I${METACALL_PATH}/libc/include \
 	-I${METACALL_PATH}/python/include"
 
 # Set linker flags
 ENV LDFLAGS=" \
-		-fPIC \
-		-L${METACALL_PATH}/libc/lib \
-		-L${METACALL_PATH}/python/lib \
-		-Wl,-rpath=${METACALL_PATH}/libc/lib \
-		-Wl,-rpath=${METACALL_PATH}/python/lib \
-		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld.so"
+	-L${METACALL_PATH}/libc/lib \
+	-L${METACALL_PATH}/python/lib \
+	-Wl,-rpath=${METACALL_PATH}/libc/lib \
+	-Wl,-rpath=${METACALL_PATH}/python/lib \
+	-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld.so"
 
 # Create output path
 RUN mkdir -p ${METACALL_PATH}/python
@@ -203,6 +203,7 @@ RUN export METACALL_LIBSQLITE3_VERSION_HEX=$(printf '%s' ${METACALL_LIBSQLITE3_V
 		--disable-static \
 		--enable-fts5 \
 		CFLAGS="-O2 \
+		-fPIC \
 		-DSQLITE_ENABLE_FTS3=1 \
 		-DSQLITE_ENABLE_FTS4=1 \
 		-DSQLITE_ENABLE_COLUMN_METADATA=1 \
@@ -256,7 +257,7 @@ FROM builder AS builder_libuuid
 
 ARG METACALL_UTIL_LINUX_VERSION
 
-RUN export CFLAGS="-I${METACALL_PATH}/libc/include" \
+RUN export CFLAGS="-fPIC -I${METACALL_PATH}/libc/include" \
 	&& git clone -j8 --single-branch --branch v${METACALL_UTIL_LINUX_VERSION} https://github.com/karelzak/util-linux.git util-linux \
 	&& cd util-linux \
 	&& mkdir -p /var/lib/hwclock \
