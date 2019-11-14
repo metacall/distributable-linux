@@ -30,6 +30,7 @@ COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 
 # Set c flags
 ENV CFLAGS=" \
+	-I${METACALL_PATH}/libc/include \
 	-I${METACALL_PATH}/ruby/include"
 
 # Set linker flags
