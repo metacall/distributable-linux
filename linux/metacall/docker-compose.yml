@@ -29,7 +29,7 @@ services:
       args:
         METACALL_ARCH: amd64
         METACALL_BUILD_TYPE: "Release"
-        METACALL_VERSION: "0.1.13"
+        METACALL_VERSION: "0.1.15"
         METACALL_PYTHON_VERSION: "3.6"
         METACALL_RUBY_VERSION: "2.5.0"
         METACALL_NETCORE_VERSION: "2.2.7"
