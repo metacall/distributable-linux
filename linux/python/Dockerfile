@@ -468,9 +468,11 @@ RUN git clone -j8 --single-branch --branch v${METACALL_PYTHON_VERSION} https://g
 		--prefix=${METACALL_PATH}/python \
 		--with-lto \
 		--enable-shared \
-		--with-system-libmpdec \
-		CFLAGS="${CFLAGS} -DHAVE_MEMMOVE=1 -D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
-		LDFLAGS="-Wl,-z,relro ${LDFLAGS} -lm" \
+		CFLAGS="${CFLAGS} \
+			-I${METACALL_PATH}/python/include/ncursesw \
+			-DHAVE_MEMMOVE=1 \
+			-D_FORTIFY_SOURCE=2 -O3 -fstack-protector-strong -Wformat -Werror=format-security" \
+		LDFLAGS="-Wl,-z,relro ${LDFLAGS} -lm -lexpat" \
 	&& make -j$(nproc) \
 	&& make install \
 	&& cd .. \
