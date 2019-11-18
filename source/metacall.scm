@@ -22,6 +22,9 @@
   #:use-module (guix download)
   #:use-module (guix build-system cmake)
   #:use-module (guix licenses)
+  #:use-module (gnu packages)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages web)
 )
 
 (define-public metacall-runtime
