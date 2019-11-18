@@ -18,28 +18,34 @@
 ;
 
 (use-modules (guix packages)
-       (guix download)
-       (guix build-system cmake)
-       (guix licenses))
+      (guix download)
+      (guix build-system cmake)
+      (guix licenses))
 
-(package
-  (name "metacall")
-  (version "0.1.12")
-  (source (origin
-      (method url-fetch)
-      (uri (string-append "https://github.com/metacall/core/archive/v" version
-        ".tar.gz"))
-      (sha256
-       (base32
-        "1dr3ka4rvg63k4vlhn2f5idxfpl41wq5lxvwsr4rbb89ig75x09k"))))
-  (build-system cmake-build-system)
+(define-public metacall
+  (package
+    (name "metacall")
+    (version "0.1.12")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
+        (sha256 (base32 "1dr3ka4rvg63k4vlhn2f5idxfpl41wq5lxvwsr4rbb89ig75x09k"))
+      )
+    )
+    (build-system cmake-build-system)
+    (inputs
+     `(("zlib" ,zlib))
+    )
     (home-page "https://metacall.io/")
     (synopsis "Inter-language foreign function interface call library")
     (description "METACALL is a library that allows calling functions,
-methods or procedures between programming languages.
-With METACALL you can transparently execute code from / to any
-programming language, for example, call Python code from JavaScript code")
-  (license asl2.0))
+  methods or procedures between programming languages.
+  With METACALL you can transparently execute code from / to any
+  programming language, for example, call Python code from JavaScript code")
+    (license asl2.0)
+  )
+)
 
 
 ; (use-modules (guix packages)
