@@ -42,19 +42,22 @@
         (list
           "-DCMAKE_BUILD_TYPE=Release"
           "-DOPTION_BUILD_DIST_LIBS=ON"
-          "-DOPTION_BUILD_EXAMPLES=ON"
-          ; TODO: Enable tests?
+          ; TODO: Enable examples
+          "-DOPTION_BUILD_EXAMPLES=OFF"
+          ; TODO: Enable tests
           "-DOPTION_BUILD_TESTS=OFF"
-          "-DOPTION_BUILD_LOADERS=TRUE"
+          "-DOPTION_BUILD_LOADERS=ON"
           "-DOPTION_BUILD_SCRIPTS=OFF"
           "-DOPTION_BUILD_LOADERS_MOCK=ON"
 
-          ; TODO: Remove this
+          ; TODO: Remove this and enable python and ruby loaders
           "-DOPTION_BUILD_LOADERS_PY=OFF"
           "-DOPTION_BUILD_SCRIPTS_PY=OFF"
           "-DOPTION_BUILD_LOADERS_RB=OFF"
           "-DOPTION_BUILD_SCRIPTS_RB=OFF"
 
+          ; TODO: Remove this
+          "-DOPTION_BUILD_SERIALS_RAPID_JSON=OFF"
 
           ; -DPYTHON_EXECUTABLE=${METACALL_PATH}/python/bin/python${METACALL_PYTHON_VERSION} \
           ; -DOPTION_BUILD_LOADERS_PY=ON \
