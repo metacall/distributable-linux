@@ -90,7 +90,6 @@
 
           ; Python Port (Swig) requires conversion between constant to non-constant char pointer
           "-DCMAKE_CXX_FLAGS=-fpermissive"
-          "-DCMAKE_C_FLAGS=-fpermissive"
         )
       )
     )
