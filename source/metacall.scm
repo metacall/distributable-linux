@@ -36,6 +36,51 @@
       )
     )
     (build-system cmake-build-system)
+    (arguments
+     '(
+        #:configure-flags
+        (list
+          "-DCMAKE_BUILD_TYPE=Release"
+          "-DOPTION_BUILD_DIST_LIBS=ON"
+          "-DOPTION_BUILD_EXAMPLES=ON"
+          ; TODO: Enable tests?
+          "-DOPTION_BUILD_TESTS=OFF"
+          "-DOPTION_BUILD_LOADERS=TRUE"
+          "-DOPTION_BUILD_SCRIPTS=OFF"
+          "-DOPTION_BUILD_LOADERS_MOCK=ON"
+
+          ; TODO: Remove this
+          "-DOPTION_BUILD_LOADERS_PY=OFF"
+          "-DOPTION_BUILD_SCRIPTS_PY=OFF"
+          "-DOPTION_BUILD_LOADERS_RB=OFF"
+          "-DOPTION_BUILD_SCRIPTS_RB=OFF"
+
+
+          ; -DPYTHON_EXECUTABLE=${METACALL_PATH}/python/bin/python${METACALL_PYTHON_VERSION} \
+          ; -DOPTION_BUILD_LOADERS_PY=ON \
+          ; -DOPTION_BUILD_SCRIPTS_PY=ON \
+          ; `# -DRUBY_EXECUTABLE=${METACALL_PATH}/ruby/bin/ruby` \
+          ; `# -DRUBY_INCLUDE_DIRS=${METACALL_PATH}/ruby/include/ruby-${METACALL_RUBY_VERSION}` \
+          ; `# -DRUBY_LIBRARY=${METACALL_PATH}/ruby/lib/libruby.so` \
+          ; `# -DRUBY_VERSION=${METACALL_RUBY_VERSION}` \
+          ; `# TODO: -DOPTION_BUILD_LOADERS_RB=ON` \
+          ; `# TODO: -DOPTION_BUILD_SCRIPTS_RB=ON` \
+          ; -DOPTION_BUILD_LOADERS_RB=OFF \
+          ; -DOPTION_BUILD_SCRIPTS_RB=OFF \
+          ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
+          "-DOPTION_BUILD_LOADERS_CS=OFF"
+          "-DOPTION_BUILD_SCRIPTS_CS=OFF"
+          "-DOPTION_BUILD_LOADERS_JS=OFF"
+          "-DOPTION_BUILD_SCRIPTS_JS=OFF"
+          "-DOPTION_BUILD_LOADERS_NODE=OFF"
+          "-DOPTION_BUILD_SCRIPTS_NODE=OFF"
+          "-DOPTION_BUILD_LOADERS_FILE=ON"
+          "-DOPTION_BUILD_SCRIPTS_FILE=ON"
+          "-DOPTION_BUILD_PORTS=ON"
+          "-DOPTION_COVERAGE=OFF"
+        )
+      )
+    )
     ; (inputs
     ;  `(("zlib" ,zlib))
     ; )
