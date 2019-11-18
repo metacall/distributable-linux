@@ -42,12 +42,18 @@
         #:tests? #f
         #:configure-flags
         (list
+          (string-append "-DCMAKE_INSTALL_LIBDIR="
+                        (assoc-ref %outputs "out")
+                        "/lib")
           "-DCMAKE_BUILD_TYPE=Release"
           "-DOPTION_BUILD_DIST_LIBS=ON"
           ; TODO: Enable examples
           "-DOPTION_BUILD_EXAMPLES=OFF"
           ; TODO: Enable tests
           "-DOPTION_BUILD_TESTS=OFF"
+          "-DOPTION_BUILD_SERIALS=ON"
+          "-DOPTION_BUILD_SERIALS_RAPID_JSON=ON"
+          "-DOPTION_BUILD_SERIALS_METACALL=ON"
           "-DOPTION_BUILD_LOADERS=ON"
           "-DOPTION_BUILD_SCRIPTS=OFF"
           "-DOPTION_BUILD_LOADERS_MOCK=ON"
@@ -57,9 +63,6 @@
           "-DOPTION_BUILD_SCRIPTS_PY=OFF"
           "-DOPTION_BUILD_LOADERS_RB=OFF"
           "-DOPTION_BUILD_SCRIPTS_RB=OFF"
-
-          ; TODO: Remove this
-          "-DOPTION_BUILD_SERIALS_RAPID_JSON=OFF"
 
           ; -DPYTHON_EXECUTABLE=${METACALL_PATH}/python/bin/python${METACALL_PYTHON_VERSION} \
           ; -DOPTION_BUILD_LOADERS_PY=ON \
@@ -86,9 +89,12 @@
         )
       )
     )
-    ; (inputs
-    ;  `(("zlib" ,zlib))
-    ; )
+    (inputs
+     `(
+        ("rapidjson" ,rapidjson)
+        ("python-3" ,python)
+      )
+    )
     (home-page "https://metacall.io/")
     (synopsis "Inter-language foreign function interface call library")
     (description "METACALL is a library that allows calling functions,
