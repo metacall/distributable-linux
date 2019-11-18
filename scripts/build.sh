@@ -19,4 +19,4 @@
 #	limitations under the License.
 #
 
-guix build metacall -L /metacall/scripts
+guix build metacall -L /metacall/source
