@@ -27,8 +27,8 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	vendor="MetaCall Inc." \
 	version="0.1"
 
-COPY source/metacall.scm scripts/build.sh /
+COPY / /metacall/
 
-RUN chmod +x /build.sh
+RUN chmod +x /metacall/scripts/build.sh
 
-CMD ["sh", "/build.sh"]
+CMD ["sh", "/metacall/scripts/build.sh"]

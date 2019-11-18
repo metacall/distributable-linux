@@ -16,14 +16,15 @@
 ;	See the License for the specific language governing permissions and
 ;	limitations under the License.
 ;
-(define-public metacall
-  (use-modules
-    (guix packages)
-    (guix download)
-    (guix build-system cmake)
-    (guix licenses)
-  )
 
+(define-module (metacall)
+  #:use-module (guix packages)
+  #:use-module (guix download)
+  #:use-module (guix build-system cmake)
+  #:use-module (guix licenses)
+)
+
+(define-public metacall-runtime
   (package
     (name "metacall")
     (version "0.1.12")
