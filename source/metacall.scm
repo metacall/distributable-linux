@@ -25,6 +25,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages python)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages swig)
 )
 
 (define-public metacall-runtime
@@ -45,9 +46,6 @@
         #:tests? #f
         #:configure-flags
         (list
-          (string-append "-DCMAKE_INSTALL_LIBDIR="
-                        (assoc-ref %outputs "out")
-                        "/lib")
           "-DCMAKE_BUILD_TYPE=Release"
           "-DOPTION_BUILD_DIST_LIBS=ON"
           ; TODO: Enable examples
@@ -96,6 +94,11 @@
      `(
         ("rapidjson" ,rapidjson)
         ("python-3" ,python)
+      )
+    )
+    (native-inputs
+     `(
+        ("swig" ,swig)
       )
     )
     (home-page "https://metacall.io/")
