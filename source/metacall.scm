@@ -38,6 +38,8 @@
     (build-system cmake-build-system)
     (arguments
      '(
+        ; TODO: Enable tests
+        #:tests? #f
         #:configure-flags
         (list
           "-DCMAKE_BUILD_TYPE=Release"
