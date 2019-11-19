@@ -21,9 +21,10 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system cmake)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages web)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages node)
@@ -62,6 +63,8 @@
           "-DOPTION_BUILD_LOADERS_MOCK=ON"
           "-DOPTION_BUILD_LOADERS_PY=ON"
           "-DOPTION_BUILD_SCRIPTS_PY=OFF" ; TODO: Enable when tests
+          "-DOPTION_BUILD_LOADERS_RB=ON"
+          "-DOPTION_BUILD_SCRIPTS_RB=OFF" ; TODO: Enable when tests
 
           ; `# -DRUBY_EXECUTABLE=${METACALL_PATH}/ruby/bin/ruby` \
           ; `# -DRUBY_INCLUDE_DIRS=${METACALL_PATH}/ruby/include/ruby-${METACALL_RUBY_VERSION}` \
@@ -74,8 +77,6 @@
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
 
           ; TODO: Remove this and enable loaders (and tests + scripts)
-          "-DOPTION_BUILD_LOADERS_RB=OFF"
-          "-DOPTION_BUILD_SCRIPTS_RB=OFF"
           "-DOPTION_BUILD_LOADERS_CS=OFF"
           "-DOPTION_BUILD_SCRIPTS_CS=OFF"
           "-DOPTION_BUILD_LOADERS_JS=OFF"
@@ -99,6 +100,7 @@
      `(
         ("rapidjson" ,rapidjson)
         ("python-3" ,python)
+        ("ruby" ,ruby)
       )
     )
     (native-inputs
@@ -112,6 +114,6 @@
   methods or procedures between programming languages.
   With METACALL you can transparently execute code from / to any
   programming language, for example, call Python code from JavaScript code")
-    (license asl2.0)
+    (license license:asl2.0)
   )
 )
