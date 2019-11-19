@@ -42,67 +42,56 @@
     )
     (build-system cmake-build-system)
     (arguments
-      (let ((python-version (version-major+minor (package-version python))))
-      `(
+      '(
+        ; TODO: Enable tests
+        #:tests? #f
+        #:configure-flags
+        (list
+          "-DCMAKE_BUILD_TYPE=Release"
+          "-DOPTION_BUILD_DIST_LIBS=ON"
+          ; TODO: Enable examples
+          "-DOPTION_BUILD_EXAMPLES=OFF"
           ; TODO: Enable tests
-          #:tests? #f
-          #:configure-flags
-          (list
-            "-DCMAKE_BUILD_TYPE=Release"
-            "-DOPTION_BUILD_DIST_LIBS=ON"
-            ; TODO: Enable examples
-            "-DOPTION_BUILD_EXAMPLES=OFF"
-            ; TODO: Enable tests
-            "-DOPTION_BUILD_TESTS=OFF"
-            "-DOPTION_BUILD_SERIALS=ON"
-            "-DOPTION_BUILD_SERIALS_RAPID_JSON=ON"
-            "-DOPTION_BUILD_SERIALS_METACALL=ON"
-            "-DOPTION_BUILD_LOADERS=ON"
-            ; TODO: Enable when tests
-            "-DOPTION_BUILD_SCRIPTS=OFF"
-            "-DOPTION_BUILD_LOADERS_MOCK=ON"
-            "-DOPTION_BUILD_LOADERS_PY=ON"
-            "-DOPTION_BUILD_SCRIPTS_PY=OFF" ; TODO: Enable when tests
-            (string-append "-DPYTHON_EXECUTABLE=" (assoc-ref %build-inputs "python") "/bin/python" ,python-version)
-            (string-append "-DPYTHON_LIBRARY=python" ,python-version "m")
-            (string-append "-DPYTHON_LIBPATH=" (assoc-ref %build-inputs "python") "/lib")
-            (string-append "-DPYTHON_INCLUDE_DIR=" (assoc-ref %build-inputs "python")
-                          "/include/python" ,python-version "m")
-            (string-append "-DPYTHON_VERSION=" ,python-version)
+          "-DOPTION_BUILD_TESTS=OFF"
+          "-DOPTION_BUILD_SERIALS=ON"
+          "-DOPTION_BUILD_SERIALS_RAPID_JSON=ON"
+          "-DOPTION_BUILD_SERIALS_METACALL=ON"
+          "-DOPTION_BUILD_LOADERS=ON"
+          ; TODO: Enable when tests
+          "-DOPTION_BUILD_SCRIPTS=OFF"
+          "-DOPTION_BUILD_LOADERS_MOCK=ON"
+          "-DOPTION_BUILD_LOADERS_PY=ON"
+          "-DOPTION_BUILD_SCRIPTS_PY=OFF" ; TODO: Enable when tests
 
-            ; -DPYTHON_EXECUTABLE=${METACALL_PATH}/python/bin/python${METACALL_PYTHON_VERSION} \
-            ; -DOPTION_BUILD_LOADERS_PY=ON \
-            ; -DOPTION_BUILD_SCRIPTS_PY=ON \
-            ; `# -DRUBY_EXECUTABLE=${METACALL_PATH}/ruby/bin/ruby` \
-            ; `# -DRUBY_INCLUDE_DIRS=${METACALL_PATH}/ruby/include/ruby-${METACALL_RUBY_VERSION}` \
-            ; `# -DRUBY_LIBRARY=${METACALL_PATH}/ruby/lib/libruby.so` \
-            ; `# -DRUBY_VERSION=${METACALL_RUBY_VERSION}` \
-            ; `# TODO: -DOPTION_BUILD_LOADERS_RB=ON` \
-            ; `# TODO: -DOPTION_BUILD_SCRIPTS_RB=ON` \
-            ; -DOPTION_BUILD_LOADERS_RB=OFF \
-            ; -DOPTION_BUILD_SCRIPTS_RB=OFF \
-            ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
+          ; `# -DRUBY_EXECUTABLE=${METACALL_PATH}/ruby/bin/ruby` \
+          ; `# -DRUBY_INCLUDE_DIRS=${METACALL_PATH}/ruby/include/ruby-${METACALL_RUBY_VERSION}` \
+          ; `# -DRUBY_LIBRARY=${METACALL_PATH}/ruby/lib/libruby.so` \
+          ; `# -DRUBY_VERSION=${METACALL_RUBY_VERSION}` \
+          ; `# TODO: -DOPTION_BUILD_LOADERS_RB=ON` \
+          ; `# TODO: -DOPTION_BUILD_SCRIPTS_RB=ON` \
+          ; -DOPTION_BUILD_LOADERS_RB=OFF \
+          ; -DOPTION_BUILD_SCRIPTS_RB=OFF \
+          ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
 
-            ; TODO: Remove this and enable loaders (and tests + scripts)
-            "-DOPTION_BUILD_LOADERS_RB=OFF"
-            "-DOPTION_BUILD_SCRIPTS_RB=OFF"
-            "-DOPTION_BUILD_LOADERS_CS=OFF"
-            "-DOPTION_BUILD_SCRIPTS_CS=OFF"
-            "-DOPTION_BUILD_LOADERS_JS=OFF"
-            "-DOPTION_BUILD_SCRIPTS_JS=OFF"
-            "-DOPTION_BUILD_LOADERS_NODE=OFF"
-            "-DOPTION_BUILD_SCRIPTS_NODE=OFF"
-            "-DOPTION_BUILD_LOADERS_FILE=ON"
-            "-DOPTION_BUILD_SCRIPTS_FILE=OFF"
-            "-DOPTION_BUILD_PORTS=ON"
-            "-DOPTION_BUILD_PORTS_NODE=ON"
-            ; TODO: Implement python port (allow to install metacall from pip on cmake build step)
-            "-DOPTION_BUILD_PORTS_PY=OFF"
-            "-DOPTION_COVERAGE=OFF"
+          ; TODO: Remove this and enable loaders (and tests + scripts)
+          "-DOPTION_BUILD_LOADERS_RB=OFF"
+          "-DOPTION_BUILD_SCRIPTS_RB=OFF"
+          "-DOPTION_BUILD_LOADERS_CS=OFF"
+          "-DOPTION_BUILD_SCRIPTS_CS=OFF"
+          "-DOPTION_BUILD_LOADERS_JS=OFF"
+          "-DOPTION_BUILD_SCRIPTS_JS=OFF"
+          "-DOPTION_BUILD_LOADERS_NODE=OFF"
+          "-DOPTION_BUILD_SCRIPTS_NODE=OFF"
+          "-DOPTION_BUILD_LOADERS_FILE=ON"
+          "-DOPTION_BUILD_SCRIPTS_FILE=OFF"
+          "-DOPTION_BUILD_PORTS=ON"
+          "-DOPTION_BUILD_PORTS_NODE=ON"
+          ; TODO: Implement python port (allow to install metacall from pip on cmake build step)
+          "-DOPTION_BUILD_PORTS_PY=OFF"
+          "-DOPTION_COVERAGE=OFF"
 
-            ; Python Port (Swig) requires conversion between constant to non-constant char pointer
-            "-DCMAKE_CXX_FLAGS=-fpermissive"
-          )
+          ; Python Port (Swig) requires conversion between constant to non-constant char pointer
+          "-DCMAKE_CXX_FLAGS=-fpermissive"
         )
       )
     )
