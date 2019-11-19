@@ -20,4 +20,4 @@
 #
 
 guix build metacall -L /metacall/source
-guix pack metacall
+guix pack -RR metacall -L /metacall/source
