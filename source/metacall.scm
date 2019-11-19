@@ -26,6 +26,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages web)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages node)
 )
 
 (define-public metacall-runtime
@@ -56,14 +57,17 @@
           "-DOPTION_BUILD_SERIALS_RAPID_JSON=ON"
           "-DOPTION_BUILD_SERIALS_METACALL=ON"
           "-DOPTION_BUILD_LOADERS=ON"
+          ; TODO: Enable when tests
           "-DOPTION_BUILD_SCRIPTS=OFF"
           "-DOPTION_BUILD_LOADERS_MOCK=ON"
-
-          ; TODO: Remove this and enable python and ruby loaders
-          "-DOPTION_BUILD_LOADERS_PY=OFF"
-          "-DOPTION_BUILD_SCRIPTS_PY=OFF"
-          "-DOPTION_BUILD_LOADERS_RB=OFF"
-          "-DOPTION_BUILD_SCRIPTS_RB=OFF"
+          "-DOPTION_BUILD_LOADERS_PY=ON"
+          "-DOPTION_BUILD_SCRIPTS_PY=OFF" ; TODO: Enable when tests
+          (string-append "-DPYTHON_EXECUTABLE=" (assoc-ref %build-inputs "python") "/bin/python" ,python-version)
+          (string-append "-DPYTHON_LIBRARY=python" ,python-version "m")
+          (string-append "-DPYTHON_LIBPATH=" (assoc-ref %build-inputs "python") "/lib")
+          (string-append "-DPYTHON_INCLUDE_DIR=" (assoc-ref %build-inputs "python")
+                        "/include/python" ,python-version "m")
+          (string-append "-DPYTHON_VERSION=" ,python-version)
 
           ; -DPYTHON_EXECUTABLE=${METACALL_PATH}/python/bin/python${METACALL_PYTHON_VERSION} \
           ; -DOPTION_BUILD_LOADERS_PY=ON \
@@ -77,6 +81,10 @@
           ; -DOPTION_BUILD_LOADERS_RB=OFF \
           ; -DOPTION_BUILD_SCRIPTS_RB=OFF \
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
+
+          ; TODO: Remove this and enable loaders (and tests + scripts)
+          "-DOPTION_BUILD_LOADERS_RB=OFF"
+          "-DOPTION_BUILD_SCRIPTS_RB=OFF"
           "-DOPTION_BUILD_LOADERS_CS=OFF"
           "-DOPTION_BUILD_SCRIPTS_CS=OFF"
           "-DOPTION_BUILD_LOADERS_JS=OFF"
@@ -84,8 +92,11 @@
           "-DOPTION_BUILD_LOADERS_NODE=OFF"
           "-DOPTION_BUILD_SCRIPTS_NODE=OFF"
           "-DOPTION_BUILD_LOADERS_FILE=ON"
-          "-DOPTION_BUILD_SCRIPTS_FILE=ON"
+          "-DOPTION_BUILD_SCRIPTS_FILE=OFF"
           "-DOPTION_BUILD_PORTS=ON"
+          "-DOPTION_BUILD_PORTS_NODE=ON"
+          ; TODO: Implement python port (allow to install metacall from pip on cmake build step)
+          "-DOPTION_BUILD_PORTS_PY=OFF"
           "-DOPTION_COVERAGE=OFF"
 
           ; Python Port (Swig) requires conversion between constant to non-constant char pointer
