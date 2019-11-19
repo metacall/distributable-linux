@@ -100,11 +100,12 @@
      `(
         ("rapidjson" ,rapidjson)
         ("python-3" ,python)
-        ("ruby" ,ruby)
+        ("ruby-2.3" ,ruby)
       )
     )
     (native-inputs
      `(
+        ("node" ,node)
         ("swig" ,swig)
       )
     )
