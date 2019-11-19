@@ -31,7 +31,7 @@
   #:use-module (gnu packages node)
 )
 
-(define-public metacall-runtime
+(define-public metacall
   (package
     (name "metacall")
     (version "0.1.12")
@@ -45,6 +45,21 @@
     (build-system cmake-build-system)
     (arguments
       '(
+        #:modules (
+          (guix build cmake-build-system)
+          ((guix build node-build-system) #:prefix node:)
+          (guix build json)
+          (guix build union)
+          (guix build utils)
+        )
+        #:imported-modules (
+          ,@%cmake-build-system-modules
+          (guix build node-build-system)
+        )
+        #:phases
+        (modify-phases %standard-phases
+          (add-before 'configure 'install
+            (assoc-ref node:%standard-phases 'install)))))
         ; TODO: Enable tests
         #:tests? #f
         #:configure-flags
@@ -87,8 +102,7 @@
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_SCRIPTS_FILE=OFF"
           "-DOPTION_BUILD_PORTS=ON"
-          ; Will be built separately
-          "-DOPTION_BUILD_PORTS_NODE=OFF"
+          "-DOPTION_BUILD_PORTS_NODE=ON"
           ; TODO: Implement python port (allow to install metacall from pip on cmake build step)
           "-DOPTION_BUILD_PORTS_PY=OFF"
           "-DOPTION_COVERAGE=OFF"
@@ -118,11 +132,5 @@
   With METACALL you can transparently execute code from / to any
   programming language, for example, call Python code from JavaScript code")
     (license license:asl2.0)
-  )
-)
-
-(define-public metacall-nodejs
-  (package (inherit metacall-runtime)
-    (build-system node-build-system)
   )
 )
