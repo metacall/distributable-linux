@@ -19,7 +19,11 @@
 
 (define-module (metacall)
   #:use-module (guix packages)
+  #:use-module (guix modules)
   #:use-module (guix download)
+  #:use-module (guix build json)
+  #:use-module (guix build union)
+  #:use-module (guix build-system)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system node)
   #:use-module ((guix licenses) #:prefix license:)
@@ -29,6 +33,7 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages node)
+  #:use-module (guix utils)
 )
 
 (define-public metacall
@@ -44,7 +49,7 @@
     )
     (build-system cmake-build-system)
     (arguments
-      '(
+      `(
         #:modules (
           (guix build cmake-build-system)
           ((guix build node-build-system) #:prefix node:)
@@ -52,14 +57,13 @@
           (guix build union)
           (guix build utils)
         )
-        #:imported-modules (
-          ,@%cmake-build-system-modules
+        #:imported-modules (,@%cmake-build-system-modules
           (guix build node-build-system)
         )
         #:phases
         (modify-phases %standard-phases
           (add-before 'configure 'install
-            (assoc-ref node:%standard-phases 'install)))))
+            (assoc-ref node:%standard-phases 'install)))
         ; TODO: Enable tests
         #:tests? #f
         #:configure-flags
