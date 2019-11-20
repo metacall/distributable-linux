@@ -39,7 +39,7 @@ help:
 build:
 	@docker rm metacall_distributable || true
 	@docker build -t metacall/distributable .
-	@docker run --privileged --name metacall_distributable metacall/distributable
+	@docker run -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable
 
 # Empty target do nothing
 %:

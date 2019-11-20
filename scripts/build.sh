@@ -19,5 +19,20 @@
 #	limitations under the License.
 #
 
+
+export GUILE_WARN_DEPRECATED='detailed'
+
+# Build
 guix build metacall -L /metacall/source
-guix pack -RR metacall -L /metacall/source
+
+# Test
+#guix package -i metacall -L /metacall/source
+
+# Lint
+#guix lint metacall
+
+# Pack
+guix pack -RR metacall -L /metacall/source | tee build.log
+
+# Copy
+cp `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack

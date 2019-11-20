@@ -50,20 +50,20 @@
     (build-system cmake-build-system)
     (arguments
       `(
-        #:modules (
-          (guix build cmake-build-system)
-          ((guix build node-build-system) #:prefix node:)
-          (guix build json)
-          (guix build union)
-          (guix build utils)
-        )
-        #:imported-modules (,@%cmake-build-system-modules
-          (guix build node-build-system)
-        )
-        #:phases
-        (modify-phases %standard-phases
-          (add-before 'configure 'install
-            (assoc-ref node:%standard-phases 'install)))
+        ;#:modules (
+        ;  (guix build cmake-build-system)
+        ;  ((guix build node-build-system) #:prefix node:)
+        ;  (guix build json)
+        ;  (guix build union)
+        ;  (guix build utils)
+        ;)
+        ;#:imported-modules (,@%cmake-build-system-modules
+        ;  (guix build node-build-system)
+        ;)
+        ;#:phases
+        ;(modify-phases %standard-phases
+        ;  (add-before 'configure 'install
+        ;    (assoc-ref node:%standard-phases 'install)))
         ; TODO: Enable tests
         #:tests? #f
         #:configure-flags
@@ -106,9 +106,11 @@
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_SCRIPTS_FILE=OFF"
           "-DOPTION_BUILD_PORTS=ON"
-          "-DOPTION_BUILD_PORTS_NODE=ON"
+          ;"-DOPTION_BUILD_PORTS_NODE=ON"
+          "-DOPTION_BUILD_PORTS_NODE=OFF"
           ; TODO: Implement python port (allow to install metacall from pip on cmake build step)
           "-DOPTION_BUILD_PORTS_PY=OFF"
+          "-DOPTION_BUILD_PORTS_RB=OFF"
           "-DOPTION_COVERAGE=OFF"
 
           ; Python Port (Swig) requires conversion between constant to non-constant char pointer

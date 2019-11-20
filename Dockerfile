@@ -29,6 +29,7 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 
 COPY / /metacall/
 
-RUN chmod +x /metacall/scripts/build.sh
+RUN chmod +x /metacall/scripts/build.sh \
+	&& mkdir -p /metacall/pack
 
 CMD ["sh", "/metacall/scripts/build.sh"]
