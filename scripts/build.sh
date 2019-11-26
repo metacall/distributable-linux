@@ -23,7 +23,7 @@
 export GUILE_WARN_DEPRECATED='detailed'
 
 # Build
-guix build metacall -L /metacall/source
+guix build node-addon-api metacall -L /metacall/source
 
 # Test
 #guix package -i metacall -L /metacall/source
@@ -32,7 +32,7 @@ guix build metacall -L /metacall/source
 #guix lint metacall
 
 # Pack
-guix pack -RR metacall -L /metacall/source | tee build.log
+#guix pack -RR metacall -L /metacall/source | tee build.log
 
 # Copy
-cp `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack
+#cp `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack

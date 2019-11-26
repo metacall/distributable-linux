@@ -36,6 +36,33 @@
   #:use-module (guix utils)
 )
 
+(define-public node-addon-api
+  (package
+    (name "node-addon-api")
+    (version "1.7.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://github.com/nodejs/node-addon-api/archive/" version ".tar.gz"))
+        (sha256 (base32 "0i3jc5ki4dlq8l2p1wn0rw1695kr47cjx1zlkzj6h4ymzyc0i1dk"))
+      )
+    )
+    (build-system node-build-system)
+    (arguments
+      `(
+        #:phases
+        (modify-phases %standard-phases
+          (delete 'check)
+        )
+      )
+    )
+    (home-page "https://github.com/nodejs/node-addon-api/")
+    (synopsis "Module for using N-API from C++")
+    (description "This module contains a header-only C++ wrapper classes ...")
+    (license license:expat)
+  )
+)
+
 (define-public metacall
   (package
     (name "metacall")
@@ -106,8 +133,7 @@
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_SCRIPTS_FILE=OFF"
           "-DOPTION_BUILD_PORTS=ON"
-          ;"-DOPTION_BUILD_PORTS_NODE=ON"
-          "-DOPTION_BUILD_PORTS_NODE=OFF"
+          "-DOPTION_BUILD_PORTS_NODE=ON"
           ; TODO: Implement python port (allow to install metacall from pip on cmake build step)
           "-DOPTION_BUILD_PORTS_PY=OFF"
           "-DOPTION_BUILD_PORTS_RB=OFF"
@@ -128,6 +154,7 @@
     (native-inputs
      `(
         ("node" ,node)
+        ("node-addon-api" ,node-addon-api)
         ("swig" ,swig)
       )
     )
