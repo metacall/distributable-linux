@@ -17,16 +17,19 @@
 #	limitations under the License.
 #
 
-version: "3.7"
+FROM metacall/guix:latest AS distributable
 
-services:
-  amd64:
-    image: metacall/distributable:linux-libc-amd64
-    container_name: metacall_distributable_linux_libc_amd64
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        METACALL_ARCH: amd64
-        METACALL_PATH: $METACALL_PATH
-        METACALL_GLIBC_VERSION: "2.30"
+# Image descriptor
+LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
+	copyright.address="vic798@gmail.com" \
+	maintainer.name="Vicente Eduardo Ferrer Garcia" \
+	maintainer.address="vic798@gmail.com" \
+	vendor="MetaCall Inc." \
+	version="0.1"
+
+COPY / /metacall/
+
+RUN chmod +x /metacall/scripts/build.sh \
+	&& mkdir -p /metacall/pack
+
+CMD ["sh", "/metacall/scripts/build.sh"]

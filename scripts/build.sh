@@ -1,10 +1,12 @@
+#!/bin/sh
+
 #
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
 #
 #	Copyright (C) 2016 - 2019 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 #
-#	Licensed under the Apache License, Version 2.0 (the "License");
+#	Licensed under the Apache License, Version 2.0 (the "License")#
 #	you may not use this file except in compliance with the License.
 #	You may obtain a copy of the License at
 #
@@ -17,20 +19,23 @@
 #	limitations under the License.
 #
 
-version: "3.7"
 
-services:
-  amd64:
-    image: metacall/distributable:linux-metacall-amd64
-    container_name: metacall_distributable_linux_metacall_amd64
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        METACALL_ARCH: amd64
-        METACALL_BUILD_TYPE: "Release"
-        METACALL_VERSION: "0.1.15"
-        METACALL_PYTHON_VERSION: "3.6"
-        METACALL_RUBY_VERSION: "2.5.0"
-        METACALL_NETCORE_VERSION: "2.2.7"
-        METACALL_PATH: $METACALL_PATH
+export GUILE_WARN_DEPRECATED='detailed'
+
+# Download
+#guix download https://github.com/metacall/core/archive/v0.1.18.tar.gz
+
+# Build
+guix build node-addon-api metacall -L /metacall/source
+
+# Test
+#guix package -i metacall -L /metacall/source
+
+# Lint
+#guix lint metacall
+
+# Pack
+#guix pack -RR metacall -L /metacall/source | tee build.log
+
+# Copy
+#cp `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack
