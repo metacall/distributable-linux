@@ -77,20 +77,14 @@
     (build-system cmake-build-system)
     (arguments
       `(
-        ;#:modules (
-        ;  (guix build cmake-build-system)
-        ;  ((guix build node-build-system) #:prefix node:)
-        ;  (guix build json)
-        ;  (guix build union)
-        ;  (guix build utils)
-        ;)
-        ;#:imported-modules (,@%cmake-build-system-modules
-        ;  (guix build node-build-system)
-        ;)
-        ;#:phases
-        ;(modify-phases %standard-phases
-        ;  (add-before 'configure 'install
-        ;    (assoc-ref node:%standard-phases 'install)))
+        #:phases
+        ; TODO: This may be hidding a CMake bug with rpath on all ports, so this must be reviewed in the future
+        (modify-phases %standard-phases
+          (add-before 'configure 'runpath-workaround
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
+                #t))))
         ; TODO: Enable tests
         #:tests? #f
         #:configure-flags
