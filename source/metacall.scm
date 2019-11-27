@@ -66,12 +66,12 @@
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.12")
+    (version "0.1.18")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1dr3ka4rvg63k4vlhn2f5idxfpl41wq5lxvwsr4rbb89ig75x09k"))
+        (sha256 (base32 "1lrd7cplzxg2a2xwcxggafl0pmy7zfrnmx3sx6ysd72svj13lknz"))
       )
     )
     (build-system cmake-build-system)
@@ -97,6 +97,8 @@
         (list
           "-DCMAKE_BUILD_TYPE=Release"
           "-DOPTION_BUILD_DIST_LIBS=ON"
+          ; TODO: Enable fork safety
+          "-DOPTION_FORK_SAFE=OFF"
           ; TODO: Enable examples
           "-DOPTION_BUILD_EXAMPLES=OFF"
           ; TODO: Enable tests
@@ -133,9 +135,10 @@
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_SCRIPTS_FILE=OFF"
           "-DOPTION_BUILD_PORTS=ON"
+          ;"-DOPTION_BUILD_PORTS_NODE=OFF"
           "-DOPTION_BUILD_PORTS_NODE=ON"
           ; TODO: Implement python port (allow to install metacall from pip on cmake build step)
-          "-DOPTION_BUILD_PORTS_PY=OFF"
+          "-DOPTION_BUILD_PORTS_PY=ON"
           "-DOPTION_BUILD_PORTS_RB=OFF"
           "-DOPTION_COVERAGE=OFF"
 

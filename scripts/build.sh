@@ -22,6 +22,9 @@
 
 export GUILE_WARN_DEPRECATED='detailed'
 
+# Download
+#guix download https://github.com/metacall/core/archive/v0.1.18.tar.gz
+
 # Build
 guix build node-addon-api metacall -L /metacall/source
 
