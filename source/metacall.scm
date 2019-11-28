@@ -90,6 +90,8 @@
         #:configure-flags
         (list
           "-DCMAKE_BUILD_TYPE=Release"
+          ; Disable stack-smashing protection and source fortify in order to improve libc portability / compatibility
+          "-DOPTION_BUILD_SECURITY=OFF"
           "-DOPTION_BUILD_DIST_LIBS=ON"
           ; TODO: Enable fork safety
           "-DOPTION_FORK_SAFE=OFF"
