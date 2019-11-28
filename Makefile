@@ -17,14 +17,14 @@
 #	limitations under the License.
 #
 
-.PHONY: all build help default
+.PHONY: all build test help default
 
 # Default target
 default: all
 
 # All targets
 all:
-	$(MAKE) build
+	$(MAKE) build test
 
 # Show help
 help:
@@ -38,8 +38,12 @@ help:
 # Build all images
 build:
 	@docker rm metacall_distributable || true
-	@docker build -t metacall/distributable .
+	@docker build -t metacall/distributable -f Dockerfile .
 	@docker run -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable
+
+# Test tarballs
+test:
+	@docker build -t metacall/distributable_test -f tests/Dockerfile .
 
 # Empty target do nothing
 %:
