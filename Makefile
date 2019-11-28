@@ -24,7 +24,8 @@ default: all
 
 # All targets
 all:
-	$(MAKE) build test
+	@$(MAKE) build
+	@$(MAKE) test
 
 # Show help
 help:
@@ -37,6 +38,8 @@ help:
 
 # Build all images
 build:
+	@rm -rf out/* && touch out/.gitkeep
+	@docker stop metacall_distributable || true
 	@docker rm metacall_distributable || true
 	@docker build -t metacall/distributable -f Dockerfile .
 	@docker run -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable

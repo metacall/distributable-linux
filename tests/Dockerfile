@@ -27,11 +27,26 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	vendor="MetaCall Inc." \
 	version="0.1"
 
-COPY out/tarball-pack.tar.gz /metacall/
+COPY out/tarball.tar.gz /metacall/
 
 RUN cd /metacall/ \
-	&& tar -xzf tarball-pack.tar.gz \
-	&& rm tarball-pack.tar.gz \
-	&& ls -la
+	&& tar -xzf tarball.tar.gz \
+	&& rm tarball.tar.gz
 
-CMD ["sh"]
+FROM python:3.7.5-alpine3.9 AS python_test
+
+# Image descriptor
+LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
+	copyright.address="vic798@gmail.com" \
+	maintainer.name="Vicente Eduardo Ferrer Garcia" \
+	maintainer.address="vic798@gmail.com" \
+	vendor="MetaCall Inc." \
+	version="0.1"
+
+COPY out/tarball.tar.gz /metacall/
+
+RUN cd /metacall/ \
+	&& tar -xzf tarball.tar.gz \
+	&& rm tarball.tar.gz
+
+ENTRYPOINT ["sh"]

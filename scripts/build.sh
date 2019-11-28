@@ -18,7 +18,7 @@
 #	See the License for the specific language governing permissions and
 #	limitations under the License.
 #
-tarball-pack.tar.gz
+
 export GUILE_WARN_DEPRECATED='detailed'
 
 # Download
@@ -28,5 +28,5 @@ export GUILE_WARN_DEPRECATED='detailed'
 `# Test` `# && guix package -i metacall -L /metacall/source` \
 `# Lint` `# && guix lint metacall` \
 `# Pack` && guix pack -RR metacall -L /metacall/source | tee build.log \
-`# Copy` && cp `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack \
+`# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack/tarball.tar.gz \
 `# Exit` && exit 0 || exit 1
