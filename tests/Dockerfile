@@ -27,9 +27,9 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	vendor="MetaCall Inc." \
 	version="0.1"
 
-COPY out/tarball.tar.gz /metacall/
+COPY out/tarball.tar.gz /
 
-RUN cd /metacall/ \
+RUN cd / \
 	&& tar -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
@@ -43,10 +43,15 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	vendor="MetaCall Inc." \
 	version="0.1"
 
-COPY out/tarball.tar.gz /metacall/
+COPY out/tarball.tar.gz /
 
-RUN cd /metacall/ \
+COPY tests/python-test.py /
+
+RUN cd / \
 	&& tar -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
+
+RUN sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*R'`/lib#g" python-test.py \
+	&& python3 python-test.py
 
 ENTRYPOINT ["sh"]
