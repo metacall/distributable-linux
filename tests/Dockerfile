@@ -17,22 +17,6 @@
 #	limitations under the License.
 #
 
-# FROM node:10.17.0-buster-slim AS node_test
-
-# # Image descriptor
-# LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
-# 	copyright.address="vic798@gmail.com" \
-# 	maintainer.name="Vicente Eduardo Ferrer Garcia" \
-# 	maintainer.address="vic798@gmail.com" \
-# 	vendor="MetaCall Inc." \
-# 	version="0.1"
-
-# COPY out/tarball.tar.gz /
-
-# RUN cd / \
-# 	&& tar -xzf tarball.tar.gz \
-# 	&& rm tarball.tar.gz
-
 FROM python:3.7.5-slim-buster AS python_test
 
 # Image descriptor
