@@ -19,5 +19,5 @@
 #	limitations under the License.
 #
 
-def test(a, b, c):
+def sum(a, b, c):
 	return a + b + c;

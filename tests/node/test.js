@@ -21,7 +21,8 @@
  */
 
 
-const { metacall, metacall_load_from_file } = require('@METACALL_LIBRARY_PATH@');
+const path = require('path');
+const { metacall, metacall_load_from_file, metacall_inspect } = require('@METACALL_LIBRARY_PATH@');
 
 /* TODO: Monkey-patch */
 
@@ -31,4 +32,5 @@ console.log(metacall('three_str', 'a', 'b', 'c'));
 
 /* Python */
 console.log(metacall_load_from_file('py', [ path.resolve(__dirname, 'test.py') ]));
-console.log(metacall('test', 'a', 'b', 'c'));
+console.log(metacall_inspect());
+console.log(metacall('sum', 'a', 'b', 'c'));
