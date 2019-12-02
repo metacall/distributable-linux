@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 #
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
@@ -17,28 +19,5 @@
 #	limitations under the License.
 #
 
-FROM node:10.17.0-buster-slim AS node_test
-
-# Image descriptor
-LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
-	copyright.address="vic798@gmail.com" \
-	maintainer.name="Vicente Eduardo Ferrer Garcia" \
-	maintainer.address="vic798@gmail.com" \
-	vendor="MetaCall Inc." \
-	version="0.1"
-
-COPY out/tarball.tar.gz /
-
-RUN cd / \
-	&& tar -xzf tarball.tar.gz \
-	&& rm tarball.tar.gz
-
-COPY tests/node/test.js /
-
-RUN cd / \
-	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib/libnode_port.node#g" test.js \
-	&& node test.js \
-		| grep 'Hello World' \
-		| grep 'abc'
-
-ENTRYPOINT ["sh", "-c"]
+def test(a, b, c):
+	return a + b + c;
