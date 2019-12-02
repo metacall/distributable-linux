@@ -45,13 +45,14 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 
 COPY out/tarball.tar.gz /
 
-COPY tests/python-test.py /
-
 RUN cd / \
 	&& tar -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-RUN sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*R'`/lib#g" python-test.py \
-	&& python3 python-test.py
+COPY tests/python-test.py /
 
-ENTRYPOINT ["sh"]
+RUN cd / \
+	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib#g" python-test.py \
+	&& python3 python-test.py | grep 'Hello World'
+
+ENTRYPOINT ["sh", "-c"]
