@@ -46,6 +46,7 @@ build:
 
 # Test tarballs
 test:
+	@docker build -t metacall/distributable_test:c -f tests/c/Dockerfile .
 	@docker build -t metacall/distributable_test:python -f tests/python/Dockerfile .
 	@docker build -t metacall/distributable_test:node -f tests/node/Dockerfile .
 
