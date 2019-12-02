@@ -1,6 +1,6 @@
 import sys
 
-sys.path.insert(0, "@METACALL_LIBRARY_PATH@")
+sys.path.insert(0, '@METACALL_LIBRARY_PATH@')
 
 from _py_port import *
 

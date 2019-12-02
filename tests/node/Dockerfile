@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM python:3.7.5-slim-buster AS python_test
+FROM node:10.17.0-buster-slim AS node_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -33,10 +33,10 @@ RUN cd / \
 	&& tar -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-COPY tests/python-test.py /
+COPY tests/node/test.js /
 
 RUN cd / \
-	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib#g" python-test.py \
-	&& python3 python-test.py | grep 'Hello World'
+	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib/node_modules/metacall/index.js#g" test.js \
+	&& node test.js | grep 'Hello World'
 
 ENTRYPOINT ["sh", "-c"]

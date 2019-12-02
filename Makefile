@@ -46,7 +46,8 @@ build:
 
 # Test tarballs
 test:
-	@docker build -t metacall/distributable_test -f tests/Dockerfile .
+	@docker build -t metacall/distributable_test -f tests/python/Dockerfile .
+	@docker build -t metacall/distributable_test -f tests/node/Dockerfile .
 
 # Empty target do nothing
 %:
