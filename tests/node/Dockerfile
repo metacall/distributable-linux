@@ -33,7 +33,7 @@ RUN cd / \
 	&& tar -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-COPY tests/node/test.js /
+COPY tests/node/test.js tests/node/test.py /
 
 RUN cd / \
 	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib/libnode_port.node#g" test.js \
