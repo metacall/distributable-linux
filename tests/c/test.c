@@ -48,48 +48,6 @@ int main(int argc, char *argv[])
 		return cleanup(2);
 	}
 
-	/* Python */
-	{
-		const char * py_scripts[] =
-		{
-			"/scripts/sum.py"
-		};
-
-		const enum metacall_value_id sum_ids[] =
-		{
-			METACALL_STRING, METACALL_STRING, METACALL_STRING
-		};
-
-		void * ret = NULL;
-
-		if (metacall_load_from_file("py", py_scripts, sizeof(py_scripts) / sizeof(py_scripts[0]), NULL) != 0)
-		{
-			return cleanup(3);
-		}
-
-		ret = metacallt("sum", sum_ids, "a", "b", "c");
-
-		if (ret == NULL)
-		{
-			return cleanup(4);
-		}
-
-		/* Check result */
-		{
-			const char result[] = "abc";
-			const char * str = metacall_value_to_string(ret);
-
-			if (strncmp(str, result, sizeof(result)) != 0)
-			{
-				return cleanup(5);
-			}
-
-			printf("%s\n", str);
-		}
-
-		metacall_value_destroy(ret);
-	}
-
 	/* Mock */
 	{
 		const char * mock_scripts[] =
@@ -124,6 +82,48 @@ int main(int argc, char *argv[])
 			if (strncmp(str, result, sizeof(result)) != 0)
 			{
 				return cleanup(8);
+			}
+
+			printf("%s\n", str);
+		}
+
+		metacall_value_destroy(ret);
+	}
+
+	/* Python */
+	{
+		const char * py_scripts[] =
+		{
+			"/scripts/sum.py"
+		};
+
+		const enum metacall_value_id sum_ids[] =
+		{
+			METACALL_STRING, METACALL_STRING, METACALL_STRING
+		};
+
+		void * ret = NULL;
+
+		if (metacall_load_from_file("py", py_scripts, sizeof(py_scripts) / sizeof(py_scripts[0]), NULL) != 0)
+		{
+			return cleanup(3);
+		}
+
+		ret = metacallt("sum", sum_ids, "a", "b", "c");
+
+		if (ret == NULL)
+		{
+			return cleanup(4);
+		}
+
+		/* Check result */
+		{
+			const char result[] = "abc";
+			const char * str = metacall_value_to_string(ret);
+
+			if (strncmp(str, result, sizeof(result)) != 0)
+			{
+				return cleanup(5);
 			}
 
 			printf("%s\n", str);
