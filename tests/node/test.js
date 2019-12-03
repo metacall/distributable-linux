@@ -31,6 +31,6 @@ console.log(metacall_load_from_file('mock', [ 'test.mock' ]));
 console.log(metacall('three_str', 'a', 'b', 'c'));
 
 /* Python */
-console.log(metacall_load_from_file('py', [ path.resolve(__dirname, 'scripts', 'sum.py') ]));
+console.log(metacall_load_from_file('py', [ '/scripts/sum.py' ]));
 console.log(metacall_inspect());
 console.log(metacall('sum', 'a', 'b', 'c'));

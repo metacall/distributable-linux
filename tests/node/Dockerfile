@@ -39,8 +39,8 @@ COPY tests/scripts/ /scripts/
 
 RUN cd / \
 	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib/libnode_port.node#g" test.js \
-	&& node test.js \
-		| grep 'Hello World' \
-		| grep 'abc'
+	&& node test.js | grep \
+		-e 'Hello World' \
+		-e 'abc'
 
 ENTRYPOINT ["sh", "-c"]
