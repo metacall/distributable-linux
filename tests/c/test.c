@@ -26,7 +26,7 @@ static int cleanup(int code)
 {
 	if (metacall_destroy() != 0)
 	{
-		return -code;
+		return code != 0 ? -code : -255;
 	}
 
 	return code;
@@ -35,18 +35,6 @@ static int cleanup(int code)
 int main(int argc, char *argv[])
 {
 	struct metacall_log_stdio_type log_stdio = { stdout };
-
-	const char * py_scripts[] =
-	{
-		"/scripts/sum.py"
-	};
-
-	const enum metacall_value_id sum_ids[] =
-	{
-		METACALL_STRING, METACALL_STRING, METACALL_STRING
-	};
-
-	void * ret = NULL;
 
 	printf(metacall_print_info());
 
@@ -60,32 +48,89 @@ int main(int argc, char *argv[])
 		return cleanup(2);
 	}
 
-	if (metacall_load_from_file("py", py_scripts, sizeof(py_scripts) / sizeof(py_scripts[0]), NULL) != 0)
+	/* Python */
 	{
-		return cleanup(3);
-	}
-
-	ret = metacallt("sum", sum_ids, "a", "b", "c");
-
-	if (ret == NULL)
-	{
-		return cleanup(4);
-	}
-
-	/* Check result */
-	{
-		const char abc[] = "abc";
-		const char * str = metacall_value_to_string(ret);
-
-		if (strncmp(str, "abc", sizeof(abc)) != 0)
+		const char * py_scripts[] =
 		{
-			return cleanup(5);
+			"/scripts/sum.py"
+		};
+
+		const enum metacall_value_id sum_ids[] =
+		{
+			METACALL_STRING, METACALL_STRING, METACALL_STRING
+		};
+
+		void * ret = NULL;
+
+		if (metacall_load_from_file("py", py_scripts, sizeof(py_scripts) / sizeof(py_scripts[0]), NULL) != 0)
+		{
+			return cleanup(3);
 		}
 
-		printf("%s\n", str);
+		ret = metacallt("sum", sum_ids, "a", "b", "c");
+
+		if (ret == NULL)
+		{
+			return cleanup(4);
+		}
+
+		/* Check result */
+		{
+			const char result[] = "abc";
+			const char * str = metacall_value_to_string(ret);
+
+			if (strncmp(str, result, sizeof(result)) != 0)
+			{
+				return cleanup(5);
+			}
+
+			printf("%s\n", str);
+		}
+
+		metacall_value_destroy(ret);
 	}
 
-	metacall_value_destroy(ret);
+	/* Mock */
+	{
+		const char * mock_scripts[] =
+		{
+			"test.mock"
+		};
+
+		const enum metacall_value_id three_str_ids[] =
+		{
+			METACALL_STRING, METACALL_STRING, METACALL_STRING
+		};
+
+		void * ret = NULL;
+
+		if (metacall_load_from_file("mock", mock_scripts, sizeof(mock_scripts) / sizeof(mock_scripts[0]), NULL) != 0)
+		{
+			return cleanup(6);
+		}
+
+		ret = metacallt("three_str", three_str_ids, "a", "b", "c");
+
+		if (ret == NULL)
+		{
+			return cleanup(7);
+		}
+
+		/* Check result */
+		{
+			const char result[] = "Hello World";
+			const char * str = metacall_value_to_string(ret);
+
+			if (strncmp(str, result, sizeof(result)) != 0)
+			{
+				return cleanup(8);
+			}
+
+			printf("%s\n", str);
+		}
+
+		metacall_value_destroy(ret);
+	}
 
 	return cleanup(0);
 }
