@@ -20,15 +20,16 @@
 
 #include <metacall/metacall.h>
 #include <stdio.h>
+#include <string.h>
 
-static int cleanup(int errcode)
+static int cleanup(int code)
 {
 	if (metacall_destroy() != 0)
 	{
-		return -1;
+		return -code;
 	}
 
-	return errcode;
+	return code;
 }
 
 int main(int argc, char *argv[])
@@ -73,9 +74,10 @@ int main(int argc, char *argv[])
 
 	/* Check result */
 	{
+		const char abc[] = "abc";
 		const char * str = metacall_value_to_string(ret);
 
-		if (strcmp(str, "abc") != 0)
+		if (strncmp(str, "abc", sizeof(abc)) != 0)
 		{
 			return cleanup(5);
 		}

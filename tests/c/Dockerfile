@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM gcc:9.2.0 AS c_test
+FROM gcc:9.2.0 AS builder
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -35,11 +35,26 @@ RUN cd / \
 
 COPY tests/c/test.c /
 
+RUN cd / \
+	&& gcc -I`find /gnu/store/ -type d -name '*metacall*[^R]'`/include test.c -L`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib -lmetacall
+
+FROM debian:buster-slim AS c_test
+
+# Image descriptor
+LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
+	copyright.address="vic798@gmail.com" \
+	maintainer.name="Vicente Eduardo Ferrer Garcia" \
+	maintainer.address="vic798@gmail.com" \
+	vendor="MetaCall Inc." \
+	version="0.1"
+
+COPY --from=builder /gnu/ /gnu/
+
+COPY --from=builder /a.out /
+
 COPY tests/scripts/ /scripts/
 
-RUN cd / \
-	&& gcc -I`find /gnu/store/ -type d -name '*metacall*[^R]'`/include test.c -L`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib -lmetacall \
-	&& ./a.out \
+RUN ./a.out \
 		| grep 'Hello World' \
 		| grep 'abc'
 
