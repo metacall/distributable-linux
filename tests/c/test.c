@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 
 	const char * py_scripts[] =
 	{
-		"sum.py"
+		"/scripts/sum.py"
 	};
 
 	const enum metacall_value_id sum_ids[] =

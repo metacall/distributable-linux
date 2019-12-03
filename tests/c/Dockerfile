@@ -35,26 +35,17 @@ RUN cd / \
 
 COPY tests/c/test.c /
 
-RUN cd / \
-	&& gcc -I`find /gnu/store/ -type d -name '*metacall*[^R]'`/include test.c -L`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib -lmetacall
-
-FROM debian:buster-slim AS c_test
-
-# Image descriptor
-LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
-	copyright.address="vic798@gmail.com" \
-	maintainer.name="Vicente Eduardo Ferrer Garcia" \
-	maintainer.address="vic798@gmail.com" \
-	vendor="MetaCall Inc." \
-	version="0.1"
-
-COPY --from=builder /gnu/ /gnu/
-
-COPY --from=builder /a.out /
-
 COPY tests/scripts/ /scripts/
 
-RUN ./a.out \
+RUN export METACALL_PATH=`find /gnu/store/ -type d -name '*metacall*[^R]'` \
+	&& cd / \
+	&& gcc \
+		-I$METACALL_PATH/include \
+		test.c \
+		-Wl,-rpath=$METACALL_PATH/lib \
+		-L$METACALL_PATH/lib \
+		-lmetacall \
+	&& ./a.out \
 		| grep 'Hello World' \
 		| grep 'abc'
 
