@@ -66,12 +66,12 @@
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.21")
+    (version "0.1.22")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "0rcdfsiaqyqk3kh6v8g7pz6mmn7rdqvmi22fl8b6z2z274ck5818"))
+        (sha256 (base32 "087xm5b7pz30k454ds4qdr3dkrhskfj3y881ns10m33hk0zglwhs"))
       )
     )
     (build-system cmake-build-system)

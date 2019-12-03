@@ -42,6 +42,6 @@ RUN export NODE_ENV=debug \
 	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib/libnode_port.node#g" test.js \
 	&& node test.js | grep \
 		-e 'Hello World' \
-		-e 'abc'
+		-e '666667'
 
 ENTRYPOINT ["sh", "-c"]

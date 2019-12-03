@@ -33,4 +33,4 @@ console.log(metacall('three_str', 'a', 'b', 'c'));
 /* Python */
 console.log(metacall_load_from_file('py', [ '/scripts/sum.py' ]));
 console.log(metacall_inspect());
-console.log(metacall('sum', 'a', 'b', 'c'));
+console.log(metacall('sum', 111111, 222222, 33334));
