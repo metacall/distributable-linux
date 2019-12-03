@@ -37,7 +37,8 @@ COPY tests/node/test.js /
 
 COPY tests/scripts/ /scripts/
 
-RUN cd / \
+RUN export NODE_ENV=debug \
+	&& cd / \
 	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib/libnode_port.node#g" test.js \
 	&& node test.js | grep \
 		-e 'Hello World' \
