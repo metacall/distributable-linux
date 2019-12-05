@@ -76,6 +76,7 @@
     )
     (build-system cmake-build-system)
     (arguments
+      (let (ruby-version (package-version ruby)))
       `(
         #:phases
         ; TODO: This may be hidding a CMake bug with rpath on all ports, so this must be reviewed in the future
@@ -111,14 +112,12 @@
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_SCRIPTS_RB=OFF" ; TODO: Enable when tests
 
-          ; `# -DRUBY_EXECUTABLE=${METACALL_PATH}/ruby/bin/ruby` \
-          ; `# -DRUBY_INCLUDE_DIRS=${METACALL_PATH}/ruby/include/ruby-${METACALL_RUBY_VERSION}` \
-          ; `# -DRUBY_LIBRARY=${METACALL_PATH}/ruby/lib/libruby.so` \
-          ; `# -DRUBY_VERSION=${METACALL_RUBY_VERSION}` \
-          ; `# TODO: -DOPTION_BUILD_LOADERS_RB=ON` \
-          ; `# TODO: -DOPTION_BUILD_SCRIPTS_RB=ON` \
-          ; -DOPTION_BUILD_LOADERS_RB=OFF \
-          ; -DOPTION_BUILD_SCRIPTS_RB=OFF \
+          ; Ruby
+          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
+          (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby") "/include/ruby-" ,ruby-version)
+          ;(string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
+          (string-append "-DRUBY_VERSION=" ,ruby-version)
+
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
 
           ; TODO: Remove this and enable loaders (and tests + scripts)
