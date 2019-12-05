@@ -76,7 +76,6 @@
     )
     (build-system cmake-build-system)
     (arguments
-      (let (ruby-version (package-version ruby)))
       `(
         #:phases
         ; TODO: This may be hidding a CMake bug with rpath on all ports, so this must be reviewed in the future
@@ -112,11 +111,11 @@
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_SCRIPTS_RB=OFF" ; TODO: Enable when tests
 
-          ; Ruby
-          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby") "/include/ruby-" ,ruby-version)
-          ;(string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
-          (string-append "-DRUBY_VERSION=" ,ruby-version)
+          ; TODO: Ruby
+          ; (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
+          ; (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby") "/include/ruby-" (package-version ruby))
+          ; (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
+          ; (string-append "-DRUBY_VERSION=" (package-version ruby))
 
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
 
@@ -145,8 +144,8 @@
     (inputs
      `(
         ("rapidjson" ,rapidjson)
-        ("python-3" ,python)
-        ("ruby-2.3" ,ruby)
+        ("python" ,python)
+        ("ruby" ,ruby)
       )
     )
     (native-inputs
