@@ -36,6 +36,15 @@
   #:use-module (guix utils)
 )
 
+; Ruby patch (meanwhile https://debbugs.gnu.org/cgi/bugreport.cgi?bug=38500 is solved)
+(define-public ruby-dynamic-2.3
+  (package
+    (inherit ruby-2.3)
+    (build-system gnu-build-system)
+    (arguments
+     `(#:configure-flags (list "--enable-shared")))))
+
+; NodeJS Port Dependencies
 (define-public node-addon-api
   (package
     (name "node-addon-api")
@@ -63,6 +72,7 @@
   )
 )
 
+; MetaCall
 (define-public metacall
   (package
     (name "metacall")
@@ -145,7 +155,7 @@
      `(
         ("rapidjson" ,rapidjson)
         ("python" ,python)
-        ("ruby" ,ruby)
+        ("ruby-dynamic-2.3" ,ruby-dynamic-2.3)
       )
     )
     (native-inputs
