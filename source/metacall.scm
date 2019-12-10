@@ -24,6 +24,7 @@
   #:use-module (guix build json)
   #:use-module (guix build union)
   #:use-module (guix build-system)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system node)
   #:use-module ((guix licenses) #:prefix license:)
@@ -42,7 +43,25 @@
     (inherit ruby-2.3)
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--enable-shared")))))
+     `(#:test-target "test"
+       #:configure-flags (list "--enable-shared")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'replace-bin-sh-and-remove-libffi
+           (lambda _
+             (substitute* '("Makefile.in"
+                            "ext/pty/pty.c"
+                            "io.c"
+                            "lib/mkmf.rb"
+                            "process.c"
+                            "test/rubygems/test_gem_ext_configure_builder.rb"
+                            "test/rdoc/test_rdoc_parser.rb"
+                            "test/ruby/test_rubyoptions.rb"
+                            "test/ruby/test_process.rb"
+                            "test/ruby/test_system.rb"
+                            "tool/rbinstall.rb")
+               (("/bin/sh") (which "sh")))
+             #t)))))
 
 ; NodeJS Port Dependencies
 (define-public node-addon-api
