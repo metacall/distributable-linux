@@ -44,6 +44,7 @@
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
+       #:tests? #f ; Disable tests for faster builds
        #:configure-flags (list "--enable-shared")
        #:phases
        (modify-phases %standard-phases
@@ -61,7 +62,7 @@
                             "test/ruby/test_system.rb"
                             "tool/rbinstall.rb")
                (("/bin/sh") (which "sh")))
-             #t)))))
+             #t)))))))
 
 ; NodeJS Port Dependencies
 (define-public node-addon-api
