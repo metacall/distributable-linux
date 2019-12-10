@@ -169,10 +169,9 @@
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_SCRIPTS_FILE=OFF"
           "-DOPTION_BUILD_PORTS=ON"
-          ;"-DOPTION_BUILD_PORTS_NODE=OFF"
           "-DOPTION_BUILD_PORTS_NODE=ON"
-          ; TODO: Implement python port (allow to install metacall from pip on cmake build step)
           "-DOPTION_BUILD_PORTS_PY=ON"
+          ; TODO: Ruby port
           "-DOPTION_BUILD_PORTS_RB=OFF"
           "-DOPTION_COVERAGE=OFF"
 
