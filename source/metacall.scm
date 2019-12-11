@@ -47,9 +47,9 @@
 )
 
 ; Ruby patch (meanwhile https://debbugs.gnu.org/cgi/bugreport.cgi?bug=38500 is solved)
-(define-public ruby-dynamic-2.3
+(define-public ruby-dynamic
   (package
-    (name "ruby-dynamic-2.3")
+    (name "ruby-dynamic")
     (version "2.3.8")
     (source
      (origin
@@ -185,9 +185,9 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_SCRIPTS_RB=OFF" ; TODO: Enable when tests
 
           ; TODO: Ruby versions not harcoded
-          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/include/ruby-2.3.0") ; (package-version ruby))
-          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/lib/libruby.so")
+          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby-dynamic") "/bin/ruby")
+          (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby-dynamic") "/include/ruby-2.3.0") ; (package-version ruby))
+          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby-dynamic") "/lib/libruby.so")
           (string-append "-DRUBY_VERSION=2.3.8") ; (package-version ruby))
 
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
@@ -217,13 +217,13 @@ a focus on simplicity and productivity.")
      `(
         ("rapidjson" ,rapidjson)
         ("python" ,python)
-        ("ruby-dynamic-2.3" ,ruby-dynamic-2.3)
+        ("ruby-dynamic" ,ruby-dynamic)
       )
     )
     (native-inputs
      `(
         ("python" ,python)
-        ("ruby-dynamic-2.3" ,ruby-dynamic-2.3)
+        ("ruby-dynamic" ,ruby-dynamic)
         ("node" ,node)
         ("node-addon-api" ,node-addon-api)
         ("swig" ,swig)
