@@ -58,6 +58,7 @@ RUN git clone -j8 --single-branch --branch v${METACALL_VERSION} https://github.c
 	&& cd core/build \
 	&& cmake \
 		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX=${METACALL_PATH}/core \
 		-DOPTION_BUILD_SECURITY=OFF `# Disable security in order to improve libc portability / compatibility` \
 		-DOPTION_BUILD_DIST_LIBS=ON \
 		-DOPTION_FORK_SAFE=OFF \
@@ -70,6 +71,9 @@ RUN git clone -j8 --single-branch --branch v${METACALL_VERSION} https://github.c
 		-DOPTION_BUILD_LOADERS=ON \
 		-DOPTION_BUILD_LOADERS_MOCK=ON \
 		-DOPTION_BUILD_LOADERS_PY=ON \
+		-DPYTHON_EXECUTABLE=${METACALL_PATH}/python/bin/python3 \
+		-DPYTHON_INCLUDE_DIRS=${METACALL_PATH}/python/include \
+		-DPYTHON_LIBRARIES=${METACALL_PATH}/python/lib \
 		-DOPTION_BUILD_LOADERS_RB=ON \
 		-DOPTION_BUILD_LOADERS_FILE=ON \
 		-DOPTION_BUILD_LOADERS_NODE=OFF `# TODO` \
