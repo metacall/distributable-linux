@@ -31,6 +31,15 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages python)
   #:use-module (gnu packages ruby)
+  ; Ruby Dependencies (meanwhile all patches are applied)
+  #:use-module (gnu packages readline)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages libffi)
+  #:use-module (gnu packages dbm)
+  #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages tcl)
+  ; /Ruby Dependencies
   #:use-module (gnu packages web)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages node)
@@ -71,7 +80,7 @@
        ("libyaml" ,libyaml)
        ("ncurses" ,ncurses)
        ("tcl" ,tcl)
-       ("tk" ,tk)
+       ("tk" ,tk) ; TODO: This still fails, Ruby is not able to locate Tk/Tcl lib
        ("zlib" ,zlib)))))
 
 ; NodeJS Port Dependencies
@@ -151,11 +160,11 @@
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_SCRIPTS_RB=OFF" ; TODO: Enable when tests
 
-          ; TODO: Ruby
-          ; (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
-          ; (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby") "/include/ruby-" (package-version ruby))
-          ; (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
-          ; (string-append "-DRUBY_VERSION=" (package-version ruby))
+          ; TODO: Ruby versions not harcoded
+          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/bin/ruby")
+          (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/include/ruby-2.3.0/ruby") ; (package-version ruby))
+          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/lib/ruby/2.3.0/x86_64-linux/libruby-2.3.so.2.3.0")
+          (string-append "-DRUBY_VERSION=2.3.8") ; (package-version ruby))
 
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
 
