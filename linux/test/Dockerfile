@@ -23,15 +23,10 @@ FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 FROM metacall/distributable:linux-python-${METACALL_ARCH} AS python
 FROM metacall/distributable:linux-ruby-${METACALL_ARCH} AS ruby
 
-FROM ${METACALL_ARCH}/alpine:3.10.1 AS test
+FROM ${METACALL_ARCH}/alpine:3.10.1 AS test_runtimes
 
 RUN apk update \
 	&& apk add binutils
-
-# FROM ${METACALL_ARCH}/debian:stretch-slim AS test
-
-# RUN apt-get update \
-# 	&& apt-get install -y --no-recommends binutils
 
 ARG METACALL_PATH
 
@@ -51,5 +46,5 @@ RUN cd ${METACALL_PATH}/python/bin \
 	&& for elf in $ELFS; do readelf -l ${elf} | grep interpreter; done
 
 # Test integration
-RUN ${METACALL_PATH}/python/bin/python3 -c 'print("Python OK")' \
-	&& ${METACALL_PATH}/ruby/bin/ruby -e "puts 'Ruby OK'"
+RUN ${METACALL_PATH}/python/bin/python3 -c 'print("Python OK")' | grep 'Python OK' \
+	&& ${METACALL_PATH}/ruby/bin/ruby -e "puts 'Ruby OK'" | grep 'Ruby OK'
