@@ -25,7 +25,7 @@ export GUILE_WARN_DEPRECATED='detailed'
 # guix download https://github.com/metacall/core/archive/v0.1.22.tar.gz
 
 # Generate a portable package tarball
-`# Build` guix build node-addon-api metacall -L /metacall/source \
+`# Build` guix build ruby-dynamic-2.3 node-addon-api metacall -L /metacall/source \
 `# Test` `# && guix package -i metacall -L /metacall/source` \
 `# Lint` `# && guix lint metacall` \
 `# Pack` && guix pack -RR metacall -L /metacall/source | tee build.log \

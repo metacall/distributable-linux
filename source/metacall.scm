@@ -49,6 +49,8 @@
 ; Ruby patch (meanwhile https://debbugs.gnu.org/cgi/bugreport.cgi?bug=38500 is solved)
 (define-public ruby-dynamic-2.3
   (package
+    (name "ruby-dynamic-2.3")
+    (version "2.3.8")
     (inherit ruby-2.3)
     (build-system gnu-build-system)
     (arguments
@@ -189,7 +191,7 @@
         )
       )
     )
-    (inputs
+    (propagated-inputs
      `(
         ("rapidjson" ,rapidjson)
         ("python" ,python)
@@ -198,6 +200,8 @@
     )
     (native-inputs
      `(
+        ("python" ,python)
+        ("ruby-dynamic-2.3" ,ruby-dynamic-2.3)
         ("node" ,node)
         ("node-addon-api" ,node-addon-api)
         ("swig" ,swig)
