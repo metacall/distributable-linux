@@ -17,29 +17,16 @@
 #	limitations under the License.
 #
 
-.PHONY: all help default
+version: "3.7"
 
-# Default target
-default: all
-
-# TODO: Implement for all architectures
-
-# All targets
-all:
-#	Build base
-	@docker-compose -f base/docker-compose.yml build amd64
-
-#	Build libc
-	@docker-compose -f libc/docker-compose.yml build amd64
-
-#	Build python
-	@docker-compose -f python/docker-compose.yml build amd64
-
-#	Build ruby
-	@docker-compose -f ruby/docker-compose.yml build amd64
-
-#	Build metacall
-	@docker-compose -f metacall/docker-compose.yml build amd64
-
-#	Build test
-	@docker-compose -f test/docker-compose.yml build amd64
+services:
+  amd64:
+    image: metacall/distributable:linux-python-amd64
+    container_name: metacall_distributable_linux_metacall_amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        METACALL_ARCH: amd64
+        METACALL_VERSION: "0.1.22"
+        METACALL_PATH: $METACALL_PATH
