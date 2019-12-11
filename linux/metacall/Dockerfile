@@ -91,4 +91,4 @@ FROM scratch AS core
 
 ARG METACALL_PATH
 
-COPY --from=builder_core ${METACALL_PATH}/core ${METACALL_PATH}/core
+COPY --from=builder ${METACALL_PATH}/core ${METACALL_PATH}/core

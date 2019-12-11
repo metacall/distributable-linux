@@ -22,6 +22,7 @@ ARG METACALL_ARCH
 FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 FROM metacall/distributable:linux-python-${METACALL_ARCH} AS python
 FROM metacall/distributable:linux-ruby-${METACALL_ARCH} AS ruby
+FROM metacall/distributable:linux-metacall-${METACALL_ARCH} AS core
 
 FROM ${METACALL_ARCH}/alpine:3.10.1 AS test_runtimes
 
@@ -30,12 +31,13 @@ RUN apk update \
 
 ARG METACALL_PATH
 
-ENV LD_LIBRARY_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib:${METACALL_PATH}/ruby/lib \
-	SHLIB_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib:${METACALL_PATH}/ruby/lib
+ENV LD_LIBRARY_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib:${METACALL_PATH}/ruby/lib:${METACALL_PATH}/core/lib \
+	SHLIB_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib:${METACALL_PATH}/ruby/lib:${METACALL_PATH}/core/lib
 
 COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=ruby ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
+COPY --from=core ${METACALL_PATH}/core ${METACALL_PATH}/core
 
 # Test binaries path
 RUN cd ${METACALL_PATH}/python/bin \

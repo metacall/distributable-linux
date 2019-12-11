@@ -21,7 +21,7 @@ version: "3.7"
 
 services:
   amd64:
-    image: metacall/distributable:linux-python-amd64
+    image: metacall/distributable:linux-metacall-amd64
     container_name: metacall_distributable_linux_metacall_amd64
     build:
       context: .
