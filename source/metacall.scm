@@ -162,8 +162,8 @@
 
           ; TODO: Ruby versions not harcoded
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/include/ruby-2.3.0/ruby") ; (package-version ruby))
-          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/lib/ruby/2.3.0/x86_64-linux/libruby-2.3.so.2.3.0")
+          (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/include/ruby-2.3.0") ; (package-version ruby))
+          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby-dynamic-2.3") "/lib/libruby.so")
           (string-append "-DRUBY_VERSION=2.3.8") ; (package-version ruby))
 
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
