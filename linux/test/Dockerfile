@@ -28,6 +28,11 @@ FROM ${METACALL_ARCH}/alpine:3.10.1 AS test
 RUN apk update \
 	&& apk add binutils
 
+# FROM ${METACALL_ARCH}/debian:stretch-slim AS test
+
+# RUN apt-get update \
+# 	&& apt-get install -y --no-recommends binutils
+
 ARG METACALL_PATH
 
 ENV LD_LIBRARY_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib:${METACALL_PATH}/ruby/lib \
@@ -37,10 +42,14 @@ COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=ruby ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 
-# Test binaries
+# Test binaries path
 RUN cd ${METACALL_PATH}/python/bin \
 	&& export ELFS=`ls python[0-9].[0-9]` \
 	&& for elf in $ELFS; do readelf -l ${elf} | grep interpreter; done \
 	&& cd ${METACALL_PATH}/ruby/bin \
 	&& export ELFS=`ls ruby` \
 	&& for elf in $ELFS; do readelf -l ${elf} | grep interpreter; done
+
+# Test integration
+RUN ${METACALL_PATH}/python/bin/python3 -c 'print("Python OK")' \
+	&& ${METACALL_PATH}/ruby/bin/ruby -e "puts 'Ruby OK'"
