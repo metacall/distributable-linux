@@ -30,7 +30,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages ruby)
+  ; #:use-module (gnu packages ruby)
   ; Ruby Dependencies (meanwhile all patches are applied)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages tls)
@@ -51,7 +51,20 @@
   (package
     (name "ruby-dynamic-2.3")
     (version "2.3.8")
-    (inherit ruby-2.3)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1zhxbjff08pvbnxvn58krns6q0p6g4977q6ykfn823gxhifn63wi"))
+       (modules '((guix build utils)))
+       (snippet `(begin
+                   ;; Remove bundled libffi
+                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
+                   #t))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -83,7 +96,16 @@
        ("ncurses" ,ncurses)
        ("tcl" ,tcl)
        ("tk" ,tk) ; TODO: This still fails, Ruby is not able to locate Tk/Tcl lib
-       ("zlib" ,zlib)))))
+       ("zlib" ,zlib)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GEM_PATH")
+            (files (list (string-append "lib/ruby/vendor_ruby"))))))
+    (synopsis "Programming language interpreter")
+    (description "Ruby is a dynamic object-oriented programming language with
+a focus on simplicity and productivity.")
+    (home-page "https://www.ruby-lang.org")
+    (license license:ruby)))
 
 ; NodeJS Port Dependencies
 (define-public node-addon-api
