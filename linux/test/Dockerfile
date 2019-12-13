@@ -42,10 +42,10 @@ COPY --from=core ${METACALL_PATH}/core ${METACALL_PATH}/core
 # Test binaries path
 RUN cd ${METACALL_PATH}/python/bin \
 	&& export ELFS=`ls python[0-9].[0-9]` \
-	&& for elf in $ELFS; do readelf -l ${elf} | grep interpreter; done \
+	&& for elf in $ELFS; do readelf -l ${elf} | grep "Requesting program interpreter: ${METACALL_PATH}/libc/lib/ld.so"; done \
 	&& cd ${METACALL_PATH}/ruby/bin \
 	&& export ELFS=`ls ruby` \
-	&& for elf in $ELFS; do readelf -l ${elf} | grep interpreter; done
+	&& for elf in $ELFS; do readelf -l ${elf} | grep "Requesting program interpreter: ${METACALL_PATH}/libc/lib/ld.so"; done
 
 # Test integration
 RUN ${METACALL_PATH}/python/bin/python3 -c 'print("Python OK")' | grep 'Python OK' \
