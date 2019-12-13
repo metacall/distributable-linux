@@ -26,7 +26,7 @@ FROM metacall/distributable:linux-ruby-${METACALL_ARCH} AS ruby
 FROM metacall/distributable:linux-base-${METACALL_ARCH} AS builder
 
 RUN apt-get update \
-	&& apt-get install -y --no-install-recommends cmake
+	&& apt-get install -y --no-install-recommends cmake swig
 
 ARG METACALL_PATH
 
@@ -79,7 +79,11 @@ RUN git clone -j8 --single-branch --branch v${METACALL_VERSION} https://github.c
 		-DOPTION_BUILD_LOADERS_NODE=OFF `# TODO` \
 		-DOPTION_BUILD_LOADERS_CS=OFF `# TODO` \
 		-DOPTION_BUILD_LOADERS_JS=OFF `# TODO` \
-		-DOPTION_BUILD_PORTS=OFF `# TODO` \
+		-DOPTION_BUILD_PORTS=ON \
+		-DOPTION_BUILD_PORTS_PY=ON \
+		-DOPTION_BUILD_PORTS_RB=OFF `# TODO` \
+		-DOPTION_BUILD_PORTS_CS=OFF `# TODO` \
+		-DOPTION_BUILD_PORTS_NODE=OFF `# TODO` \
 		-DCMAKE_CXX_FLAGS=-fpermissive `# Required by Python Port (Swig)` \
 		.. \
 	&& make -j$(nproc) \
