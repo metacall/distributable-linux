@@ -43,7 +43,6 @@ RUN export NODE_ENV=debug \
 	&& echo "Running tests ${CACHE_INVALIDATE}" \
 	&& cd / \
 	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/lib/libnode_port.node#g" test.js \
-	&& cat test.js \
 	&& node test.js | grep \
 		-e 'Hello World' \
 		-e '666667'
