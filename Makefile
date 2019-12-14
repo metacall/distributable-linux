@@ -33,6 +33,7 @@ help:
 	@echo
 	@echo 'Usage:'
 	@echo '    make build                    Build all images for all platforms and architectures.'
+	@echo '    make test                     Run integration tests for the built tarballs.'
 	@echo '    make help                     Show verbose help.'
 	@echo
 
