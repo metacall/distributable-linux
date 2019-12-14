@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
 			return cleanup(6);
 		}
 
-		ret = metacallt("mult", mult_ids, 434254, 12788);
+		ret = metacallt("mult", mult_ids, 324, 775);
 
 		if (ret == NULL)
 		{
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
 
 		/* Check result */
 		{
-			const int result = 5553240152;
+			const int result = 251100;
 			const int value = metacall_value_to_int(ret);
 
 			if (result != value)

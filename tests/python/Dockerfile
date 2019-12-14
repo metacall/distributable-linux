@@ -38,7 +38,7 @@ COPY tests/python/test.py /
 COPY tests/scripts/ /scripts/
 
 RUN cd / \
-	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]'`/lib#g" test.py \
+	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/lib#g" test.py \
 	&& python3 test.py | grep \
 		-e 'Hello World'
 

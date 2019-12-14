@@ -37,7 +37,8 @@ COPY tests/c/test.c /
 
 COPY tests/scripts/ /scripts/
 
-RUN export METACALL_PATH=`find /gnu/store/ -type d -name '*metacall*[^R]'` \
+RUN export METACALL_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`" \
+	&& echo "METACALL_PATH=${METACALL_PATH}" \
 	&& cd / \
 	&& gcc \
 		-I$METACALL_PATH/include \
