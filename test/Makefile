@@ -27,4 +27,4 @@ default: all
 # All targets
 all:
 #	Build linux test
-	@docker-compose -f base/docker-compose.yml build linux_amd64
+	@docker-compose -f docker-compose.yml build linux_amd64

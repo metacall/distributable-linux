@@ -44,14 +44,16 @@ COPY --from=core ${METACALL_PATH}/core ${METACALL_PATH}/core
 
 FROM python:3.7.5-slim-buster AS python_test
 
+ARG METACALL_PATH
+
 COPY --from=base_test ${METACALL_PATH}/ ${METACALL_PATH}/
 
-COPY test/source/test.py /
+COPY source/test.py /
 
-COPY test/scripts/ /scripts/
+COPY scripts/ /scripts/
 
 RUN cd / \
-	&& sed -i "s#@METACALL_LIBRARY_PATH@#${METACALL_PATH}/lib#g" test.py \
+	&& sed -i "s#@METACALL_LIBRARY_PATH@#${METACALL_PATH}/core/lib#g" test.py \
 	&& python3 test.py | grep \
 		-e 'Hello World'
 
