@@ -93,6 +93,14 @@ RUN git clone -j8 --single-branch --branch v${METACALL_VERSION} https://github.c
 
 FROM scratch AS core
 
+# Image descriptor
+LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
+	copyright.address="vic798@gmail.com" \
+	maintainer.name="Vicente Eduardo Ferrer Garcia" \
+	maintainer.address="vic798@gmail.com" \
+	vendor="MetaCall Inc." \
+	version="0.1"
+
 ARG METACALL_PATH
 
 COPY --from=builder ${METACALL_PATH}/core ${METACALL_PATH}/core

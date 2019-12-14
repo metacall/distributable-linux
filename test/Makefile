@@ -17,16 +17,14 @@
 #	limitations under the License.
 #
 
-version: "3.7"
+.PHONY: all help default
 
-services:
-  amd64:
-    image: metacall/distributable:linux-metacall-amd64
-    container_name: metacall_distributable_linux_metacall_amd64
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        METACALL_ARCH: amd64
-        METACALL_VERSION: "0.1.22"
-        METACALL_PATH: $METACALL_PATH
+# Default target
+default: all
+
+# TODO: Implement for all architectures and operative systems
+
+# All targets
+all:
+#	Build linux test
+	@docker-compose -f base/docker-compose.yml build linux_amd64

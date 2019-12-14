@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 #
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
@@ -17,29 +19,5 @@
 #	limitations under the License.
 #
 
-.PHONY: all help default
-
-# Default target
-default: all
-
-# TODO: Implement for all architectures
-
-# All targets
-all:
-#	Build base
-	@docker-compose -f base/docker-compose.yml build amd64
-
-#	Build libc
-	@docker-compose -f libc/docker-compose.yml build amd64
-
-#	Build python
-	@docker-compose -f python/docker-compose.yml build amd64
-
-#	Build ruby
-	@docker-compose -f ruby/docker-compose.yml build amd64
-
-#	Build core
-	@docker-compose -f core/docker-compose.yml build amd64
-
-#	Build unit test
-	@docker-compose -f test/docker-compose.yml build amd64
+def sum(a, b, c):
+	return a + b + c;

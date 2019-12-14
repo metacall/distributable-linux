@@ -22,9 +22,17 @@ ARG METACALL_ARCH
 FROM metacall/distributable:linux-libc-${METACALL_ARCH} AS libc
 FROM metacall/distributable:linux-python-${METACALL_ARCH} AS python
 FROM metacall/distributable:linux-ruby-${METACALL_ARCH} AS ruby
-FROM metacall/distributable:linux-metacall-${METACALL_ARCH} AS core
+FROM metacall/distributable:linux-core-${METACALL_ARCH} AS core
 
-FROM ${METACALL_ARCH}/alpine:3.10.1 AS test_runtimes
+FROM ${METACALL_ARCH}/alpine:3.10.1 AS test
+
+# Image descriptor
+LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
+	copyright.address="vic798@gmail.com" \
+	maintainer.name="Vicente Eduardo Ferrer Garcia" \
+	maintainer.address="vic798@gmail.com" \
+	vendor="MetaCall Inc." \
+	version="0.1"
 
 RUN apk update \
 	&& apk add binutils
@@ -39,7 +47,7 @@ COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=ruby ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 COPY --from=core ${METACALL_PATH}/core ${METACALL_PATH}/core
 
-# Test binaries path
+# Test loader path
 RUN cd ${METACALL_PATH}/python/bin \
 	&& export ELFS=`ls python[0-9].[0-9]` \
 	&& for elf in $ELFS; do readelf -l ${elf} | grep "Requesting program interpreter: ${METACALL_PATH}/libc/lib/ld.so"; done \
@@ -47,6 +55,6 @@ RUN cd ${METACALL_PATH}/python/bin \
 	&& export ELFS=`ls ruby` \
 	&& for elf in $ELFS; do readelf -l ${elf} | grep "Requesting program interpreter: ${METACALL_PATH}/libc/lib/ld.so"; done
 
-# Test integration
+# Test runtime execution
 RUN ${METACALL_PATH}/python/bin/python3 -c 'print("Python OK")' | grep 'Python OK' \
 	&& ${METACALL_PATH}/ruby/bin/ruby -e "puts 'Ruby OK'" | grep 'Ruby OK'

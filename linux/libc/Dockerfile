@@ -69,6 +69,14 @@ RUN echo 'int main(){}' > main.c \
 
 FROM scratch AS libc
 
+# Image descriptor
+LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
+	copyright.address="vic798@gmail.com" \
+	maintainer.name="Vicente Eduardo Ferrer Garcia" \
+	maintainer.address="vic798@gmail.com" \
+	vendor="MetaCall Inc." \
+	version="0.1"
+
 ARG METACALL_PATH
 
 COPY --from=builder ${METACALL_PATH}/libc ${METACALL_PATH}/libc

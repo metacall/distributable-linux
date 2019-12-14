@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 #
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
@@ -17,29 +19,11 @@
 #	limitations under the License.
 #
 
-.PHONY: all help default
+import sys
 
-# Default target
-default: all
+sys.path.insert(0, '@METACALL_LIBRARY_PATH@')
 
-# TODO: Implement for all architectures
+from _py_port import *
 
-# All targets
-all:
-#	Build base
-	@docker-compose -f base/docker-compose.yml build amd64
-
-#	Build libc
-	@docker-compose -f libc/docker-compose.yml build amd64
-
-#	Build python
-	@docker-compose -f python/docker-compose.yml build amd64
-
-#	Build ruby
-	@docker-compose -f ruby/docker-compose.yml build amd64
-
-#	Build core
-	@docker-compose -f core/docker-compose.yml build amd64
-
-#	Build unit test
-	@docker-compose -f test/docker-compose.yml build amd64
+print(metacall_load_from_file('mock', ['test.mock']));
+print(metacall('three_str', 'a', 'b', 'c'));

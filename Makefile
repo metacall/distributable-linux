@@ -46,6 +46,11 @@ build:
 #	Build macos
 	@cd macos && $(MAKE) -f Makefile
 
+# Test targets
+test:
+#	Run test suite
+	@cd test && $(MAKE) -f Makefile
+
 # Empty target do nothing
 %:
 	@:

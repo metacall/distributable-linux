@@ -297,6 +297,14 @@ RUN export METACALL_RUBY_VERSION_BRANCH=$(printf '%s' "${METACALL_RUBY_VERSION}"
 
 FROM scratch AS ruby
 
+# Image descriptor
+LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
+	copyright.address="vic798@gmail.com" \
+	maintainer.name="Vicente Eduardo Ferrer Garcia" \
+	maintainer.address="vic798@gmail.com" \
+	vendor="MetaCall Inc." \
+	version="0.1"
+
 ARG METACALL_PATH
 
 COPY --from=builder_ruby ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby

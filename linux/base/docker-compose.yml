@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-# TODO (qemu?):
+# TODO (QEMU):
 #   mips: mips-linux-gnu
 #   mips64el: mips64el-linux-gnuabi64
 #   mipsel: mipsel-linux-gnu

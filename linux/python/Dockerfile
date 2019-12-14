@@ -480,6 +480,14 @@ RUN git clone -j8 --single-branch --branch v${METACALL_PYTHON_VERSION} https://g
 
 FROM scratch AS python
 
+# Image descriptor
+LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
+	copyright.address="vic798@gmail.com" \
+	maintainer.name="Vicente Eduardo Ferrer Garcia" \
+	maintainer.address="vic798@gmail.com" \
+	vendor="MetaCall Inc." \
+	version="0.1"
+
 ARG METACALL_PATH
 
 COPY --from=builder_python ${METACALL_PATH}/python ${METACALL_PATH}/python
