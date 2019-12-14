@@ -19,6 +19,7 @@
  */
 
 #include <metacall/metacall.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -149,6 +150,23 @@ int main(int argc, char *argv[])
 		if (metacall_load_from_file("rb", rb_scripts, sizeof(rb_scripts) / sizeof(rb_scripts[0]), NULL) != 0)
 		{
 			return cleanup(6);
+		}
+
+		/* Print inspect information */
+		{
+			size_t size = 0;
+
+			struct metacall_allocator_std_type std_ctx = { &malloc, &realloc, &free };
+
+			void * allocator = metacall_allocator_create(METACALL_ALLOCATOR_STD, (void *)&std_ctx);
+
+			char * inspect_str = metacall_inspect(&size, allocator);
+
+			printf("Inspect:\n%s\n", inspect_str);
+
+			metacall_allocator_free(allocator, inspect_str);
+
+			metacall_allocator_destroy(allocator);
 		}
 
 		ret = metacallt("mult", mult_ids, 324, 775);
