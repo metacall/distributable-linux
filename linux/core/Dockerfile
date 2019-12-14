@@ -38,7 +38,7 @@ COPY --from=libc ${METACALL_PATH}/libc ${METACALL_PATH}/libc
 COPY --from=python ${METACALL_PATH}/python ${METACALL_PATH}/python
 COPY --from=ruby ${METACALL_PATH}/ruby ${METACALL_PATH}/ruby
 
-# Set c and linker flags
+# Set environment variables
 ENV CFLAGS="" \
 	LDFLAGS=" \
 		-fPIC \
@@ -48,7 +48,8 @@ ENV CFLAGS="" \
 		-Wl,-rpath=${METACALL_PATH}/libc/lib \
 		-Wl,-rpath=${METACALL_PATH}/python/lib \
 		-Wl,-rpath=${METACALL_PATH}/ruby/lib \
-		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld.so"
+		-Wl,--dynamic-linker=${METACALL_PATH}/libc/lib/ld.so" \
+	PATH="${PATH}:${METACALL_PATH}/python/bin:${METACALL_PATH}/ruby/bin"
 
 # Build MetaCall
 ARG METACALL_VERSION
