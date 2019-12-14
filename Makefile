@@ -47,9 +47,10 @@ build:
 
 # Test tarballs
 test:
-	@docker build -t metacall/distributable_test:c -f tests/c/Dockerfile .
-	@docker build -t metacall/distributable_test:python -f tests/python/Dockerfile .
-	@docker build -t metacall/distributable_test:node -f tests/node/Dockerfile .
+	$(eval CACHE_INVALIDATE := $(shell date +%s))
+	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:c -f tests/c/Dockerfile .
+	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:python -f tests/python/Dockerfile .
+	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:node -f tests/node/Dockerfile .
 
 # Empty target do nothing
 %:

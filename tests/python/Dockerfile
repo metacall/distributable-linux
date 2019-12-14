@@ -37,7 +37,10 @@ COPY tests/python/test.py /
 
 COPY tests/scripts/ /scripts/
 
-RUN cd / \
+ARG CACHE_INVALIDATE
+
+RUN echo "Running tests ${CACHE_INVALIDATE}" \
+	&& cd / \
 	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/lib#g" test.py \
 	&& python3 test.py | grep \
 		-e 'Hello World'

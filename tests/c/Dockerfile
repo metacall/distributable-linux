@@ -37,8 +37,10 @@ COPY tests/c/test.c /
 
 COPY tests/scripts/ /scripts/
 
+ARG CACHE_INVALIDATE
+
 RUN export METACALL_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`" \
-	&& echo "METACALL_PATH=${METACALL_PATH}" \
+	&& echo "Running tests ${CACHE_INVALIDATE}" \
 	&& cd / \
 	&& gcc \
 		-I$METACALL_PATH/include \
