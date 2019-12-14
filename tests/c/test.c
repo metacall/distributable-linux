@@ -132,5 +132,47 @@ int main(int argc, char *argv[])
 		metacall_value_destroy(ret);
 	}
 
+	/* Ruby */
+	{
+		const char * rb_scripts[] =
+		{
+			"/scripts/mult.rb"
+		};
+
+		const enum metacall_value_id mult_ids[] =
+		{
+			METACALL_INT, METACALL_INT
+		};
+
+		void * ret = NULL;
+
+		if (metacall_load_from_file("rb", rb_scripts, sizeof(rb_scripts) / sizeof(rb_scripts[0]), NULL) != 0)
+		{
+			return cleanup(6);
+		}
+
+		ret = metacallt("mult", mult_ids, 434254, 12788);
+
+		if (ret == NULL)
+		{
+			return cleanup(7);
+		}
+
+		/* Check result */
+		{
+			const int result = 5553240152;
+			const int value = metacall_value_to_int(ret);
+
+			if (result != value)
+			{
+				return cleanup(8);
+			}
+
+			printf("%d\n", value);
+		}
+
+		metacall_value_destroy(ret);
+	}
+
 	return cleanup(0);
 }
