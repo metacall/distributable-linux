@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-.PHONY: all build help default
+.PHONY: all build test help default
 
 # Default target
 default: all
@@ -25,6 +25,7 @@ default: all
 # All targets
 all:
 	$(MAKE) build
+	$(MAKE) test
 
 # Show help
 help:
@@ -32,6 +33,7 @@ help:
 	@echo
 	@echo 'Usage:'
 	@echo '    make build                    Build all images for all platforms and architectures.'
+	@echo '    make test                     Run integration tests against the built images.'
 	@echo '    make help                     Show verbose help.'
 	@echo
 
