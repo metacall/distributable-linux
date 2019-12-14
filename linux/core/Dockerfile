@@ -76,8 +76,9 @@ RUN git clone -j8 --single-branch --branch v${METACALL_VERSION} https://github.c
 		-DPYTHON_LIBRARIES=${METACALL_PATH}/python/lib \
 		-DOPTION_BUILD_LOADERS_RB=ON \
 		-DRUBY_EXECUTABLE=${METACALL_PATH}/ruby/bin/ruby \
-		-DRUBY_INCLUDE_DIRS=${METACALL_PATH}/ruby/include/ruby-2.3.8 \
-		-DRUBY_LIBRARY=${METACALL_PATH}/ruby/lib/libruby.so \
+		-DRUBY_INCLUDE_DIRS=${METACALL_PATH}/ruby/include/ruby-2.5.0 \
+		-DRUBY_LIBRARY=${METACALL_PATH}/ruby/lib/libruby.so.2.5.5 \
+		-DRUBY_VERSION=2.5.5 \
 		-DOPTION_BUILD_LOADERS_FILE=ON \
 		-DOPTION_BUILD_LOADERS_NODE=OFF `# TODO` \
 		-DOPTION_BUILD_LOADERS_CS=OFF `# TODO` \
