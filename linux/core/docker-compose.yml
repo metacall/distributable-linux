@@ -28,5 +28,8 @@ services:
       dockerfile: Dockerfile
       args:
         METACALL_ARCH: amd64
+        METACALL_ARCH_HOST: "x86_64-linux"
+        METACALL_RUBY_VERSION: "2.5.5"
+        METACALL_RUBY_INCLUDE_VERSION: "2.5.0"
         METACALL_VERSION: "0.1.22"
         METACALL_PATH: $METACALL_PATH
