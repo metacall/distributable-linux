@@ -46,6 +46,9 @@ FROM python:3.7.5-slim-buster AS python_test
 
 ARG METACALL_PATH
 
+ENV LD_LIBRARY_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib:${METACALL_PATH}/ruby/lib:${METACALL_PATH}/core/lib \
+	SHLIB_PATH=${METACALL_PATH}/libc/lib:${METACALL_PATH}/python/lib:${METACALL_PATH}/ruby/lib:${METACALL_PATH}/core/lib
+
 COPY --from=base_test ${METACALL_PATH}/ ${METACALL_PATH}/
 
 COPY source/test.py /
