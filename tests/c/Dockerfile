@@ -43,7 +43,8 @@ RUN export METACALL_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | hea
 	&& gcc \
 		-I$METACALL_PATH/include \
 		test.c \
-		-Wl,-rpath=$METACALL_PATH/lib \
+		-Wl,-rpath=${METACALL_PATH}/lib \
+		-Wl,--dynamic-linker=`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so' | head -n 1` \
 		-L$METACALL_PATH/lib \
 		-lmetacall \
 	&& ./a.out | grep \
