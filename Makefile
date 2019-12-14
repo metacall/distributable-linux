@@ -43,7 +43,7 @@ build:
 	@docker stop metacall_distributable || true
 	@docker rm metacall_distributable || true
 	@docker build -t metacall/distributable -f Dockerfile .
-	@docker run -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable
+	@docker run --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable
 
 # Test tarballs
 test:

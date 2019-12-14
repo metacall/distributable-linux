@@ -69,12 +69,12 @@
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.22")
+    (version "0.1.23")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "087xm5b7pz30k454ds4qdr3dkrhskfj3y881ns10m33hk0zglwhs"))
+        (sha256 (base32 "0rdnhvcrap2m0241hq81ssxcci616cyicl0xpyqaik5hqblm9n79"))
       )
     )
     (build-system cmake-build-system)
@@ -115,10 +115,10 @@
           "-DOPTION_BUILD_SCRIPTS_RB=OFF" ; TODO: Enable when tests
 
           ; TODO: Ruby versions not harcoded
-          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby-2.3") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "ruby-2.3") "/include/ruby-2.3.0") ; (package-version ruby))
-          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby-2.3") "/lib/libruby.so")
-          (string-append "-DRUBY_VERSION=2.3.8") ; (package-version ruby))
+          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
+          (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.5.0") ; (package-version ruby))
+          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
+          (string-append "-DRUBY_VERSION=2.5.3") ; (package-version ruby))
 
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
 
@@ -147,13 +147,13 @@
      `(
         ("rapidjson" ,rapidjson)
         ("python" ,python)
-        ("ruby-2.3" ,ruby-2.3)
+        ("ruby" ,ruby)
       )
     )
     (native-inputs
      `(
         ("python" ,python)
-        ("ruby-2.3" ,ruby-2.3)
+        ("ruby" ,ruby)
         ("node" ,node)
         ("node-addon-api" ,node-addon-api)
         ("swig" ,swig)
