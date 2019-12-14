@@ -18,24 +18,104 @@
 ;
 
 (define-module (metacall)
+  ; Guix Packages
   #:use-module (guix packages)
   #:use-module (guix modules)
   #:use-module (guix download)
-  #:use-module (guix build json)
-  #:use-module (guix build union)
+
+  ; Build Systems
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system node)
+  #:use-module (guix build json)
+  #:use-module (guix build union)
   #:use-module ((guix licenses) #:prefix license:)
+
+  ; GNU Packages
   #:use-module (gnu packages)
+
+  ; Python Dependencies
   #:use-module (gnu packages python)
-  #:use-module (gnu packages ruby)
-  #:use-module (gnu packages web)
+
+  ; Ruby Dependencies
+  #:use-module (gnu packages readline)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages libffi)
+  #:use-module (gnu packages dbm)
+  #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages tcl)
+
+  ; Swig
   #:use-module (gnu packages swig)
+
+  ; NodeJS
+  #:use-module (gnu packages web)
   #:use-module (gnu packages node)
   #:use-module (guix utils)
 )
+
+; Ruby
+(define-public ruby
+  (package
+    (name "ruby")
+    (version "2.3.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1zhxbjff08pvbnxvn58krns6q0p6g4977q6ykfn823gxhifn63wi"))
+       (modules '((guix build utils)))
+       (snippet `(begin
+                   ;; Remove bundled libffi
+                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
+                   #t))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "test"
+       #:configure-flags (list "--enable-shared")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'replace-bin-sh-and-remove-libffi
+           (lambda _
+             (substitute* '("Makefile.in"
+                            "ext/pty/pty.c"
+                            "io.c"
+                            "lib/mkmf.rb"
+                            "process.c"
+                            "test/rubygems/test_gem_ext_configure_builder.rb"
+                            "test/rdoc/test_rdoc_parser.rb"
+                            "test/ruby/test_rubyoptions.rb"
+                            "test/ruby/test_process.rb"
+                            "test/ruby/test_system.rb"
+                            "tool/rbinstall.rb")
+               (("/bin/sh") (which "sh")))
+             #t)))))
+    (inputs
+     `(("readline" ,readline)
+       ("openssl" ,openssl)
+       ("bzip2" ,bzip2)
+       ("libffi" ,libffi)
+       ("gdbm" ,gdbm)
+       ("libyaml" ,libyaml)
+       ("ncurses" ,ncurses)
+       ("tcl" ,tcl)
+       ("tk" ,tk) ; TODO: This still fails, Ruby is not able to locate Tk/Tcl lib
+       ("zlib" ,zlib)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GEM_PATH")
+            (files (list (string-append "lib/ruby/vendor_ruby"))))))
+    (synopsis "Programming language interpreter")
+    (description "Ruby is a dynamic object-oriented programming language with
+a focus on simplicity and productivity.")
+    (home-page "https://www.ruby-lang.org")
+    (license license:ruby)))
 
 ; NodeJS Port Dependencies
 (define-public node-addon-api
@@ -116,9 +196,9 @@
 
           ; TODO: Ruby versions not harcoded
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.5.0") ; (package-version ruby))
+          (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.3.0")
           (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
-          (string-append "-DRUBY_VERSION=2.5.3") ; (package-version ruby))
+          (string-append "-DRUBY_VERSION=2.3.8")
 
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
 
