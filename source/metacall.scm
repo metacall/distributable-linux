@@ -49,6 +49,7 @@
   #:use-module (guix utils)
 
   ; NodeJS
+  #:use-module (gnu packages node)
   #:use-module (gnu packages base)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages adns)
@@ -66,9 +67,9 @@
 )
 
 ; NodeJS
-(define-public node
+(define-public libnode
   (package
-    (name "node")
+    (name "libnode")
     (version "10.16.0")
     (source (origin
               (method url-fetch)
@@ -371,9 +372,9 @@ a focus on simplicity and productivity.")
           (string-append "-DRUBY_VERSION=2.3.8")
 
           ; TODO: Avoid harcoded versions of NodeJS
-          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node") "/bin/node")
-          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "node") "/include/node")
-          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "node") "/lib/libnode.so")
+          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "libnode") "/bin/node")
+          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "libnode") "/include/node")
+          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so")
 
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
 
@@ -401,7 +402,7 @@ a focus on simplicity and productivity.")
         ; TODO: Package only the runtime lib for each runtime
         ("python" ,python)
         ("ruby" ,ruby)
-        ("node" ,node)
+        ("libnode" ,libnode)
       )
     )
     (native-inputs
