@@ -1,4 +1,4 @@
-#!/usr/bin/env rubys
+#!/usr/bin/env ruby
 
 #
 #	MetaCall Distributable by Parra Studios
@@ -21,6 +21,10 @@
 
 def mult(a, b)
 	result = left * right
-	puts('Multiply', result, '!')
+	return result
+end
+
+def add(a: Fixnum, b: Fixnum)
+	result = a + b
 	return result
 end

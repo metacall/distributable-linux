@@ -51,6 +51,7 @@ RUN export METACALL_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | hea
 		-lmetacall \
 	&& ./a.out | grep \
 		-e 'Hello World' \
-		-e 'abc'
+		-e 'abc' \
+		-e '1099'
 
 ENTRYPOINT ["sh", "-c"]

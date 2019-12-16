@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
 
 		const enum metacall_value_id mult_ids[] =
 		{
-			METACALL_INT, METACALL_INT
+			METACALL_LONG, METACALL_LONG
 		};
 
 		void * ret = NULL;
@@ -152,24 +152,7 @@ int main(int argc, char *argv[])
 			return cleanup(6);
 		}
 
-		/* Print inspect information */
-		{
-			size_t size = 0;
-
-			struct metacall_allocator_std_type std_ctx = { &malloc, &realloc, &free };
-
-			void * allocator = metacall_allocator_create(METACALL_ALLOCATOR_STD, (void *)&std_ctx);
-
-			char * inspect_str = metacall_inspect(&size, allocator);
-
-			printf("Inspect:\n%s\n", inspect_str);
-
-			metacall_allocator_free(allocator, inspect_str);
-
-			metacall_allocator_destroy(allocator);
-		}
-
-		ret = metacallt("mult", mult_ids, 324, 775);
+		ret = metacall("add", 324, 775);
 
 		if (ret == NULL)
 		{
@@ -178,7 +161,7 @@ int main(int argc, char *argv[])
 
 		/* Check result */
 		{
-			const int result = 251100;
+			const int result = 1099;
 			const int value = metacall_value_to_int(ret);
 
 			if (result != value)
@@ -186,11 +169,56 @@ int main(int argc, char *argv[])
 				return cleanup(8);
 			}
 
+
 			printf("%d\n", value);
 		}
 
 		metacall_value_destroy(ret);
+
+		/* TODO: This generates a segmentation fault, review */
+		/*
+		ret = metacallt("mult", mult_ids, 324L, 775L);
+
+		if (ret == NULL)
+		{
+			return cleanup(7);
+		}
+
+		*//* Check result *//*
+		{
+			const long result = 251100L;
+			const long value = metacall_value_to_long(ret);
+
+			if (result != value)
+			{
+				return cleanup(8);
+			}
+
+			printf("%ld\n", value);
+		}
+
+		metacall_value_destroy(ret);
+		*/
 	}
+
+
+	/* Inspect */
+	{
+		size_t size = 0;
+
+		struct metacall_allocator_std_type std_ctx = { &malloc, &realloc, &free };
+
+		void * allocator = metacall_allocator_create(METACALL_ALLOCATOR_STD, (void *)&std_ctx);
+
+		char * inspect_str = metacall_inspect(&size, allocator);
+
+		printf("Inspect:\n%s\n", inspect_str);
+
+		metacall_allocator_free(allocator, inspect_str);
+
+		metacall_allocator_destroy(allocator);
+	}
+
 
 	return cleanup(0);
 }

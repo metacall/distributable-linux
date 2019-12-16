@@ -78,7 +78,10 @@
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
-       #:configure-flags (list "--enable-shared")
+       #:configure-flags
+       (list
+         "--enable-shared"
+       )
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'replace-bin-sh-and-remove-libffi
@@ -194,7 +197,7 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_SCRIPTS_RB=OFF" ; TODO: Enable when tests
 
-          ; TODO: Ruby versions not harcoded
+          ; TODO: Avoid harcoded versions of Ruby
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
           (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.3.0")
           (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
@@ -214,8 +217,7 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_PORTS=ON"
           "-DOPTION_BUILD_PORTS_NODE=ON"
           "-DOPTION_BUILD_PORTS_PY=ON"
-          ; TODO: Ruby port
-          "-DOPTION_BUILD_PORTS_RB=OFF"
+          "-DOPTION_BUILD_PORTS_RB=ON"
           "-DOPTION_COVERAGE=OFF"
 
           ; Python Port (Swig) requires conversion between constant to non-constant char pointer
