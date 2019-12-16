@@ -49,6 +49,14 @@
   #:use-module (guix utils)
 
   ; NodeJS
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages adns)
+  #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages libevent)
+  #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages linux)
 
   ; Swig
   #:use-module (gnu packages swig)
