@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM gcc:9.2.0 AS c_test
+FROM busybox:1.31.1 AS cli_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -33,25 +33,25 @@ RUN cd / \
 	&& tar -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-COPY tests/c/test.c /
+# COPY tests/cli/test.sh /
 
 COPY tests/scripts/ /scripts/
 
 ARG CACHE_INVALIDATE
 
-RUN export METACALL_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`" \
-	&& echo "Running tests ${CACHE_INVALIDATE}" \
-	&& cd / \
-	&& gcc \
-		-I$METACALL_PATH/include \
-		test.c \
-		-Wl,-rpath=${METACALL_PATH}/lib \
-		-Wl,--dynamic-linker=`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so' | head -n 1` \
-		-L$METACALL_PATH/lib \
-		-lmetacall \
-	&& ./a.out | grep \
-		-e 'Hello World' \
-		-e 'abc' \
-		-e '1099'
+# RUN export LD_LIBRARY_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`" \
+# 	&& echo "Running tests ${CACHE_INVALIDATE}" \
+# 	&& cd / \
+# 	&& gcc \
+# 		-I$METACALL_PATH/include \
+# 		test.c \
+# 		-Wl,-rpath=${METACALL_PATH}/lib \
+# 		-Wl,--dynamic-linker=`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so' | head -n 1` \
+# 		-L$METACALL_PATH/lib \
+# 		-lmetacall \
+# 	&& ./a.out | grep \
+# 		-e 'Hello World' \
+# 		-e 'abc' \
+# 		-e '1099'
 
-ENTRYPOINT ["sh", "-c"]
+ENTRYPOINT ["`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli"]
