@@ -322,7 +322,7 @@
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
-                (setenv "NPM_CONFIG_PREFIX" "/tmp")
+                (setenv "HOME" "/tmp")
                 #t))))
         ; TODO: Enable tests
         #:tests? #f
@@ -417,7 +417,7 @@
      `(
         ; ("python" ,python)
         ; ("ruby" ,ruby)
-        ; ("node" ,node)
+        ("node" ,node)
         ("node-addon-api" ,node-addon-api)
         ("swig" ,swig)
       )
