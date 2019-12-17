@@ -33,25 +33,13 @@ RUN cd / \
 	&& tar -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-# COPY tests/cli/test.sh /
-
 COPY tests/scripts/ /scripts/
 
 ARG CACHE_INVALIDATE
 
-# RUN export LD_LIBRARY_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`" \
-# 	&& echo "Running tests ${CACHE_INVALIDATE}" \
-# 	&& cd / \
-# 	&& gcc \
-# 		-I$METACALL_PATH/include \
-# 		test.c \
-# 		-Wl,-rpath=${METACALL_PATH}/lib \
-# 		-Wl,--dynamic-linker=`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so' | head -n 1` \
-# 		-L$METACALL_PATH/lib \
-# 		-lmetacall \
-# 	&& ./a.out | grep \
-# 		-e 'Hello World' \
-# 		-e 'abc' \
-# 		-e '1099'
+RUN echo "Running tests ${CACHE_INVALIDATE}" \
+	&& printf "inspect\nexit" \
+	| `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli mock test.mock \
+	| grep -e 'function three_str(a_str, b_str, c_str)'
 
-ENTRYPOINT ["`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli"]
+ENTRYPOINT ["sh", "-c"]
