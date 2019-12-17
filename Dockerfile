@@ -32,4 +32,4 @@ COPY / /metacall/
 RUN chmod +x /metacall/scripts/build.sh \
 	&& mkdir -p /metacall/pack
 
-ENTRYPOINT ["sh"]
+CMD ["sh"]

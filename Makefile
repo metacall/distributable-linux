@@ -44,8 +44,7 @@ deps:
 	@docker stop metacall_distributable 2> /dev/null || true
 	@docker rm metacall_distributable 2> /dev/null || true
 	@docker build -t metacall/distributable -f Dockerfile .
-	@docker run -d --privileged --name metacall_distributable metacall/distributable
-	@docker exec -it metacall_distributable /metacall/scripts/deps.sh
+	@docker run --privileged --name metacall_distributable metacall/distributable /metacall/scripts/deps.sh
 	@docker commit metacall_distributable metacall/distributable
 	@docker rm -f metacall_distributable
 
