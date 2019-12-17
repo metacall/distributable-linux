@@ -236,9 +236,9 @@ devices.")
 )
 
 ; Ruby
-(define-public ruby
+(define-public dynruby
   (package
-    (name "ruby")
+    (name "dynruby")
     (version "2.3.8")
     (source
      (origin
@@ -322,7 +322,8 @@ a focus on simplicity and productivity.")
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
-                (setenv "HOME" "/tmp")
+                ; TODO: NPM fails with cb()
+                ; (setenv "HOME" "/tmp")
                 #t))))
         ; TODO: Enable tests
         #:tests? #f
@@ -364,12 +365,12 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_LOADERS_PY=ON"
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_LOADERS_FILE=ON"
-          "-DOPTION_BUILD_LOADERS_NODE=ON"
+          "-DOPTION_BUILD_LOADERS_NODE=OFF" ; TODO: Enable node loader
 
           ; TODO: Avoid harcoded versions of Ruby
-          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.3.0")
-          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
+          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
+          (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "dynruby") "/include/ruby-2.3.0")
+          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "dynruby") "/lib/libruby.so")
           (string-append "-DRUBY_VERSION=2.3.8")
 
           ; TODO: Avoid harcoded versions of NodeJS
@@ -402,14 +403,14 @@ a focus on simplicity and productivity.")
         ("rapidjson" ,rapidjson)
         ; TODO: Package only the runtime lib for each runtime
         ("python" ,python)
-        ("ruby" ,ruby)
+        ("dynruby" ,dynruby)
         ("libnode" ,libnode)
       )
     )
     (native-inputs
      `(
         ("python" ,python)
-        ("ruby" ,ruby)
+        ("dynruby" ,dynruby)
         ("node" ,node)
         ("node-addon-api" ,node-addon-api)
         ("swig" ,swig)

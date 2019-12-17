@@ -22,5 +22,5 @@
 export GUILE_WARN_DEPRECATED='detailed'
 
 # Build dependencies
-`# Build` guix build libnode ruby node-addon-api -L /metacall/source \
+`# Build` guix build libnode dynruby node-addon-api -L /metacall/source \
 `# Exit` && exit 0 || exit 1
