@@ -41,26 +41,44 @@ help:
 
 # Build deps
 deps:
+	# Clear the container
 	@docker stop metacall_distributable 2> /dev/null || true
 	@docker rm metacall_distributable 2> /dev/null || true
+	# Build the base image
 	@docker build -t metacall/distributable -f Dockerfile .
+	# Build dependencies
 	@docker run --privileged --name metacall_distributable metacall/distributable /metacall/scripts/deps.sh
+	# Commit dependencies into the image
 	@docker commit metacall_distributable metacall/distributable
+	# Clear the container
 	@docker rm -f metacall_distributable
+	@echo "Done"
 
 # Build tarball
 build:
+	# Clear the tarball
 	@rm -rf out/* && touch out/.gitkeep
+	# Clear the container
 	@docker stop metacall_distributable 2> /dev/null || true
 	@docker rm metacall_distributable 2> /dev/null || true
+	# Patch the source (metacall.scm) with latest version
+	@docker run -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable metacall/distributable cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
+	@docker commit metacall_distributable metacall/distributable
+	# Clear the container
+	@docker rm -f metacall_distributable
+	# Build tarball and store it into out folder
 	@docker run --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable /metacall/scripts/build.sh
+	@echo "Done"
 
 # Test tarballs
 test:
+	# Generate a unique id for invalidating the cache of test layers
 	$(eval CACHE_INVALIDATE := $(shell date +%s))
+	# Run tests
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:c -f tests/c/Dockerfile .
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:python -f tests/python/Dockerfile .
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:node -f tests/node/Dockerfile .
+	@echo "Done"
 
 # Empty target do nothing
 %:

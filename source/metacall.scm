@@ -335,13 +335,14 @@ a focus on simplicity and productivity.")
           ; Disable stack-smashing protection and source fortify in order to improve libc portability / compatibility
           "-DOPTION_BUILD_SECURITY=OFF"
 
-          ; Enable distributable libs
+          ; Distributable libs
           "-DOPTION_BUILD_DIST_LIBS=ON"
+
+          ; Examples
+          "-DOPTION_BUILD_EXAMPLES=ON"
 
           ; TODO: Enable fork safety
           "-DOPTION_FORK_SAFE=OFF"
-          ; TODO: Enable examples
-          "-DOPTION_BUILD_EXAMPLES=OFF"
           ; TODO: Enable tests
           "-DOPTION_BUILD_TESTS=OFF"
 
