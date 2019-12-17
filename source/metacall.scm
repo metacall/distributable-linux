@@ -235,70 +235,70 @@ devices.")
   )
 )
 
-; ; Ruby
-; (define-public ruby
-;   (package
-;     (name "ruby")
-;     (version "2.3.8")
-;     (source
-;      (origin
-;        (method url-fetch)
-;        (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
-;                            (version-major+minor version)
-;                            "/ruby-" version ".tar.xz"))
-;        (sha256
-;         (base32
-;          "1zhxbjff08pvbnxvn58krns6q0p6g4977q6ykfn823gxhifn63wi"))
-;        (modules '((guix build utils)))
-;        (snippet `(begin
-;                    ;; Remove bundled libffi
-;                    (delete-file-recursively "ext/fiddle/libffi-3.2.1")
-;                    #t))))
-;     (build-system gnu-build-system)
-;     (arguments
-;      `(#:test-target "test"
-;        #:tests? #f ; TODO: Enable tests by removing this line
-;        #:configure-flags
-;        (list
-;          "--enable-shared"
-;        )
-;        #:phases
-;        (modify-phases %standard-phases
-;          (add-before 'configure 'replace-bin-sh-and-remove-libffi
-;            (lambda _
-;              (substitute* '("Makefile.in"
-;                             "ext/pty/pty.c"
-;                             "io.c"
-;                             "lib/mkmf.rb"
-;                             "process.c"
-;                             "test/rubygems/test_gem_ext_configure_builder.rb"
-;                             "test/rdoc/test_rdoc_parser.rb"
-;                             "test/ruby/test_rubyoptions.rb"
-;                             "test/ruby/test_process.rb"
-;                             "test/ruby/test_system.rb"
-;                             "tool/rbinstall.rb")
-;                (("/bin/sh") (which "sh")))
-;              #t)))))
-;     (inputs
-;      `(("readline" ,readline)
-;        ("openssl" ,openssl)
-;        ("bzip2" ,bzip2)
-;        ("libffi" ,libffi)
-;        ("gdbm" ,gdbm)
-;        ("libyaml" ,libyaml)
-;        ("ncurses" ,ncurses)
-;        ("tcl" ,tcl)
-;        ("tk" ,tk) ; TODO: This still fails, Ruby is not able to locate Tk/Tcl lib
-;        ("zlib" ,zlib)))
-;     (native-search-paths
-;      (list (search-path-specification
-;             (variable "GEM_PATH")
-;             (files (list (string-append "lib/ruby/vendor_ruby"))))))
-;     (synopsis "Programming language interpreter")
-;     (description "Ruby is a dynamic object-oriented programming language with
-; a focus on simplicity and productivity.")
-;     (home-page "https://www.ruby-lang.org")
-;     (license license:ruby)))
+; Ruby
+(define-public ruby
+  (package
+    (name "ruby")
+    (version "2.3.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1zhxbjff08pvbnxvn58krns6q0p6g4977q6ykfn823gxhifn63wi"))
+       (modules '((guix build utils)))
+       (snippet `(begin
+                   ;; Remove bundled libffi
+                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
+                   #t))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:test-target "test"
+       #:tests? #f ; TODO: Enable tests by removing this line
+       #:configure-flags
+       (list
+         "--enable-shared"
+       )
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'replace-bin-sh-and-remove-libffi
+           (lambda _
+             (substitute* '("Makefile.in"
+                            "ext/pty/pty.c"
+                            "io.c"
+                            "lib/mkmf.rb"
+                            "process.c"
+                            "test/rubygems/test_gem_ext_configure_builder.rb"
+                            "test/rdoc/test_rdoc_parser.rb"
+                            "test/ruby/test_rubyoptions.rb"
+                            "test/ruby/test_process.rb"
+                            "test/ruby/test_system.rb"
+                            "tool/rbinstall.rb")
+               (("/bin/sh") (which "sh")))
+             #t)))))
+    (inputs
+     `(("readline" ,readline)
+       ("openssl" ,openssl)
+       ("bzip2" ,bzip2)
+       ("libffi" ,libffi)
+       ("gdbm" ,gdbm)
+       ("libyaml" ,libyaml)
+       ("ncurses" ,ncurses)
+       ("tcl" ,tcl)
+       ("tk" ,tk) ; TODO: This still fails, Ruby is not able to locate Tk/Tcl lib
+       ("zlib" ,zlib)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GEM_PATH")
+            (files (list (string-append "lib/ruby/vendor_ruby"))))))
+    (synopsis "Programming language interpreter")
+    (description "Ruby is a dynamic object-oriented programming language with
+a focus on simplicity and productivity.")
+    (home-page "https://www.ruby-lang.org")
+    (license license:ruby)))
 
 ; MetaCall
 (define-public metacall
@@ -361,20 +361,16 @@ devices.")
           ; Loaders
           "-DOPTION_BUILD_LOADERS=ON"
           "-DOPTION_BUILD_LOADERS_MOCK=ON"
-          ; "-DOPTION_BUILD_LOADERS_PY=ON"
-          ; "-DOPTION_BUILD_LOADERS_RB=ON"
-          ; "-DOPTION_BUILD_LOADERS_FILE=ON"
-          ; "-DOPTION_BUILD_LOADERS_NODE=ON"
-          "-DOPTION_BUILD_LOADERS_PY=OFF"
-          "-DOPTION_BUILD_LOADERS_RB=OFF"
-          "-DOPTION_BUILD_LOADERS_FILE=OFF"
+          "-DOPTION_BUILD_LOADERS_PY=ON"
+          "-DOPTION_BUILD_LOADERS_RB=ON"
+          "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
 
-          ; ; TODO: Avoid harcoded versions of Ruby
-          ; (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
-          ; (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.3.0")
-          ; (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
-          ; (string-append "-DRUBY_VERSION=2.3.8")
+          ; TODO: Avoid harcoded versions of Ruby
+          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
+          (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.3.0")
+          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
+          (string-append "-DRUBY_VERSION=2.3.8")
 
           ; TODO: Avoid harcoded versions of NodeJS
           (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node") "/bin/node")
@@ -389,11 +385,8 @@ devices.")
 
           ; Ports
           "-DOPTION_BUILD_PORTS=ON"
-          ; "-DOPTION_BUILD_PORTS_PY=ON"
-          ; "-DOPTION_BUILD_PORTS_RB=ON"
-          ; "-DOPTION_BUILD_PORTS_NODE=ON"
-          "-DOPTION_BUILD_PORTS_PY=OFF"
-          "-DOPTION_BUILD_PORTS_RB=OFF"
+          "-DOPTION_BUILD_PORTS_PY=ON"
+          "-DOPTION_BUILD_PORTS_RB=ON"
           "-DOPTION_BUILD_PORTS_NODE=ON"
 
           ; Disable coverage
@@ -408,15 +401,15 @@ devices.")
      `(
         ("rapidjson" ,rapidjson)
         ; TODO: Package only the runtime lib for each runtime
-        ; ("python" ,python)
-        ; ("ruby" ,ruby)
+        ("python" ,python)
+        ("ruby" ,ruby)
         ("libnode" ,libnode)
       )
     )
     (native-inputs
      `(
-        ; ("python" ,python)
-        ; ("ruby" ,ruby)
+        ("python" ,python)
+        ("ruby" ,ruby)
         ("node" ,node)
         ("node-addon-api" ,node-addon-api)
         ("swig" ,swig)

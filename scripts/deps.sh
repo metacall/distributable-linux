@@ -21,13 +21,6 @@
 
 export GUILE_WARN_DEPRECATED='detailed'
 
-# Download
-# guix download https://github.com/metacall/core/archive/v0.1.23.tar.gz
-
-# Generate a portable package tarball
-`# Build` guix build metacall -L /metacall/source \
-`# Test` `# && guix package -i metacall -L /metacall/source` \
-`# Lint` `# && guix lint metacall` \
-`# Pack` && guix pack -RR metacall -L /metacall/source | tee build.log \
-`# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack/tarball.tar.gz \
+# Build dependencies
+`# Build` guix build libnode ruby node-addon-api -L /metacall/source \
 `# Exit` && exit 0 || exit 1

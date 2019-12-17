@@ -17,13 +17,14 @@
 #	limitations under the License.
 #
 
-.PHONY: all build test help default
+.PHONY: all deps build test help default
 
 # Default target
 default: all
 
 # All targets
 all:
+	@$(MAKE) deps
 	@$(MAKE) build
 	@$(MAKE) test
 
@@ -32,17 +33,28 @@ help:
 	@echo 'Management commands for metacall-distributable:'
 	@echo
 	@echo 'Usage:'
-	@echo '    make build                    Build all images for all platforms and architectures.'
-	@echo '    make test                     Run integration tests for the built tarballs.'
-	@echo '    make help                     Show verbose help.'
+	@echo '    make deps         Build dependency images for caching the runtimes.'
+	@echo '    make build        Build the tarball for all platforms and architectures.'
+	@echo '    make test         Run integration tests for the already built tarballs.'
+	@echo '    make help         Show verbose help.'
 	@echo
 
-# Build all images
+# Build deps
+deps:
+	@docker stop metacall_distributable 2> /dev/null || true
+	@docker rm metacall_distributable 2> /dev/null || true
+	@docker build -t metacall/distributable -f Dockerfile .
+	@docker run -d --privileged --name metacall_distributable metacall/distributable
+	@docker exec -it metacall_distributable /metacall/scripts/deps.sh
+	@docker commit metacall_distributable metacall/distributable
+	@docker rm -f metacall_distributable
+
+# Build tarball
 build:
 	@rm -rf out/* && touch out/.gitkeep
-	@docker stop metacall_distributable || true
-	@docker build -t metacall/distributable -f Dockerfile .
-	@docker run --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable
+	@docker stop metacall_distributable 2> /dev/null || true
+	@docker rm metacall_distributable 2> /dev/null || true
+	@docker run --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable /metacall/scripts/build.sh
 
 # Test tarballs
 test:
