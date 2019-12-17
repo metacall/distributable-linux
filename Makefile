@@ -41,7 +41,6 @@ help:
 build:
 	@rm -rf out/* && touch out/.gitkeep
 	@docker stop metacall_distributable || true
-	@docker rm metacall_distributable || true
 	@docker build -t metacall/distributable -f Dockerfile .
 	@docker run --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable
 
