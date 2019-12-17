@@ -366,16 +366,16 @@
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
 
-          ; TODO: Avoid harcoded versions of Ruby
-          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.3.0")
-          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
-          (string-append "-DRUBY_VERSION=2.3.8")
+          ; ; TODO: Avoid harcoded versions of Ruby
+          ; (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
+          ; (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.3.0")
+          ; (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
+          ; (string-append "-DRUBY_VERSION=2.3.8")
 
-          ; TODO: Avoid harcoded versions of NodeJS
-          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node") "/bin/node")
-          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "libnode") "/include/node")
-          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so.64")
+          ; ; TODO: Avoid harcoded versions of NodeJS
+          ; (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node") "/bin/node")
+          ; (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "libnode") "/include/node")
+          ; (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so.64")
 
           ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
 
@@ -401,16 +401,16 @@
      `(
         ("rapidjson" ,rapidjson)
         ; TODO: Package only the runtime lib for each runtime
-        ("python" ,python)
-        ("ruby" ,ruby)
-        ("libnode" ,libnode)
+        ; ("python" ,python)
+        ; ("ruby" ,ruby)
+        ; ("libnode" ,libnode)
       )
     )
     (native-inputs
      `(
-        ("python" ,python)
-        ("ruby" ,ruby)
-        ("node" ,node)
+        ; ("python" ,python)
+        ; ("ruby" ,ruby)
+        ; ("node" ,node)
         ("node-addon-api" ,node-addon-api)
         ("swig" ,swig)
       )
