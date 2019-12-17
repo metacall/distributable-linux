@@ -361,10 +361,14 @@
           ; Loaders
           "-DOPTION_BUILD_LOADERS=ON"
           "-DOPTION_BUILD_LOADERS_MOCK=ON"
-          "-DOPTION_BUILD_LOADERS_PY=ON"
-          "-DOPTION_BUILD_LOADERS_RB=ON"
-          "-DOPTION_BUILD_LOADERS_FILE=ON"
-          "-DOPTION_BUILD_LOADERS_NODE=ON"
+          ; "-DOPTION_BUILD_LOADERS_PY=ON"
+          ; "-DOPTION_BUILD_LOADERS_RB=ON"
+          ; "-DOPTION_BUILD_LOADERS_FILE=ON"
+          ; "-DOPTION_BUILD_LOADERS_NODE=ON"
+          "-DOPTION_BUILD_LOADERS_PY=OFF"
+          "-DOPTION_BUILD_LOADERS_RB=OFF"
+          "-DOPTION_BUILD_LOADERS_FILE=OFF"
+          "-DOPTION_BUILD_LOADERS_NODE=OFF"
 
           ; ; TODO: Avoid harcoded versions of Ruby
           ; (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
@@ -385,8 +389,11 @@
 
           ; Ports
           "-DOPTION_BUILD_PORTS=ON"
-          "-DOPTION_BUILD_PORTS_PY=ON"
-          "-DOPTION_BUILD_PORTS_RB=ON"
+          ; "-DOPTION_BUILD_PORTS_PY=ON"
+          ; "-DOPTION_BUILD_PORTS_RB=ON"
+          ; "-DOPTION_BUILD_PORTS_NODE=ON"
+          "-DOPTION_BUILD_PORTS_PY=OFF"
+          "-DOPTION_BUILD_PORTS_RB=OFF"
           "-DOPTION_BUILD_PORTS_NODE=ON"
 
           ; Disable coverage
