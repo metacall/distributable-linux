@@ -64,7 +64,10 @@ build:
 	# Patch the source (metacall.scm) with latest version
 	@docker run -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable metacall/distributable cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
 	@docker commit metacall_distributable metacall/distributable
-	# Clear the container
+	@docker rm -f metacall_distributable
+	# Patch the script (build.sh) with latest version
+	@docker run -v `pwd`/scripts:/metacall/patch --privileged --name metacall_distributable metacall/distributable cp /metacall/patch/build.sh /metacall/scripts/build.sh
+	@docker commit metacall_distributable metacall/distributable
 	@docker rm -f metacall_distributable
 	# Build tarball and store it into out folder
 	@docker run --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable /metacall/scripts/build.sh

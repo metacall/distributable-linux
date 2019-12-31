@@ -31,7 +31,8 @@ export GUILE_WARN_DEPRECATED='detailed'
 `# Pack` && guix pack -RR -S /bin=bin metacall -L /metacall/source | tee build.log \
 `# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/tarball.tar.gz \
 `# Ownership` && mkdir -p /metacall/tmp \
-				&& tar -C /metacall/tmp/ -zxf /metacall/tarball.tar.gz \
-				&& tar tar -czf /metacall/pack/tarball.tar.gz --owner=1000 --group=1000 /metacall/tmp/ \
-				&& rm -rf /metacall/tmp \
+		&& tar -C /metacall/tmp/ -zxf /metacall/tarball.tar.gz \
+		&& chown -R 1000:1000 /metacall/tmp/ \
+		&& tar -czf /metacall/pack/tarball.tar.gz /metacall/tmp/ \
+		&& rm -rf /metacall/tmp \
 `# Exit` && exit 0 || exit 1
