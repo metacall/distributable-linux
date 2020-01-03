@@ -39,7 +39,7 @@ ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& printf "inspect\nexit" \
-	| `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli mock test.mock \
+	| `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli load mock test.mock \
 	| grep -e 'function three_str(a_str, b_str, c_str)'
 
 ENTRYPOINT ["sh", "-c"]
