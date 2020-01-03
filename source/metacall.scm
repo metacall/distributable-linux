@@ -207,6 +207,35 @@ devices.")
     (license expat)
     (properties '((timeout . 3600))))) ; 1 h
 
+; NodeJS Loader Dependencies
+(define-public cherow
+  (package
+    (name "cherow")
+    (version "1.6.9")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://registry.npmjs.org/cherow/-/cherow-" version ".tgz"))
+        (sha256 (base32 "1m397n6lzj49rhr8742c2cbcyqjrrxa56l197xvrx1sk4jgmzymf"))
+      )
+    )
+    (build-system node-build-system)
+    (arguments
+      `(
+        #:phases
+        (modify-phases %standard-phases
+          (delete 'check)
+        )
+      )
+    )
+    (home-page "https://github.com/cherow/cherow")
+    (synopsis "A very fast and lightweight, self-hosted javascript parser.")
+    (description "A very fast and lightweight, standards-compliant,
+self-hosted javascript parser with high focus on both performance and stability.")
+    (license license:expat)
+  )
+)
+
 ; NodeJS Port Dependencies
 (define-public node-addon-api
   (package
