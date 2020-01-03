@@ -29,5 +29,5 @@ export GUILE_WARN_DEPRECATED='detailed'
 `# Test` `# && guix package -i metacall -L /metacall/source` \
 `# Lint` `# && guix lint metacall` \
 `# Pack` && guix pack -RR metacall -L /metacall/source | tee build.log \
-`# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/tarball.tar.gz \
+`# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack/tarball.tar.gz \
 `# Exit` && exit 0 || exit 1
