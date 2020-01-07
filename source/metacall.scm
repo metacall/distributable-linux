@@ -225,6 +225,7 @@ devices.")
         #:phases
         (modify-phases %standard-phases
           (delete 'check)
+          (delete 'build)
         )
       )
     )
