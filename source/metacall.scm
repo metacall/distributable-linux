@@ -207,35 +207,35 @@ devices.")
     (license expat)
     (properties '((timeout . 3600))))) ; 1 h
 
-; NodeJS Loader Dependencies
-(define-public cherow
-  (package
-    (name "cherow")
-    (version "1.6.9")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://registry.npmjs.org/cherow/-/cherow-" version ".tgz"))
-        (sha256 (base32 "1m397n6lzj49rhr8742c2cbcyqjrrxa56l197xvrx1sk4jgmzymf"))
-      )
-    )
-    (build-system node-build-system)
-    (arguments
-      `(
-        #:phases
-        (modify-phases %standard-phases
-          (delete 'check)
-          (delete 'build)
-        )
-      )
-    )
-    (home-page "https://github.com/cherow/cherow")
-    (synopsis "A very fast and lightweight, self-hosted javascript parser.")
-    (description "A very fast and lightweight, standards-compliant,
-self-hosted javascript parser with high focus on both performance and stability.")
-    (license license:expat)
-  )
-)
+; ; NodeJS Loader Dependencies
+; (define-public cherow
+;   (package
+;     (name "cherow")
+;     (version "1.6.9")
+;     (source
+;       (origin
+;         (method url-fetch)
+;         (uri (string-append "https://registry.npmjs.org/cherow/-/cherow-" version ".tgz"))
+;         (sha256 (base32 "1m397n6lzj49rhr8742c2cbcyqjrrxa56l197xvrx1sk4jgmzymf"))
+;       )
+;     )
+;     (build-system node-build-system)
+;     (arguments
+;       `(
+;         #:phases
+;         (modify-phases %standard-phases
+;           (delete 'check)
+;           (delete 'build)
+;         )
+;       )
+;     )
+;     (home-page "https://github.com/cherow/cherow")
+;     (synopsis "A very fast and lightweight, self-hosted javascript parser.")
+;     (description "A very fast and lightweight, standards-compliant,
+; self-hosted javascript parser with high focus on both performance and stability.")
+;     (license license:expat)
+;   )
+; )
 
 ; NodeJS Port Dependencies
 (define-public node-addon-api
@@ -352,8 +352,7 @@ a focus on simplicity and productivity.")
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
-                ; TODO: NPM fails with cb()
-                ; (setenv "HOME" "/tmp")
+                (setenv "HOME" (string-append (getenv "NIX_BUILD_TOP") "/npm-home"))
                 #t))))
         ; TODO: Enable tests
         #:tests? #f
@@ -396,7 +395,7 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_LOADERS_PY=ON"
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_LOADERS_FILE=ON"
-          "-DOPTION_BUILD_LOADERS_NODE=OFF" ; TODO: Enable node loader
+          "-DOPTION_BUILD_LOADERS_NODE=ON"
 
           ; TODO: Avoid harcoded versions of Ruby
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
@@ -432,7 +431,6 @@ a focus on simplicity and productivity.")
     (propagated-inputs
      `(
         ("rapidjson" ,rapidjson)
-        ; TODO: Package only the runtime lib for each runtime
         ("python" ,python)
         ("dynruby" ,dynruby)
         ("libnode" ,libnode)
