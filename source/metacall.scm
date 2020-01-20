@@ -330,36 +330,6 @@ a focus on simplicity and productivity.")
     (home-page "https://www.ruby-lang.org")
     (license license:ruby)))
 
-(define-public metacall-nodejs-bootstrap
-  (package
-    (name "metacall")
-    (version "0.1.25")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "129b5l6103331y1a6lq1fvdcly89rxhfnzf5451cchpl83xr1bvg"))
-      )
-    )
-    (build-system node-build-system)
-    (arguments
-      `(
-        #:phases
-        (modify-phases %standard-phases
-          (add-before 'unpack 'chdir
-            (lambda _
-              (chdir "source/loaders/node_loader/bootstrap/lib")
-        #t)))
-      )
-    )
-    (inputs
-     `(
-        ("cherow" ,cherow)
-      )
-    )
-  )
-)
-
 ; MetaCall
 (define-public metacall
   (package
