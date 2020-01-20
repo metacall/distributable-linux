@@ -334,12 +334,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.25")
+    (version "0.1.26")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "129b5l6103331y1a6lq1fvdcly89rxhfnzf5451cchpl83xr1bvg"))
+        (sha256 (base32 "1r3q6kjpqlnj676vmja936gj09anlhfa948kjdjflcdv1xps1j15"))
       )
     )
     (build-system cmake-build-system)
@@ -357,6 +357,9 @@ a focus on simplicity and productivity.")
         #:tests? #f
         #:configure-flags
         (list
+          ; Disable all unreproductible operations
+          "-DOPTION_BUILD_GUIX=ON"
+
           ; Build wiht release mode
           "-DCMAKE_BUILD_TYPE=Release"
 
@@ -395,8 +398,6 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
-          "-DDISABLE_BUILD_LOADERS_NODE_TRAMPOLINE=ON"
-          "-DDISABLE_BUILD_LOADERS_NODE_BOOTSTRAP=ON"
 
           ; TODO: Avoid harcoded versions of Ruby
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
