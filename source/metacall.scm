@@ -37,6 +37,7 @@
 
   ; Python Dependencies
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
 
   ; Ruby Dependencies
   #:use-module (gnu packages readline)
