@@ -334,12 +334,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.27")
+    (version "0.1.28")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1y75bm9j7x790gdgl2p6b95c1wrghy86sgr688xa5wqkr2j59csg"))
+        (sha256 (base32 "00qw946cmb88wzzc91k9xjhdr9lpw3id5h82da8qq72x2ad97pjh"))
       )
     )
     (build-system cmake-build-system)
@@ -443,7 +443,7 @@ a focus on simplicity and productivity.")
     (native-inputs
      `(
         ("python" ,python) ; For building Python Port
-        ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
+        ("python-gyp" ,python-gyp) ; For building NodeJS Port
         ("dynruby" ,dynruby) ; For building Ruby Port
         ("node" ,node) ; For building NodeJS Port
         ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
