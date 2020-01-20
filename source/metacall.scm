@@ -334,12 +334,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.26")
+    (version "0.1.27")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1r3q6kjpqlnj676vmja936gj09anlhfa948kjdjflcdv1xps1j15"))
+        (sha256 (base32 "1y75bm9j7x790gdgl2p6b95c1wrghy86sgr688xa5wqkr2j59csg"))
       )
     )
     (build-system cmake-build-system)
@@ -432,21 +432,22 @@ a focus on simplicity and productivity.")
     )
     (inputs
      `(
-        ("rapidjson" ,rapidjson)
-        ("python" ,python)
-        ("dynruby" ,dynruby)
-        ("libnode" ,libnode)
-        ("libuv" ,libuv)
-        ("cherow" ,cherow)
+        ("rapidjson" ,rapidjson) ; RapidJson Serial dependency
+        ("python" ,python) ; Python Loader dependency
+        ("dynruby" ,dynruby) ; Ruby Loader dependency
+        ("libnode" ,libnode) ; NodeJS Loader dependency
+        ("libuv" ,libuv) ; NodeJS Loader dependency
+        ("cherow" ,cherow) ; NodeJS Loader dependency
       )
     )
     (native-inputs
      `(
-        ("python" ,python)
-        ("dynruby" ,dynruby)
-        ("node" ,node)
-        ("node-addon-api" ,node-addon-api)
-        ("swig" ,swig)
+        ("python" ,python) ; For building Python Port
+        ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
+        ("dynruby" ,dynruby) ; For building Ruby Port
+        ("node" ,node) ; For building NodeJS Port
+        ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
+        ("swig" ,swig) ; For building ports
       )
     )
     (home-page "https://metacall.io/")
