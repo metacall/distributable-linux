@@ -335,12 +335,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.29")
+    (version "0.1.30")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "0yqfx51qsiqdbywz17pqhbr9qx9xkv0994n9542pgjd3k462jy83"))
+        (sha256 (base32 "1krc1jxrdcbwd4qj8kz8dcadq75v5k9q001iif0gm1z6gb0rmijq"))
       )
     )
     (build-system cmake-build-system)
@@ -353,7 +353,14 @@ a focus on simplicity and productivity.")
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
-                #t))))
+                #t)))
+          (add-after 'build 'build-node-loader-bootstrap-cherow
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                      (cherow (assoc-ref inputs "cherow")))
+                (copy-file (string-append cherow "/dist/commonjs/cherow.min.js")
+                  (string-append out "node_modules/cherow/index.js")))
+              #t)))
         ; TODO: Enable tests
         #:tests? #f
         #:configure-flags
@@ -431,24 +438,24 @@ a focus on simplicity and productivity.")
         )
       )
     )
-    (inputs
+    (propagated-inputs
      `(
-        ("rapidjson" ,rapidjson) ; RapidJson Serial dependency
         ("python" ,python) ; Python Loader dependency
         ("dynruby" ,dynruby) ; Ruby Loader dependency
         ("libnode" ,libnode) ; NodeJS Loader dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
-        ("cherow" ,cherow) ; NodeJS Loader dependency
       )
     )
-    (native-inputs
+    (inputs
      `(
+        ("rapidjson" ,rapidjson) ; RapidJson Serial dependency
         ("python" ,python) ; For building Python Port
         ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
         ("dynruby" ,dynruby) ; For building Ruby Port
         ("node" ,node) ; For building NodeJS Port
         ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
         ("swig" ,swig) ; For building ports
+        ("cherow" ,cherow) ; NodeJS Loader dependency
       )
     )
     (home-page "https://metacall.io/")
