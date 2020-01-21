@@ -331,16 +331,19 @@ a focus on simplicity and productivity.")
     (home-page "https://www.ruby-lang.org")
     (license license:ruby)))
 
+; TODO: MetaCall CLI should set some enviroment variables in order to make it work for Guixers
+; See metacall/install CLI script for knowing the needed variables and paths
+
 ; MetaCall
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.30")
+    (version "0.1.31")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1krc1jxrdcbwd4qj8kz8dcadq75v5k9q001iif0gm1z6gb0rmijq"))
+        (sha256 (base32 "14i54gw7jha2aw1bgkdr1wpny7cvpkmnpcm46p7bga584qvs1f18"))
       )
     )
     (build-system cmake-build-system)
