@@ -356,11 +356,12 @@ a focus on simplicity and productivity.")
                 #t)))
           (add-after 'build 'build-node-loader-bootstrap-cherow
             (lambda* (#:key outputs inputs #:allow-other-keys)
-              (let* ((output (string-append (assoc-ref outputs "out") "/node_modules/cherow/index.js"))
+              (let* ((output (string-append (assoc-ref outputs "out") "/node_modules/cherow"))
                       (cherow (string-append (assoc-ref inputs "cherow") "/lib/node_modules/cherow/dist/commonjs/cherow.min.js")))
-                (format #t "CHEROW PATH: ~a" cherow)
-                (format #t "OUTPUT PATH: ~a" output)
-                (copy-file cherow output))
+                (format #t "Cherow Path: ~a\n" cherow)
+                (format #t "Output Path: ~a\n" output)
+                (mkdir-p output)
+                (copy-file cherow (string-append output "/index.js")))
               #t)))
         ; TODO: Enable tests
         #:tests? #f
