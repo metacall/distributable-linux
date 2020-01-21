@@ -24,20 +24,33 @@ default: all
 
 # All targets
 all:
+	@$(MAKE) clear
 	@$(MAKE) deps
 	@$(MAKE) build
 	@$(MAKE) test
+	@$(MAKE) clear
 
 # Show help
 help:
 	@echo 'Management commands for metacall-distributable:'
 	@echo
 	@echo 'Usage:'
+	@echo '    make clear        Clear all containers and images.'
 	@echo '    make deps         Build dependency images for caching the runtimes.'
 	@echo '    make build        Build the tarball for all platforms and architectures.'
 	@echo '    make test         Run integration tests for the already built tarballs.'
 	@echo '    make help         Show verbose help.'
 	@echo
+
+# Clear images and containers
+clear:
+	# Clear the container
+	@docker stop metacall_distributable 2> /dev/null || true
+	@docker rm metacall_distributable 2> /dev/null || true
+	# Clear the images
+	@docker images | grep metacall/distributable_test | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi metacall/distributable_test:{} 2> /dev/null || true
+	@docker rmi metacall/distributable 2> /dev/null || true
+
 
 # Build deps
 deps:
