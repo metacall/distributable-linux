@@ -453,9 +453,7 @@ a focus on simplicity and productivity.")
     (inputs
      `(
         ("rapidjson" ,rapidjson) ; RapidJson Serial dependency
-        ("python" ,python) ; For building Python Port
         ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
-        ("dynruby" ,dynruby) ; For building Ruby Port
         ("node" ,node) ; For building NodeJS Port
         ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
         ("swig" ,swig) ; For building ports
