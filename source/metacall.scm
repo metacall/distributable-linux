@@ -446,6 +446,7 @@ a focus on simplicity and productivity.")
         ("python" ,python) ; Python Loader dependency
         ("dynruby" ,dynruby) ; Ruby Loader dependency
         ("libnode" ,libnode) ; NodeJS Loader dependency
+        ("node" ,node) ; MetaCall CLI NPM dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
       )
     )
