@@ -37,12 +37,25 @@ COPY tests/scripts/ /scripts/
 
 ARG CACHE_INVALIDATE
 
+# TODO: PATH incompatibility between python and node package managers must be solved, now the
+# test passes because of the PATH is set after python packages are installed, if we move the
+# PATH setting to the top, it will fail
+
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
-	&& export LOADER_LIBRARY_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/lib" \
+	&& export METACALL_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`" \
+	&& export LOADER_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export SERIAL_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export DETOUR_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export PORT_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
 	&& export NODE_PATH="`find /gnu/store/ -type d -name '*libnode*' | head -n 1`/lib/node_modules" \
 	&& export NODE_EXE_PATH="`find /gnu/store/ -type d -name '*node*' | head -n 1`/bin/node" \
+	&& `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli install py metacall \
+	&& `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli install py numpy \
+	&& if [ -z "${PATH-}" ]; then export PATH="/gnu/bin"; else export PATH="/gnu/bin:${PATH}"; fi \
 	&& `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli install node rambda \
+	&& `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli install node metacall \
 	&& printf "inspect\nexit" \
 	| `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli load mock test.mock \
 	| grep -e 'function three_str(a_str, b_str, c_str)'
