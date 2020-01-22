@@ -38,6 +38,11 @@ COPY tests/scripts/ /scripts/
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
+	&& export LOADER_SCRIPT_PATH="/scripts/" \
+	&& export LOADER_LIBRARY_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/lib" \
+	&& export NODE_PATH="`find /gnu/store/ -type d -name '*libnode*' | head -n 1`/lib/node_modules" \
+	&& export NODE_EXE_PATH="`find /gnu/store/ -type d -name '*node*' | head -n 1`/bin/node" \
+	&& `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli install node rambda \
 	&& printf "inspect\nexit" \
 	| `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli load mock test.mock \
 	| grep -e 'function three_str(a_str, b_str, c_str)'
