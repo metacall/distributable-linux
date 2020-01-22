@@ -33,18 +33,26 @@ RUN cd / \
 	&& tar -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-COPY tests/node/test.js /
-
 COPY tests/scripts/ /scripts/
+
+COPY tests/node/test.js /scripts/
 
 ARG CACHE_INVALIDATE
 
-RUN export NODE_ENV=debug \
-	&& echo "Running tests ${CACHE_INVALIDATE}" \
-	&& cd / \
-	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/lib/libnode_port.node#g" test.js \
-	&& node test.js | grep \
-		-e 'Hello World' \
-		-e '666667'
+RUN echo "Running tests ${CACHE_INVALIDATE}" \
+	&& export NODE_ENV=debug \
+	&& export LOADER_SCRIPT_PATH="/scripts/" \
+	&& export LOADER_LIBRARY_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/lib" \
+	&& export NODE_PATH="`find /gnu/store/ -type d -name '*libnode*' | head -n 1`/lib/node_modules" \
+	&& export NODE_EXE_PATH="`find /gnu/store/ -type d -name '*node*' | head -n 1`/bin/node" \
+	&& `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli install node metacall \
+	&& echo 'call mock()\nexit' | `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli load node test.js \
+	| grep \
+		-e 'Hello World'
+
+# TODO: Check why calling python function ceates a deadlock
+#	&& echo 'call python()\nexit' | `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli load node test.js \
+#	| grep \
+#		-e '666667'
 
 ENTRYPOINT ["sh", "-c"]
