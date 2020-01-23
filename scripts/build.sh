@@ -28,6 +28,7 @@ export GUILE_WARN_DEPRECATED='detailed'
 `# Build` guix build metacall -L /metacall/source \
 `# Test` `# && guix package -i metacall -L /metacall/source` \
 `# Lint` `# && guix lint metacall` \
-`# Pack` && guix pack -S /gnu/bin=bin -RR metacall -L /metacall/source | tee build.log \
+`# Pack uses --no-grafts option in order to avoid conflicts between duplicated versions` \
+`# Pack` && guix pack --no-grafts -S /gnu/bin=bin -RR metacall -L /metacall/source | tee build.log \
 `# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack/tarball.tar.gz \
 `# Exit` && exit 0 || exit 1
