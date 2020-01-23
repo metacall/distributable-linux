@@ -19,11 +19,9 @@
 #	limitations under the License.
 #
 
-import sys
+from metacall import metacall, metacall_load_from_file
 
-sys.path.insert(0, '@METACALL_LIBRARY_PATH@')
+metacall_load_from_file('mock', ['test.mock']);
 
-from _py_port import *
-
-print(metacall_load_from_file('mock', ['test.mock']));
-print(metacall('three_str', 'a', 'b', 'c'));
+def test():
+	return metacall('three_str', 'a', 'b', 'c');

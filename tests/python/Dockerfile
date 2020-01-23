@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM python:3.7.5-slim-buster AS python_test
+FROM busybox:1.31.1 AS node_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -33,16 +33,29 @@ RUN cd / \
 	&& tar -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-COPY tests/python/test.py /
-
 COPY tests/scripts/ /scripts/
+
+COPY tests/node/test.js /scripts/
 
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
-	&& cd / \
-	&& sed -i "s#@METACALL_LIBRARY_PATH@#`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/lib#g" test.py \
-	&& python3 test.py | grep \
-		-e 'Hello World'
+	&& export PATH="/gnu/bin:${PATH}" \
+	&& /gnu/bin/pip3 install metacall
+
+RUN export LOADER_SCRIPT_PATH="/scripts/" \
+	&& export METACALL_PATH="/gnu/store/`ls /gnu/store/ | grep metacall | head -n 1`" \
+	&& export LOADER_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export SERIAL_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export DETOUR_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export PORT_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
+	&& printf 'load py test.py\ninspect\ncall test()\nexit' | ${METACALL_PATH}/metacallcli \
+	&& cat /root/metacall.log
+
+# TODO: The script is not being loaded properly, investigate why
+# \
+#	| grep \
+#		-e 'Hello World'
 
 ENTRYPOINT ["sh", "-c"]

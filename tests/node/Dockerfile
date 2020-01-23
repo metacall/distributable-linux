@@ -40,7 +40,10 @@ COPY tests/node/test.js /scripts/
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
-	&& export LOADER_SCRIPT_PATH="/scripts/" \
+	&& export PATH="/gnu/bin:${PATH}" \
+	&& /gnu/bin/node /gnu/bin/npm install metacall
+
+RUN export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export METACALL_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`" \
 	&& export LOADER_LIBRARY_PATH="${METACALL_PATH}/lib" \
 	&& export SERIAL_LIBRARY_PATH="${METACALL_PATH}/lib" \
@@ -48,13 +51,12 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& export PORT_LIBRARY_PATH="${METACALL_PATH}/lib" \
 	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
 	&& export NODE_ENV=debug \
-	&& /gnu/bin/node /gnu/bin/npm install metacall \
-	&& echo 'load node test.js\ncall mock()\nexit' | ${METACALL_PATH}/metacallcli \
+	&& printf 'load node test.js\ncall mock()\nexit' | ${METACALL_PATH}/metacallcli \
 	| grep \
 		-e 'Hello World'
 
-# TODO: Check why calling python function ceates a deadlock
-#	&& echo 'load node test.js\ncall python()\nexit' | ${METACALL_PATH}/metacallcli \
+# TODO: Check why calling python function creates a deadlock
+#	&& printf 'load node test.js\ncall python()\nexit' | ${METACALL_PATH}/metacallcli \
 #	| grep \
 #		-e '666667'
 

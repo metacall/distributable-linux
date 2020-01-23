@@ -53,9 +53,8 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	| grep -e 'function three_str(a_str, b_str, c_str)' \
 	&& printf "load rb mult.rb\ninspect\nexit" \
 	| ${METACALL_PATH}/metacallcli \
-	| grep -e 'function mult(a, b)' \
-	| grep -e 'function add(a, b)' \
-	&& printf "load mock sum.py\ninspect\nexit" \
+	| grep -e 'function add(a, b)' -e 'function mult(a, b)' \
+	&& printf "load py sum.py\ninspect\nexit" \
 	| ${METACALL_PATH}/metacallcli \
 	| grep -e 'function sum(a, b, c)'
 
