@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM node:10.17.0-buster-slim AS node_test
+FROM busybox:1.31.1 AS node_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -40,18 +40,21 @@ COPY tests/node/test.js /scripts/
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
-	&& export NODE_ENV=debug \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
-	&& export LOADER_LIBRARY_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/lib" \
-	&& export NODE_PATH="`find /gnu/store/ -type d -name '*libnode*' | head -n 1`/lib/node_modules" \
-	&& export NODE_EXE_PATH="`find /gnu/store/ -type d -name '*node*' | head -n 1`/bin/node" \
-	&& `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli install node metacall \
-	&& echo 'call mock()\nexit' | `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli load node test.js \
+	&& export METACALL_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`" \
+	&& export LOADER_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export SERIAL_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export DETOUR_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export PORT_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
+	&& export NODE_ENV=debug \
+	&& /gnu/bin/node /gnu/bin/npm install metacall \
+	&& echo 'load node test.js\ncall mock()\nexit' | ${METACALL_PATH}/metacallcli \
 	| grep \
 		-e 'Hello World'
 
 # TODO: Check why calling python function ceates a deadlock
-#	&& echo 'call python()\nexit' | `find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`/metacallcli load node test.js \
+#	&& echo 'load node test.js\ncall python()\nexit' | ${METACALL_PATH}/metacallcli \
 #	| grep \
 #		-e '666667'
 
