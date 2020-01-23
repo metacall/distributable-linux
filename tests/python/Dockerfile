@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM busybox:1.31.1 AS node_test
+FROM busybox:1.31.1 AS python_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
