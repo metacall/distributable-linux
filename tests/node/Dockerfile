@@ -44,7 +44,7 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& /gnu/bin/node /gnu/bin/npm install metacall
 
 RUN export LOADER_SCRIPT_PATH="/scripts/" \
-	&& export METACALL_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`" \
+	&& export METACALL_PATH="/gnu/store/`ls /gnu/store/ | grep metacall | head -n 1`" \
 	&& export LOADER_LIBRARY_PATH="${METACALL_PATH}/lib" \
 	&& export SERIAL_LIBRARY_PATH="${METACALL_PATH}/lib" \
 	&& export DETOUR_LIBRARY_PATH="${METACALL_PATH}/lib" \

@@ -39,8 +39,14 @@ COPY tests/scripts/ /scripts/
 
 ARG CACHE_INVALIDATE
 
-RUN export METACALL_PATH="`find /gnu/store/ -type d -name '*metacall*[^R]' | head -n 1`" \
-	&& echo "Running tests ${CACHE_INVALIDATE}" \
+RUN echo "Running tests ${CACHE_INVALIDATE}" \
+	&& export LOADER_SCRIPT_PATH="/scripts/" \
+	&& export METACALL_PATH="/gnu/store/`ls /gnu/store/ | grep metacall | head -n 1`" \
+	&& export LOADER_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export SERIAL_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export DETOUR_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export PORT_LIBRARY_PATH="${METACALL_PATH}/lib" \
+	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
 	&& cd / \
 	&& gcc \
 		-I$METACALL_PATH/include \
