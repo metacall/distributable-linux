@@ -22,7 +22,7 @@
 export GUILE_WARN_DEPRECATED='detailed'
 
 # Download
-# guix download https://github.com/metacall/core/archive/v0.1.35.tar.gz
+# docker run --rm -it metacall/guix guix download https://github.com/metacall/core/archive/v0.1.36.tar.gz
 
 # Generate a portable package tarball
 `# Build` guix build metacall -L /metacall/source \
