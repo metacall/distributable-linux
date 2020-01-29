@@ -35,7 +35,7 @@ RUN cd / \
 
 COPY tests/scripts/ /scripts/
 
-COPY tests/node/test.js /scripts/
+COPY tests/python/script.py /scripts/
 
 ARG CACHE_INVALIDATE
 
@@ -50,12 +50,9 @@ RUN export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export DETOUR_LIBRARY_PATH="${METACALL_PATH}/lib" \
 	&& export PORT_LIBRARY_PATH="${METACALL_PATH}/lib" \
 	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
-	&& printf 'load py test.py\ninspect\ncall test()\nexit' | ${METACALL_PATH}/metacallcli \
+	&& printf 'load py script.py\ninspect\ncall test()\nexit' | ${METACALL_PATH}/metacallcli \
+	| grep \
+		-e 'Hello World' \
 	&& cat /root/metacall.log
-
-# TODO: The script is not being loaded properly, investigate why
-# \
-#	| grep \
-#		-e 'Hello World'
 
 ENTRYPOINT ["sh", "-c"]
