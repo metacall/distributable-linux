@@ -51,7 +51,6 @@ clear:
 	@docker images | grep metacall/distributable_test | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi metacall/distributable_test:{} 2> /dev/null || true
 	@docker rmi metacall/distributable 2> /dev/null || true
 
-
 # Build deps
 deps:
 	# Clear the container
