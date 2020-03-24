@@ -6,7 +6,7 @@
 #
 #	Copyright (C) 2016 - 2020 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 #
-#	Licensed under the Apache License, Version 2.0 (the "License")#
+#	Licensed under the Apache License, Version 2.0 (the "License")
 #	you may not use this file except in compliance with the License.
 #	You may obtain a copy of the License at
 #
@@ -20,15 +20,17 @@
 #
 
 export GUILE_WARN_DEPRECATED='detailed'
+export METACALL_BUILD_TRIPLET=${METACALL_BUILD_TRIPLET:-x86_64-linux-gnu}
 
 # Download
 # docker run --rm -it metacall/guix guix download https://github.com/metacall/core/archive/v0.1.43.tar.gz
 
-# Generate a portable package tarball
-`# Build` guix build metacall -L /metacall/source \
+# Build metacall from source
+`# Info` echo "Building MetaCall ($METACALL_BUILD_TRIPLET)" \
+`# Build` guix build --target=$METACALL_BUILD_TRIPLET metacall -L /metacall/source \
 `# Test` `# && guix package -i metacall -L /metacall/source` \
 `# Lint` `# && guix lint metacall` \
 `# Pack uses --no-grafts option in order to avoid conflicts between duplicated versions` \
-`# Pack` && guix pack --no-grafts -S /gnu/bin=bin -RR metacall -L /metacall/source | tee build.log \
-`# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack/tarball.tar.gz \
+`# Pack` && guix pack --no-grafts -S /gnu/bin=bin -RR metacall -L /metacall/source | tee build-$METACALL_BUILD_TRIPLET.log \
+`# Copy` && mv `cat build-$METACALL_BUILD_TRIPLET.log | grep "tarball-pack.tar.gz"` /metacall/pack/metacall-tarball-$METACALL_BUILD_TRIPLET.tar.gz \
 `# Exit` && exit 0 || exit 1

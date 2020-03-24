@@ -19,11 +19,4 @@
 #	limitations under the License.
 #
 
-export GUILE_WARN_DEPRECATED='detailed'
-export METACALL_BUILD_TRIPLET=${METACALL_BUILD_TRIPLET:-x86_64-linux-gnu}
-
-# Build dependencies
-`# Info` echo "Building MetaCall Dependencies ($METACALL_BUILD_TRIPLET)" # \
-`# Build (Node Build System)` && guix build node-addon-api cherow -L /metacall/source \
-`# Build (GNU Build System)` && guix build --target=$METACALL_BUILD_TRIPLET libnode dynruby -L /metacall/source \
-`# Exit` && exit 0 || exit 1
+# TODO
