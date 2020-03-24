@@ -22,6 +22,8 @@
 export GUILE_WARN_DEPRECATED='detailed'
 export METACALL_BUILD_TRIPLET=${METACALL_BUILD_TRIPLET:-x86_64-linux-gnu}
 
+# TODO: Do no use target when building in the host architecture
+
 # Build dependencies
 `# Info` echo "Building MetaCall Dependencies ($METACALL_BUILD_TRIPLET)" # \
 `# Build (Node Build System)` && guix build node-addon-api cherow -L /metacall/source \

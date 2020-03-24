@@ -25,6 +25,8 @@ export METACALL_BUILD_TRIPLET=${METACALL_BUILD_TRIPLET:-x86_64-linux-gnu}
 # Download
 # docker run --rm -it metacall/guix guix download https://github.com/metacall/core/archive/v0.1.43.tar.gz
 
+# TODO: Do no use target when building in the host architecture
+
 # Build metacall from source
 `# Info` echo "Building MetaCall ($METACALL_BUILD_TRIPLET)" \
 `# Build` guix build --target=$METACALL_BUILD_TRIPLET metacall -L /metacall/source \
