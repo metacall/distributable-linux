@@ -338,12 +338,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.44")
+    (version "0.1.45")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "0d2h80vk67bc6xh9awxag1dk8cry8zhd3j0xbw28vbnz5f4pcrsk"))
+        (sha256 (base32 "1w83yw0vy5r7bly3zvk08m5xc3691s96zg6vx0c9x72ql7ayz0da"))
       )
     )
     (build-system cmake-build-system)
