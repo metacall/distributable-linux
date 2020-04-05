@@ -25,6 +25,8 @@ default: all
 # All targets
 all:
 	@$(MAKE) clear
+	@$(MAKE) base
+	@$(MAKE) pull
 	@$(MAKE) deps
 	@$(MAKE) build
 	@$(MAKE) test
@@ -35,29 +37,35 @@ help:
 	@echo 'Management commands for metacall-distributable:'
 	@echo
 	@echo 'Usage:'
-	@echo '    make clear        Clear all containers and images.'
+	@echo '    make base         Builds base image with MetaCall scripts.'
+	@echo '    make pull         Updates Guix repository to the latest version.'
 	@echo '    make deps         Build dependency images for caching the runtimes.'
 	@echo '    make build        Build the tarball for all platforms and architectures.'
 	@echo '    make test         Run integration tests for the already built tarballs.'
+	@echo '    make clear        Clear all containers and images.'
 	@echo '    make help         Show verbose help.'
 	@echo
 
-# Clear images and containers
-clear:
-	# Clear the container
-	@docker stop metacall_distributable 2> /dev/null || true
-	@docker rm metacall_distributable 2> /dev/null || true
-	# Clear the images
-	@docker images | grep metacall/distributable_test | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi metacall/distributable_test:{} 2> /dev/null || true
-	@docker rmi metacall/distributable 2> /dev/null || true
-
-# Build deps
-deps:
+base:
 	# Clear the container
 	@docker stop metacall_distributable 2> /dev/null || true
 	@docker rm metacall_distributable 2> /dev/null || true
 	# Build the base image
 	@docker build -t metacall/distributable -f Dockerfile .
+
+# Pull latest version of Guix
+pull:
+	# Clear the container
+	@docker stop metacall_distributable 2> /dev/null || true
+	@docker rm metacall_distributable 2> /dev/null || true
+	# Install the additional channels and pull
+	@docker run --privileged --name metacall_distributable metacall/distributable guix pull --channels=/metacall/source/channels.scm
+	@docker commit metacall_distributable metacall/distributable
+	@docker rm -f metacall_distributable
+	@echo "Done"
+
+# Build deps
+deps:
 	# Build dependencies
 	@docker run --privileged --name metacall_distributable metacall/distributable /metacall/scripts/deps.sh
 	# Commit dependencies into the image
@@ -95,6 +103,15 @@ test:
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:python -f tests/python/Dockerfile .
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:node -f tests/node/Dockerfile .
 	@echo "Done"
+
+# Clear images and containers
+clear:
+	# Clear the container
+	@docker stop metacall_distributable 2> /dev/null || true
+	@docker rm metacall_distributable 2> /dev/null || true
+	# Clear the images
+	@docker images | grep metacall/distributable_test | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi metacall/distributable_test:{} 2> /dev/null || true
+	@docker rmi metacall/distributable 2> /dev/null || true
 
 # Empty target do nothing
 %:

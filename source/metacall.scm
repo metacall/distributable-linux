@@ -65,6 +65,9 @@
 
   ; RapidJSON
   #:use-module (gnu packages web)
+
+  ; NonGuix
+  #:use-module (nonguix build-system binary)
 )
 
 ; NodeJS
