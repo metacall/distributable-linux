@@ -22,5 +22,5 @@
 export GUILE_WARN_DEPRECATED='detailed'
 
 # Build dependencies
-`# Build` guix build libnode dynruby node-addon-api cherow -L /metacall/source \
+`# Build` guix build libnode cherow node-addon-api dynruby netcore -L /metacall/source \
 `# Exit` && exit 0 || exit 1

@@ -334,6 +334,32 @@ a focus on simplicity and productivity.")
     (home-page "https://www.ruby-lang.org")
     (license license:ruby)))
 
+; C# NetCore
+(define-public netcore
+  (package
+    (name "netcore")
+    (version "2.1.17")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://download.visualstudio.microsoft.com/download/pr/"
+          "a668ac5e-ffcc-419a-8c82-9e5feb7b2619/4108ef8aede75bbb569a359dff689c5c"
+          "/dotnet-runtime-" version "-" "linux-x64" ".tar.gz"))
+        (sha256 (base32 "0g7azv4f1acjsjxrqdwmsxhv6x7kgnb3kjrd624sjxq9j9ygmqpn"))
+      )
+    )
+    (build-system binary-build-system)
+    ; TODO: Add support for other triplets
+    (supported-systems '("i686-linux" "x86_64-linux"))
+    (home-page "https://dotnet.microsoft.com/")
+    (synopsis ".NET Core")
+    (description ".NET Core is a free and open-source, managed computer software framework for Windows,
+Linux, and macOS operating systems. It is a cross-platform successor to .NET Framework.
+The project is primarily developed by Microsoft and released under the MIT License.")
+    (license license:expat)
+  )
+)
+
 ; TODO: MetaCall CLI should set some enviroment variables in order to make it work for Guixers
 ; See metacall/install CLI script for knowing the needed variables and paths
 
