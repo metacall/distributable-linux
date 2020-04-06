@@ -66,9 +66,6 @@
 
   ; RapidJSON
   #:use-module (gnu packages web)
-
-  ; ; NonGuix
-  ; #:use-module (nonguix build-system binary)
 )
 
 ; NodeJS
@@ -357,14 +354,19 @@ a focus on simplicity and productivity.")
       )
     )
     (build-system copy-build-system)
+    (arguments
       `(
         #:phases
         (modify-phases %standard-phases
           (replace 'install
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (copy-recursively "." outputs)))
+              (let* ((out (assoc-ref outputs "out"))
+                     (out-lib-build (string-append out "/lib/modules/build")))
+                (copy-recursively "." out)
+                #t)))
         )
       )
+    )
     (home-page "https://dotnet.microsoft.com/")
     (synopsis ".NET Core")
     (description ".NET Core is a free and open-source, managed computer software framework for Windows,
