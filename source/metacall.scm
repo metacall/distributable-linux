@@ -355,18 +355,10 @@ a focus on simplicity and productivity.")
     )
     (build-system copy-build-system)
     (arguments
-      `(
-        #:phases
-        (modify-phases %standard-phases
-          (replace 'install
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (out-lib-build (string-append out "/lib/modules/build")))
-                (copy-recursively "." out)
-                #t)))
-        )
-      )
-    )
+     `(#:install-plan
+       `(("." ("shared")))))
+    (inputs
+     `(("gcc:lib" ,gcc "lib")))
     (home-page "https://dotnet.microsoft.com/")
     (synopsis ".NET Core")
     (description ".NET Core is a free and open-source, managed computer software framework for Windows,
