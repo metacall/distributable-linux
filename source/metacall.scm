@@ -358,8 +358,19 @@ a focus on simplicity and productivity.")
     )
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
-       `(("./shared" "shared"))))
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out    (assoc-ref outputs "out"))
+                    (shared (string-append out "/shared")))
+               (mkdir-p shared)
+
+               ; (copy-file "retux.py" (string-append bin "/retux"))
+
+               (copy-recursively "shared" shared)
+
+               #t))))))
     (inputs
      `(("gcc:lib" ,gcc "lib")))
     (home-page "https://dotnet.microsoft.com/")
