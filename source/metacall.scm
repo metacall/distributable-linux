@@ -69,7 +69,6 @@
 
   ; C# NetCore Dependencies
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages glibc)
   #:use-module (nonguix build-system binary)
 )
 
