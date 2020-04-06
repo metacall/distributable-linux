@@ -357,6 +357,14 @@ a focus on simplicity and productivity.")
       )
     )
     (build-system copy-build-system)
+      `(
+        #:phases
+        (modify-phases %standard-phases
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (copy-recursively "." outputs)))
+        )
+      )
     (home-page "https://dotnet.microsoft.com/")
     (synopsis ".NET Core")
     (description ".NET Core is a free and open-source, managed computer software framework for Windows,
