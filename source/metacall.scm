@@ -360,15 +360,27 @@ a focus on simplicity and productivity.")
     (build-system binary-build-system)
     (supported-systems '("x86_64-linux"))
     (arguments
-     '(#:system "x86_64-linux"
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'unpack
+           (lambda* (#:key source #:allow-other-keys)
+             (invoke "tar" "xvf" source)
+             ;(display (find-files "." "\\.(dll|so|a)$"))
+           )
+         )
+       )
+       #:system "x86_64-linux"
        #:patchelf-plan
-       '(("../host/fxr/2.1.17/libhostfxr.so" ("gcc:lib" "glibc")))
+       '(("host/fxr/2.1.17/libhostfxr.so" ("gcc:lib" "glibc")))
+       ;'(
+       ;   (map (lambda (x) (list x (list "gcc:lib" "glibc"))) '(find-files "." "\\.(dll|so|a)$"))
+       ; )
        #:install-plan
-       '(("../host" "host")
-        ("../shared" "shared")
-        ("../dotnet" "dotnet")
-        ("../ThirdPartyNotices.txt" "ThirdPartyNotices.txt")
-        ("../LICENSE.txt" "LICENSE.txt"))
+       '(("host" "host")
+        ("shared" "shared")
+        ("dotnet" "dotnet")
+        ("ThirdPartyNotices.txt" "ThirdPartyNotices.txt")
+        ("LICENSE.txt" "LICENSE.txt"))
       )
     )
     (inputs
