@@ -361,14 +361,14 @@ a focus on simplicity and productivity.")
     (supported-systems '("x86_64-linux"))
     (arguments
      '(#:system "x86_64-linux"
+       #:patchelf-plan
+       '(("../host/fxr/2.1.17/libhostfxr.so" ("gcc:lib" "glibc")))
        #:install-plan
        '(("../host" "host")
         ("../shared" "shared")
         ("../dotnet" "dotnet")
         ("../ThirdPartyNotices.txt" "ThirdPartyNotices.txt")
         ("../LICENSE.txt" "LICENSE.txt"))
-       #:patchelf-plan
-       '(("host/fxr/2.1.17/libhostfxr.so" ("gcc:lib" "glibc")))
       )
     )
     (inputs
