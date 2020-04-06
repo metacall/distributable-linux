@@ -357,9 +357,11 @@ a focus on simplicity and productivity.")
         (sha256 (base32 "0g7azv4f1acjsjxrqdwmsxhv6x7kgnb3kjrd624sjxq9j9ygmqpn"))
       )
     )
-    (build-system copy-build-system)
+    (build-system binary-build-system)
+    (supported-systems '("x86_64-linux"))
     (arguments
-     '(#:install-plan
+     '(#:system "x86_64-linux"
+       #:install-plan
        '(("../host" "host")
         ("../shared" "shared")
         ("../dotnet" "dotnet")
