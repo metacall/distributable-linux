@@ -66,6 +66,9 @@
 
   ; RapidJSON
   #:use-module (gnu packages web)
+
+  ; C# NetCore Dependencies
+  #:use-module (gnu packages gcc)
 )
 
 ; NodeJS
@@ -356,7 +359,7 @@ a focus on simplicity and productivity.")
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
-       `(("." ("shared")))))
+       `(("./shared" "shared"))))
     (inputs
      `(("gcc:lib" ,gcc "lib")))
     (home-page "https://dotnet.microsoft.com/")
