@@ -25,6 +25,7 @@
 
   ; Build Systems
   #:use-module (guix build-system)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system node)
@@ -333,6 +334,8 @@ self-hosted javascript parser with high focus on both performance and stability.
 a focus on simplicity and productivity.")
     (home-page "https://www.ruby-lang.org")
     (license license:ruby)))
+
+; TODO: C# NetCore SDK
 
 ; C# NetCore
 (define-public netcore
