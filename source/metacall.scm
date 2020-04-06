@@ -359,7 +359,11 @@ a focus on simplicity and productivity.")
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
-       '((".." "."))))
+       '(("../host" "host")
+        ("../shared" "shared")
+        ("../dotnet" "dotnet")
+        ("../ThirdPartyNotices.txt" "ThirdPartyNotices.txt")
+        ("../LICENSE.txt" "LICENSE.txt"))))
     (inputs
      `(("gcc:lib" ,gcc "lib")))
     (home-page "https://dotnet.microsoft.com/")
