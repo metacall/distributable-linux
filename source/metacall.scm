@@ -69,6 +69,8 @@
 
   ; C# NetCore Dependencies
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages glibc)
+  #:use-module (nonguix build-system binary)
 )
 
 ; NodeJS
@@ -363,9 +365,20 @@ a focus on simplicity and productivity.")
         ("../shared" "shared")
         ("../dotnet" "dotnet")
         ("../ThirdPartyNotices.txt" "ThirdPartyNotices.txt")
-        ("../LICENSE.txt" "LICENSE.txt"))))
+        ("../LICENSE.txt" "LICENSE.txt"))
+
+      ;  #:phases
+      ;   (modify-phases %standard-phases
+      ;     (add-after 'install 'patchelf
+      ;       (lambda* (#:key inputs outputs #:allow-other-keys)
+      ;         (unless (zero? (system* "autoreconf" "-vfi"))
+      ;           (error "autoreconf failed"))
+      ;         #t)))
+      )
+    )
     (inputs
-     `(("gcc:lib" ,gcc "lib")))
+     `(("gcc:lib" ,gcc "lib")
+       ("glibc" ,glibc)))
     (home-page "https://dotnet.microsoft.com/")
     (synopsis ".NET Core")
     (description ".NET Core is a free and open-source, managed computer software framework for Windows,
