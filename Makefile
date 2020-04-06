@@ -61,9 +61,7 @@ pull:
 	@docker stop metacall_distributable 2> /dev/null || true
 	@docker rm metacall_distributable 2> /dev/null || true
 	# Install the additional channels and pull
-	@docker run --privileged --name metacall_distributable metacall/distributable sh -c ' \
-		mv /metacall/source/channels.scm /root/.config/guix/channels.scm \
-		&& guix pull'
+	@docker run --privileged --name metacall_distributable metacall/distributable guix pull
 	@docker commit metacall_distributable metacall/distributable
 	@docker rm -f metacall_distributable
 	@echo "Done"

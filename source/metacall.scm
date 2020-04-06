@@ -66,8 +66,8 @@
   ; RapidJSON
   #:use-module (gnu packages web)
 
-  ; NonGuix
-  #:use-module (nonguix build-system binary)
+  ; ; NonGuix
+  ; #:use-module (nonguix build-system binary)
 )
 
 ; NodeJS
@@ -344,13 +344,15 @@ a focus on simplicity and productivity.")
         (method url-fetch)
         (uri (string-append "https://download.visualstudio.microsoft.com/download/pr/"
           "a668ac5e-ffcc-419a-8c82-9e5feb7b2619/4108ef8aede75bbb569a359dff689c5c"
-          "/dotnet-runtime-" version "-" "linux-x64" ".tar.gz"))
+          "/dotnet-runtime-"
+          version
+          "-"
+          "linux-x64"
+          ".tar.gz"))
         (sha256 (base32 "0g7azv4f1acjsjxrqdwmsxhv6x7kgnb3kjrd624sjxq9j9ygmqpn"))
       )
     )
-    (build-system binary-build-system)
-    ; TODO: Add support for other triplets
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (build-system copy-build-system)
     (home-page "https://dotnet.microsoft.com/")
     (synopsis ".NET Core")
     (description ".NET Core is a free and open-source, managed computer software framework for Windows,

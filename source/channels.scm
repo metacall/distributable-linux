@@ -17,7 +17,7 @@
 ;	limitations under the License.
 ;
 
-(cons* (channel
-        (name 'nonguix)
-        (url "https://gitlab.com/nonguix/nonguix"))
-       %default-channels)
+; (cons* (channel
+;         (name 'nonguix)
+;         (url "https://gitlab.com/nonguix/nonguix"))
+;        %default-channels)
