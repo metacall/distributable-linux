@@ -336,6 +336,7 @@ a focus on simplicity and productivity.")
     (license license:ruby)))
 
 ; TODO: C# NetCore SDK
+; https://dotnet.microsoft.com/download/dotnet-core/2.1
 
 ; C# NetCore
 (define-public netcore
