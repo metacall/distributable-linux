@@ -367,14 +367,8 @@ a focus on simplicity and productivity.")
         ("../dotnet" "dotnet")
         ("../ThirdPartyNotices.txt" "ThirdPartyNotices.txt")
         ("../LICENSE.txt" "LICENSE.txt"))
-
-      ;  #:phases
-      ;   (modify-phases %standard-phases
-      ;     (add-after 'install 'patchelf
-      ;       (lambda* (#:key inputs outputs #:allow-other-keys)
-      ;         (unless (zero? (system* "autoreconf" "-vfi"))
-      ;           (error "autoreconf failed"))
-      ;         #t)))
+       #:patchelf-plan
+       '(("host/fxr/2.1.17/libhostfxr.so" ("gcc:lib" "glibc")))
       )
     )
     (inputs
