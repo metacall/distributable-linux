@@ -1,0 +1,6 @@
+machine upload.github.com
+  login <user>
+  password <token>
+machine api.github.com
+  login <user>
+  password <token>

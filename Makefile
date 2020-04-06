@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-.PHONY: all deps build test help default
+.PHONY: all base pull deps build test release help default
 
 # Default target
 default: all
@@ -30,6 +30,7 @@ all:
 	@$(MAKE) deps
 	@$(MAKE) build
 	@$(MAKE) test
+	@$(MAKE) release
 	@$(MAKE) clear
 
 # Show help
@@ -42,6 +43,7 @@ help:
 	@echo '    make deps         Build dependency images for caching the runtimes.'
 	@echo '    make build        Build the tarball for all platforms and architectures.'
 	@echo '    make test         Run integration tests for the already built tarballs.'
+	@echo '    make release      Releases the tarball into GitHub.'
 	@echo '    make clear        Clear all containers and images.'
 	@echo '    make help         Show verbose help.'
 	@echo
@@ -78,8 +80,6 @@ deps:
 
 # Build tarball
 build:
-	# Clear the tarball
-	@rm -rf out/* && touch out/.gitkeep
 	# Clear the container
 	@docker stop metacall_distributable 2> /dev/null || true
 	@docker rm metacall_distributable 2> /dev/null || true
@@ -106,8 +106,19 @@ test:
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:node -f tests/node/Dockerfile .
 	@echo "Done"
 
+# Release tarballs
+release:
+	# Check if .netrc exists
+	@test -f `pwd`/.netrc || (echo "File .netrc does not exist, aborting release." && exit 1)
+
+	# TODO
+
+	@echo "Done"
+
 # Clear images and containers
 clear:
+	# Clear the tarball
+	@rm -rf out/* && touch out/.gitkeep
 	# Clear the container
 	@docker stop metacall_distributable 2> /dev/null || true
 	@docker rm metacall_distributable 2> /dev/null || true
