@@ -359,7 +359,7 @@ a focus on simplicity and productivity.")
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
-       '(("." "shared/" #:include-regexp ("\\.dll$" )))))
+       '((".." "."))))
     (inputs
      `(("gcc:lib" ,gcc "lib")))
     (home-page "https://dotnet.microsoft.com/")
