@@ -472,7 +472,7 @@ The project is primarily developed by Microsoft and released under the MIT Licen
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
-          "-DOPTION_BUILD_LOADERS_CS=OFF" ; TODO
+          "-DOPTION_BUILD_LOADERS_CS=ON"
 
           ; TODO: Avoid harcoded versions of Ruby
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")

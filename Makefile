@@ -30,8 +30,6 @@ all:
 	@$(MAKE) deps
 	@$(MAKE) build
 	@$(MAKE) test
-	@$(MAKE) release
-	@$(MAKE) clear
 
 # Show help
 help:
