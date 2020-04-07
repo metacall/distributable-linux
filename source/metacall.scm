@@ -515,7 +515,8 @@ The project is primarily developed by Microsoft and released under the MIT Licen
           (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so.64")
 
           ; TODO: Avoid harcoded versions of NetCore
-          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore") "/shared/Microsoft.NETCore.App/2.1.17/")
+          ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore") "/shared/Microsoft.NETCore.App/2.1.17/")
+          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore") "/shared/Microsoft.NETCore.App/2.2.8/")
 
           ; TODO: Finish all loaders
           "-DOPTION_BUILD_SCRIPTS_JS=OFF"
