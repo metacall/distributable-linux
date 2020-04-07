@@ -68,8 +68,16 @@
   #:use-module (gnu packages web)
 
   ; NetCore Dependencies
-  #:use-module (gnu packages gcc)
   #:use-module (nonguix build-system binary)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages curl)
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages mono)
+
 )
 
 ; NodeJS
@@ -337,24 +345,38 @@ a focus on simplicity and productivity.")
     (license license:ruby)))
 
 ; TODO: NetCore SDK
-; https://dotnet.microsoft.com/download/dotnet-core/2.1
+; https://dotnet.microsoft.com/download/dotnet-core/2.2
 
 ; NetCore
 (define-public netcore
   (package
     (name "netcore")
-    (version "2.1.17")
+    ; (version "2.1.17")
+    ; (source
+    ;   (origin
+    ;     (method url-fetch)
+    ;     (uri (string-append "https://download.visualstudio.microsoft.com/download/pr/"
+    ;       "a668ac5e-ffcc-419a-8c82-9e5feb7b2619/4108ef8aede75bbb569a359dff689c5c"
+    ;       "/dotnet-runtime-"
+    ;       version
+    ;       "-"
+    ;       "linux-x64"
+    ;       ".tar.gz"))
+    ;     (sha256 (base32 "0g7azv4f1acjsjxrqdwmsxhv6x7kgnb3kjrd624sjxq9j9ygmqpn"))
+    ;   )
+    ; )
+    (version "2.2.8")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://download.visualstudio.microsoft.com/download/pr/"
-          "a668ac5e-ffcc-419a-8c82-9e5feb7b2619/4108ef8aede75bbb569a359dff689c5c"
+          "3fbca771-e7d3-45bf-8e77-cfc1c5c41810/e118d44f5a6df21714abd8316e2e042b"
           "/dotnet-runtime-"
           version
           "-"
           "linux-x64"
           ".tar.gz"))
-        (sha256 (base32 "0g7azv4f1acjsjxrqdwmsxhv6x7kgnb3kjrd624sjxq9j9ygmqpn"))
+        (sha256 (base32 "0vwc96jwagqxw2ybfxb932vxsa8jbd6052yfn4v40zrxac6d6igf"))
       )
     )
     (build-system binary-build-system)
@@ -371,7 +393,7 @@ a focus on simplicity and productivity.")
               (apply old-patchelf (append args (list
               #:patchelf-plan
                 (map (lambda (x)
-                  (list x (list "gcc:lib" "glibc")))
+                  (list x (list "gcc:lib" "glibc"))) ; TODO: Add rpaths?
                   (append (find-files "." "\\.so$") '("dotnet")))
                   )))))))
        #:system "x86_64-linux"
@@ -384,7 +406,14 @@ a focus on simplicity and productivity.")
     )
     (inputs
      `(("gcc:lib" ,gcc "lib")
-       ("glibc" ,glibc)))
+       ("glibc" ,glibc)
+       ("lttng-ust" ,lttng-ust)
+       ("libcurl" ,curl)
+       ("openssl" ,openssl)
+       ("mit-krb5" ,mit-krb5)
+       ("zlib" ,zlib)
+       ("icu4c" ,icu4c)
+       ("libgdiplus" ,libgdiplus)))
     (home-page "https://dotnet.microsoft.com/")
     (synopsis ".NET Core")
     (description ".NET Core is a free and open-source, managed computer software framework for Windows,
