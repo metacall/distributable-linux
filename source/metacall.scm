@@ -67,7 +67,7 @@
   ; RapidJSON
   #:use-module (gnu packages web)
 
-  ; C# NetCore Dependencies
+  ; NetCore Dependencies
   #:use-module (gnu packages gcc)
   #:use-module (nonguix build-system binary)
 )
@@ -336,10 +336,10 @@ a focus on simplicity and productivity.")
     (home-page "https://www.ruby-lang.org")
     (license license:ruby)))
 
-; TODO: C# NetCore SDK
+; TODO: NetCore SDK
 ; https://dotnet.microsoft.com/download/dotnet-core/2.1
 
-; C# NetCore
+; NetCore
 (define-public netcore
   (package
     (name "netcore")
@@ -368,12 +368,12 @@ a focus on simplicity and productivity.")
               (invoke "tar" "xvf" source)))
           (replace 'patchelf
             (lambda args
-              (apply old-patchelf
+              (apply old-patchelf (append args (list
               #:patchelf-plan
                 (map (lambda (x)
                   (list x (list "gcc:lib" "glibc")))
-                  (find-files "." "\\.(dll|so|a)$"))
-                  args)))))
+                  (append (find-files "." "\\.so$") '("dotnet")))
+                  )))))))
        #:system "x86_64-linux"
        #:install-plan
        '(("host" "host")
@@ -473,6 +473,7 @@ The project is primarily developed by Microsoft and released under the MIT Licen
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
+          "-DOPTION_BUILD_LOADERS_CS=OFF" ; TODO
 
           ; TODO: Avoid harcoded versions of Ruby
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
@@ -485,10 +486,10 @@ The project is primarily developed by Microsoft and released under the MIT Licen
           (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "libnode") "/include/node")
           (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so.64")
 
-          ; `# TODO: -DDOTNET_CORE_PATH=${METACALL_PATH}/netcore/share/dotnet/shared/Microsoft.NETCore.App/${METACALL_NETCORE_VERSION}/` \
+          ; TODO: Avoid harcoded versions of NetCore
+          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore") "/shared/Microsoft.NETCore.App/2.1.17/")
 
-          ; TODO: Remove this and enable loaders
-          "-DOPTION_BUILD_LOADERS_CS=OFF"
+          ; TODO: Finish all loaders
           "-DOPTION_BUILD_SCRIPTS_JS=OFF"
 
           ; Ports
@@ -512,6 +513,7 @@ The project is primarily developed by Microsoft and released under the MIT Licen
         ("libnode" ,libnode) ; NodeJS Loader dependency
         ("node" ,node) ; MetaCall CLI NPM dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
+        ("netcore" ,netcore) ; NetCore Loader dependency
       )
     )
     (inputs
