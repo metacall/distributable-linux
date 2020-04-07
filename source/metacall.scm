@@ -361,20 +361,20 @@ a focus on simplicity and productivity.")
     (supported-systems '("x86_64-linux"))
     (arguments
      '(#:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           (lambda* (#:key source #:allow-other-keys)
-             (invoke "tar" "xvf" source)
-             ;(display (find-files "." "\\.(dll|so|a)$"))
-           )
-         )
-       )
+        (let ((old-patchelf (assoc-ref %standard-phases 'patchelf)))
+          (modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "tar" "xvf" source)))
+          (replace 'patchelf
+            (lambda args
+              (apply old-patchelf
+              #:patchelf-plan
+                (map (lambda (x)
+                  (list x (list "gcc:lib" "glibc")))
+                  (find-files "." "\\.(dll|so|a)$"))
+                  args)))))
        #:system "x86_64-linux"
-       #:patchelf-plan
-       '(("host/fxr/2.1.17/libhostfxr.so" ("gcc:lib" "glibc")))
-       ;'(
-       ;   (map (lambda (x) (list x (list "gcc:lib" "glibc"))) '(find-files "." "\\.(dll|so|a)$"))
-       ; )
        #:install-plan
        '(("host" "host")
         ("shared" "shared")
