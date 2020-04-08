@@ -68,6 +68,17 @@ pull:
 
 # Build deps
 deps:
+	# Clear the container
+	@docker stop metacall_distributable 2> /dev/null || true
+	@docker rm metacall_distributable 2> /dev/null || true
+	# Patch the source (metacall.scm) with latest version
+	@docker run -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable metacall/distributable cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
+	@docker commit metacall_distributable metacall/distributable
+	@docker rm -f metacall_distributable
+	# Patch the script (deps.sh) with latest version
+	@docker run -v `pwd`/scripts:/metacall/patch --privileged --name metacall_distributable metacall/distributable cp /metacall/patch/deps.sh /metacall/scripts/deps.sh
+	@docker commit metacall_distributable metacall/distributable
+	@docker rm -f metacall_distributable
 	# Build dependencies
 	@docker run --privileged --name metacall_distributable metacall/distributable /metacall/scripts/deps.sh
 	# Commit dependencies into the image
