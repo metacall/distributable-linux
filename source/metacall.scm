@@ -348,18 +348,18 @@ a focus on simplicity and productivity.")
 (define-public netcore-sdk
   (package
     (name "netcore-sdk")
-    (version "2.2.8")
+    (version "2.2.207")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://download.visualstudio.microsoft.com/download/pr/"
-          "3fbca771-e7d3-45bf-8e77-cfc1c5c41810/e118d44f5a6df21714abd8316e2e042b"
-          "/dotnet-runtime-"
+          "022d9abf-35f0-4fd5-8d1c-86056df76e89/477f1ebb70f314054129a9f51e9ec8ec"
+          "/dotnet-sdk-"
           version
           "-"
           "linux-x64"
           ".tar.gz"))
-        (sha256 (base32 "0vwc96jwagqxw2ybfxb932vxsa8jbd6052yfn4v40zrxac6d6igf"))
+        (sha256 (base32 "1k98p9bs0flgcfw6xiqmyxs9ipvnqrjwr4zhxv1ikq79asczpdag"))
       )
     )
     (build-system binary-build-system)
@@ -383,6 +383,7 @@ a focus on simplicity and productivity.")
        #:install-plan
        '(("host" "host")
         ("shared" "shared")
+        ("sdk" "sdk")
         ("dotnet" "dotnet")
         ("ThirdPartyNotices.txt" "share/doc/ThirdPartyNotices.txt"))
       )
@@ -407,9 +408,9 @@ The project is primarily developed by Microsoft and released under the MIT Licen
 )
 
 ; NetCore (https://dotnet.microsoft.com/download/dotnet-core/2.2)
-(define-public netcore
+(define-public netcore-runtime
   (package
-    (name "netcore")
+    (name "netcore-runtime")
     ; (version "2.1.17")
     ; (source
     ;   (origin
@@ -579,8 +580,8 @@ The project is primarily developed by Microsoft and released under the MIT Licen
 
           ; TODO: Avoid harcoded versions of NetCore
           (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "netcore-sdk") "/dotnet")
-          ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore") "/shared/Microsoft.NETCore.App/2.1.17/")
-          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore") "/shared/Microsoft.NETCore.App/2.2.8/")
+          ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore-runtime") "/shared/Microsoft.NETCore.App/2.1.17/")
+          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore-runtime") "/shared/Microsoft.NETCore.App/2.2.8/")
 
           ; TODO: Finish all loaders
           "-DOPTION_BUILD_SCRIPTS_JS=OFF"
@@ -608,7 +609,7 @@ The project is primarily developed by Microsoft and released under the MIT Licen
         ("node" ,node) ; MetaCall CLI NPM dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("cherow" ,cherow) ; NodeJS Loader dependency
-        ("netcore" ,netcore) ; NetCore Loader dependency
+        ("netcore-runtime" ,netcore-runtime) ; NetCore Loader dependency
       )
     )
     (native-inputs
