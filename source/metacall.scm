@@ -344,10 +344,69 @@ a focus on simplicity and productivity.")
     (home-page "https://www.ruby-lang.org")
     (license license:ruby)))
 
-; TODO: NetCore SDK
-; https://dotnet.microsoft.com/download/dotnet-core/2.2
+; NetCore SDK (https://dotnet.microsoft.com/download/dotnet-core/2.2)
+(define-public netcore-sdk
+  (package
+    (name "netcore-sdk")
+    (version "2.2.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://download.visualstudio.microsoft.com/download/pr/"
+          "3fbca771-e7d3-45bf-8e77-cfc1c5c41810/e118d44f5a6df21714abd8316e2e042b"
+          "/dotnet-runtime-"
+          version
+          "-"
+          "linux-x64"
+          ".tar.gz"))
+        (sha256 (base32 "0vwc96jwagqxw2ybfxb932vxsa8jbd6052yfn4v40zrxac6d6igf"))
+      )
+    )
+    (build-system binary-build-system)
+    (supported-systems '("x86_64-linux"))
+    (arguments
+     '(#:phases
+        (let ((old-patchelf (assoc-ref %standard-phases 'patchelf)))
+          (modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "tar" "xvf" source)))
+          (replace 'patchelf
+            (lambda args
+              (apply old-patchelf (append args (list
+              #:patchelf-plan
+                (map (lambda (x)
+                  (list x (list "gcc:lib" "glibc" "lttng-ust" "libcurl" "openssl" "mit-krb5" "zlib" "icu4c" "libgdiplus")))
+                  (append (find-files "." "\\.so$") '("dotnet")))
+                  )))))))
+       #:system "x86_64-linux"
+       #:install-plan
+       '(("host" "host")
+        ("shared" "shared")
+        ("dotnet" "dotnet")
+        ("ThirdPartyNotices.txt" "share/doc/ThirdPartyNotices.txt"))
+      )
+    )
+    (inputs
+     `(("gcc:lib" ,gcc "lib")
+       ("glibc" ,glibc)
+       ("lttng-ust" ,lttng-ust)
+       ("libcurl" ,curl)
+       ("openssl" ,openssl)
+       ("mit-krb5" ,mit-krb5)
+       ("zlib" ,zlib)
+       ("icu4c" ,icu4c)
+       ("libgdiplus" ,libgdiplus)))
+    (home-page "https://dotnet.microsoft.com/")
+    (synopsis ".NET Core SDK")
+    (description ".NET Core is a free and open-source, managed computer software framework for Windows,
+Linux, and macOS operating systems. It is a cross-platform successor to .NET Framework.
+The project is primarily developed by Microsoft and released under the MIT License.")
+    (license license:expat)
+  )
+)
 
-; NetCore
+; NetCore (https://dotnet.microsoft.com/download/dotnet-core/2.2)
 (define-public netcore
   (package
     (name "netcore")
@@ -430,12 +489,12 @@ The project is primarily developed by Microsoft and released under the MIT Licen
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.45")
+    (version "0.1.46")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1w83yw0vy5r7bly3zvk08m5xc3691s96zg6vx0c9x72ql7ayz0da"))
+        (sha256 (base32 "1apzbhvg670vm0fixarqn8v4pl7kphhn3xfkfrlyis49q6v7rcs2"))
       )
     )
     (build-system cmake-build-system)
@@ -460,6 +519,9 @@ The project is primarily developed by Microsoft and released under the MIT Licen
         #:tests? #f
         #:configure-flags
         (list
+          ; Disable developer warnings
+          "-Wno-dev"
+
           ; Disable all unreproductible operations
           "-DOPTION_BUILD_GUIX=ON"
 
@@ -507,14 +569,16 @@ The project is primarily developed by Microsoft and released under the MIT Licen
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
           (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "dynruby") "/include/ruby-2.3.0")
           (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "dynruby") "/lib/libruby.so")
-          (string-append "-DRUBY_VERSION=2.3.8")
+          (string-append "-DRUBY_VERSION=" "2.3.8")
 
           ; TODO: Avoid harcoded versions of NodeJS
           (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node") "/bin/node")
           (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "libnode") "/include/node")
           (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so.64")
 
+
           ; TODO: Avoid harcoded versions of NetCore
+          (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "netcore-sdk") "/dotnet")
           ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore") "/shared/Microsoft.NETCore.App/2.1.17/")
           (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore") "/shared/Microsoft.NETCore.App/2.2.8/")
 
@@ -526,6 +590,7 @@ The project is primarily developed by Microsoft and released under the MIT Licen
           "-DOPTION_BUILD_PORTS_PY=ON"
           "-DOPTION_BUILD_PORTS_RB=ON"
           "-DOPTION_BUILD_PORTS_NODE=ON"
+          "-DOPTION_BUILD_PORTS_CS=ON"
 
           ; Disable coverage
           "-DOPTION_COVERAGE=OFF"
@@ -542,17 +607,18 @@ The project is primarily developed by Microsoft and released under the MIT Licen
         ("libnode" ,libnode) ; NodeJS Loader dependency
         ("node" ,node) ; MetaCall CLI NPM dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
+        ("cherow" ,cherow) ; NodeJS Loader dependency
         ("netcore" ,netcore) ; NetCore Loader dependency
       )
     )
-    (inputs
+    (native-inputs
      `(
         ("rapidjson" ,rapidjson) ; RapidJson Serial dependency
         ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
         ("node" ,node) ; For building NodeJS Port
         ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
         ("swig" ,swig) ; For building ports
-        ("cherow" ,cherow) ; NodeJS Loader dependency
+        ("netcore-sdk" ,netcore-sdk) ; NetCore Loader dependency
       )
     )
     (home-page "https://metacall.io/")
