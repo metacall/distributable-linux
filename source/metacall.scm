@@ -393,7 +393,7 @@ a focus on simplicity and productivity.")
               (apply old-patchelf (append args (list
               #:patchelf-plan
                 (map (lambda (x)
-                  (list x (list "gcc:lib" "glibc"))) ; TODO: Add rpaths?
+                  (list x (list "gcc:lib" "glibc" "lttng-ust" "libcurl" "openssl" "mit-krb5" "zlib" "icu4c" "libgdiplus")))
                   (append (find-files "." "\\.so$") '("dotnet")))
                   )))))))
        #:system "x86_64-linux"
