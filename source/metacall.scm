@@ -490,12 +490,12 @@ The project is primarily developed by Microsoft and released under the MIT Licen
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.46")
+    (version "0.1.47")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1apzbhvg670vm0fixarqn8v4pl7kphhn3xfkfrlyis49q6v7rcs2"))
+        (sha256 (base32 "1n8wlhddr6fcz0nzplrm54g4mrdjhywilnjrsj2a59mhph3n4216"))
       )
     )
     (build-system cmake-build-system)
