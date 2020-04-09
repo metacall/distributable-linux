@@ -1,12 +1,10 @@
-#!/bin/sh
-
 #
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
 #
 #	Copyright (C) 2016 - 2020 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 #
-#	Licensed under the Apache License, Version 2.0 (the "License")
+#	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
 #	You may obtain a copy of the License at
 #
@@ -19,8 +17,17 @@
 #	limitations under the License.
 #
 
-export GUILE_WARN_DEPRECATED='detailed'
+using System;
 
-# Build dependencies
-`# Build` guix build libnode cherow node-addon-api dynruby netcore-runtime netcore-sdk -L /metacall/source \
-`# Exit` && exit 0 || exit 1
+namespace Scripts
+{
+	public class Program
+	{
+		public static string Say(string text)
+		{
+			Console.WriteLine(text);
+
+			return text;
+		}
+	}
+}
