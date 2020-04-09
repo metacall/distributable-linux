@@ -509,6 +509,13 @@ The project is primarily developed by Microsoft and released under the MIT Licen
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
                 #t)))
+          (add-before 'build 'setenv
+            ; TODO: Workaround for HOME directory, move this to netcore build system in the future
+            (lambda _
+              (let* ((home (string-append (getenv "NIX_BUILD_TOP") "/dotnet-home"))
+                    (setenv "HOME" home))
+                    (mkdir-p home))
+            #t))
           (add-after 'build 'build-node-loader-bootstrap-cherow
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((output (string-append (getcwd) "/node_modules/cherow"))
