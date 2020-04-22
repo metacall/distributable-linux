@@ -78,6 +78,9 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages mono)
 
+  ; Cobol Dependencies
+  #:use-module (gnu packages cobol)
+  #:use-module (gnu packages multiprecision)
 )
 
 ; NodeJS
@@ -490,12 +493,12 @@ The project is primarily developed by Microsoft and released under the MIT Licen
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.47")
+    (version "0.1.62")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1n8wlhddr6fcz0nzplrm54g4mrdjhywilnjrsj2a59mhph3n4216"))
+        (sha256 (base32 "0gw0jbzybd3g5d6ak8hj9rrabgdj3h8l8159hc47wia8bazd3cmw"))
       )
     )
     (build-system cmake-build-system)
@@ -509,12 +512,16 @@ The project is primarily developed by Microsoft and released under the MIT Licen
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
                 #t)))
-          (add-before 'build 'setenv
+          (add-before 'configure 'setenv
             ; TODO: Workaround for HOME directory, move this to netcore build system in the future
             (lambda _
-              (let* ((home (string-append (getenv "NIX_BUILD_TOP") "/dotnet-home"))
-                    (setenv "HOME" home))
-                    (mkdir-p home))
+              ; (let ((home (string-append (getenv "NIX_BUILD_TOP") "/dotnet-home")))
+              (let ((home "/tmp")
+                    (packages "/tmp/.nuget/packages"))
+                    (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
+                    (setenv "HOME" home)
+                    (mkdir-p home)
+                    (mkdir-p packages))
             #t))
           (add-after 'build 'build-node-loader-bootstrap-cherow
             (lambda* (#:key inputs #:allow-other-keys)
@@ -571,7 +578,9 @@ The project is primarily developed by Microsoft and released under the MIT Licen
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
-          "-DOPTION_BUILD_LOADERS_CS=ON"
+          "-DOPTION_BUILD_LOADERS_CS=OFF" ; TODO: Implement C# Loader
+          "-DOPTION_BUILD_LOADERS_JS=OFF" ; TODO: Implement V8 Loader
+          "-DOPTION_BUILD_LOADERS_COB=ON"
 
           ; TODO: Avoid harcoded versions of Ruby
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
@@ -584,11 +593,17 @@ The project is primarily developed by Microsoft and released under the MIT Licen
           (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "libnode") "/include/node")
           (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so.64")
 
+          "-DNODEJS_CMAKE_DEBUG=ON"
 
           ; TODO: Avoid harcoded versions of NetCore
           (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "netcore-sdk") "/dotnet")
           ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore-runtime") "/shared/Microsoft.NETCore.App/2.1.17/")
           (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore-runtime") "/shared/Microsoft.NETCore.App/2.2.8/")
+
+          ; TODO: Avoid harcoded versions of Cobol
+          (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
+          (string-append "-DCOBOL_INCLUDE_DIR=" (assoc-ref %build-inputs "gnucobol") "/include")
+          (string-append "-DCOBOL_LIBRARY=" (assoc-ref %build-inputs "gnucobol") "/lib/libcob.so.4.0.0")
 
           ; TODO: Finish all loaders
           "-DOPTION_BUILD_SCRIPTS_JS=OFF"
@@ -617,6 +632,8 @@ The project is primarily developed by Microsoft and released under the MIT Licen
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("cherow" ,cherow) ; NodeJS Loader dependency
         ("netcore-runtime" ,netcore-runtime) ; NetCore Loader dependency
+        ("gnucobol" ,gnucobol) ; Cobol Loader dependency
+        ("gmp" ,gmp) ; Cobol Loader dependency
       )
     )
     (native-inputs
