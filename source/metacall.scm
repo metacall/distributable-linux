@@ -592,8 +592,8 @@ The project is primarily developed by Microsoft and released under the MIT Licen
           (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node") "/bin/node")
           (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "libnode") "/include/node")
           (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so.64")
-
           "-DNODEJS_CMAKE_DEBUG=ON"
+          "-DNODEJS_SHARED_UV=ON"
 
           ; TODO: Avoid harcoded versions of NetCore
           (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "netcore-sdk") "/dotnet")
