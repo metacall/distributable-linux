@@ -58,4 +58,8 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	| ${METACALL_PATH}/metacallcli \
 	| grep -e 'function sum(a, b, c)'
 
+#	| grep -e 'function sum(a, b, c)' \
+#	&& printf "load cs say.cs\ninspect\nexit" \
+#	| ${METACALL_PATH}/metacallcli || cat /root/metacall.log
+
 ENTRYPOINT ["sh", "-c"]
