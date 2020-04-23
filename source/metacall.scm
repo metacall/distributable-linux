@@ -595,10 +595,10 @@ a focus on simplicity and productivity.")
           "-DNODEJS_CMAKE_DEBUG=ON"
           "-DNODEJS_SHARED_UV=ON"
 
-          ; TODO: Avoid harcoded versions of NetCore
-          (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "netcore-sdk") "/dotnet")
-          ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore-runtime") "/shared/Microsoft.NETCore.App/2.1.17/")
-          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore-runtime") "/shared/Microsoft.NETCore.App/2.2.8/")
+          ; ; TODO: Avoid harcoded versions of NetCore
+          ; (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "netcore-sdk") "/dotnet")
+          ; ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore-runtime") "/shared/Microsoft.NETCore.App/2.1.17/")
+          ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore-runtime") "/shared/Microsoft.NETCore.App/2.2.8/")
 
           ; TODO: Avoid harcoded versions of Cobol
           (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
@@ -631,7 +631,7 @@ a focus on simplicity and productivity.")
         ("node" ,node) ; MetaCall CLI NPM dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("cherow" ,cherow) ; NodeJS Loader dependency
-        ("netcore-runtime" ,netcore-runtime) ; NetCore Loader dependency
+        ; ("netcore-runtime" ,netcore-runtime) ; NetCore Loader dependency
         ("gnucobol" ,gnucobol) ; Cobol Loader dependency
         ("gmp" ,gmp) ; Cobol Loader dependency
       )
@@ -643,7 +643,7 @@ a focus on simplicity and productivity.")
         ("node" ,node) ; For building NodeJS Port
         ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
         ("swig" ,swig) ; For building ports
-        ("netcore-sdk" ,netcore-sdk) ; NetCore Loader dependency
+        ; ("netcore-sdk" ,netcore-sdk) ; NetCore Loader dependency
       )
     )
     (home-page "https://metacall.io/")
