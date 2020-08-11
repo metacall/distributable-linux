@@ -493,7 +493,7 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.1.63")
+    (version "0.2.5")
     (source
       (origin
         (method url-fetch)
