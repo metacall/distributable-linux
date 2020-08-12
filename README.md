@@ -9,3 +9,17 @@ This will generate all tarballs in the `out` directory. All logs will be stored 
 ```bash
 make &> dist.log & tail -f dist.log
 ```
+
+## How to Get the Hash from a Package
+
+Replace `$URL` by the URL of the source code tarball, for example: `https://registry.npmjs.org/typescript/-/typescript-3.9.7.tgz`. Then paste the resulting hash into the package definition in the `.scm` file.
+
+```bash
+docker run --rm --privileged -it metacall/guix guix download $URL | tail -n1
+```
+
+In order to update hash from MetaCall Core package, just run the following command. It will automatically patch the hash in the `source/metacall.scm` file.
+
+```bash
+make download
+```

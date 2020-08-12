@@ -141,6 +141,37 @@ self-hosted javascript parser with high focus on both performance and stability.
   )
 )
 
+; TypeScript Loader Dependencies
+(define-public typescript
+  (package
+    (name "typescript")
+    (version "3.9.7")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://registry.npmjs.org/typescript/-/typescript-" version ".tgz"))
+        (sha256 (base32 "1h0naj9x5g4lhhq4aiiqid4mvnqimjijxyni9zgphc6df91sinvd"))
+      )
+    )
+    (build-system node-build-system)
+    (arguments
+      `(
+        #:phases
+        (modify-phases %standard-phases
+          (delete 'check)
+          (delete 'build)
+        )
+      )
+    )
+    (home-page "https://www.typescriptlang.org/")
+    (synopsis "TypeScript extends JavaScript by adding types to the language. ")
+    (description "TypeScript is a language for application-scale JavaScript.
+TypeScript adds optional types to JavaScript that support tools for large-scale JavaScript applications for any browser,
+for any host, on any OS. TypeScript compiles to readable, standards-based JavaScript.")
+    (license license:asl2.0)
+  )
+)
+
 ; Ruby
 (define-public dynruby
   (package
@@ -388,6 +419,13 @@ a focus on simplicity and productivity.")
                       (cherow (string-append (assoc-ref inputs "cherow") "/lib/node_modules/cherow/dist/commonjs/cherow.min.js")))
                 (mkdir-p output)
                 (copy-file cherow (string-append output "/index.js")))
+              #t))
+          (add-after 'build 'build-ts-loader-bootstrap-typescript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((output (string-append (getcwd) "/node_modules/typescript"))
+                      (typescript (string-append (assoc-ref inputs "typescript") "/lib/node_modules/typescript")))
+                (mkdir-p output)
+                (copy-recursively typescript output))
               #t)))
         ; TODO: Enable tests
         #:tests? #f
@@ -437,6 +475,7 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_LOADERS_RB=ON"
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
+          "-DOPTION_BUILD_LOADERS_TS=ON"
           "-DOPTION_BUILD_LOADERS_CS=OFF" ; TODO: Implement C# Loader
           "-DOPTION_BUILD_LOADERS_JS=OFF" ; TODO: Implement V8 Loader
           "-DOPTION_BUILD_LOADERS_COB=ON"
@@ -472,6 +511,7 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_PORTS_PY=ON"
           "-DOPTION_BUILD_PORTS_RB=ON"
           "-DOPTION_BUILD_PORTS_NODE=ON"
+          "-DOPTION_BUILD_PORTS_TS=OFF" ; TODO: Not implemented yet
           "-DOPTION_BUILD_PORTS_CS=ON"
 
           ; Disable coverage
@@ -490,6 +530,7 @@ a focus on simplicity and productivity.")
         ("node" ,node) ; MetaCall CLI NPM dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("cherow" ,cherow) ; NodeJS Loader dependency
+        ("typescript" ,typescript) ; TypeScript Loader dependency
         ; ("netcore-runtime" ,netcore-runtime) ; NetCore Loader dependency
         ("gnucobol" ,gnucobol) ; Cobol Loader dependency
         ("gmp" ,gmp) ; Cobol Loader dependency
