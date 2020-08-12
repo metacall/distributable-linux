@@ -172,6 +172,26 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
   )
 )
 
+; NodeJS (with fixed version)
+(define node-inferior
+  (first (lookup-inferior-packages
+    (inferior-for-channels
+      (list (channel
+        (name 'guix)
+        (url "https://git.savannah.gnu.org/git/guix.git")
+        (commit "489f9909a60ea8d0e083af559c22fe73bb9b492f"))))
+        "node" "10.19.0")))
+
+; NodeJS Library (with fixed version)
+(define libnode-inferior
+  (first (lookup-inferior-packages
+    (inferior-for-channels
+      (list (channel
+        (name 'guix)
+        (url "https://git.savannah.gnu.org/git/guix.git")
+        (commit "489f9909a60ea8d0e083af559c22fe73bb9b492f"))))
+        "libnode" "10.19.0")))
+
 ; Ruby
 (define-public dynruby
   (package
@@ -526,8 +546,8 @@ a focus on simplicity and productivity.")
      `(
         ("python" ,python) ; Python Loader dependency
         ("dynruby" ,dynruby) ; Ruby Loader dependency
-        ("libnode" ,libnode) ; NodeJS Loader dependency
-        ("node" ,node) ; MetaCall CLI NPM dependency
+        ("libnode" ,libnode-inferior) ; NodeJS Loader dependency
+        ("node" ,node-inferior) ; MetaCall CLI NPM dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("cherow" ,cherow) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency
@@ -540,7 +560,7 @@ a focus on simplicity and productivity.")
      `(
         ("rapidjson" ,rapidjson) ; RapidJson Serial dependency
         ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
-        ("node" ,node) ; For building NodeJS Port
+        ("node" ,node-inferior) ; For building NodeJS Port
         ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
         ("swig" ,swig) ; For building ports
         ; ("netcore-sdk" ,netcore-sdk) ; NetCore Loader dependency
