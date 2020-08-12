@@ -172,9 +172,9 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 )
 
 ; NodeJS
-(define-public node
+(define-public metacall-node
   (package
-    (name "node")
+    (name "metacall-node")
     (version "10.16.0")
     (source (origin
               (method url-fetch)
@@ -627,9 +627,9 @@ a focus on simplicity and productivity.")
           (string-append "-DRUBY_VERSION=" "2.3.8")
 
           ; TODO: Avoid harcoded versions of NodeJS
-          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node") "/bin/node")
-          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "node") "/include/node")
-          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "node") "/lib/libnode.so.64")
+          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "metacall-node") "/bin/node")
+          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "metacall-node") "/include/node")
+          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "metacall-node") "/lib/libnode.so.64")
           "-DNODEJS_CMAKE_DEBUG=ON"
           "-DNODEJS_SHARED_UV=ON"
 
@@ -666,7 +666,7 @@ a focus on simplicity and productivity.")
      `(
         ("python" ,python) ; Python Loader dependency
         ("dynruby" ,dynruby) ; Ruby Loader dependency
-        ("node" ,node) ; NodeJS Loader dependency
+        ("metacall-node" ,metacall-node) ; NodeJS Loader dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("cherow" ,cherow) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency
@@ -679,7 +679,7 @@ a focus on simplicity and productivity.")
      `(
         ("rapidjson" ,rapidjson) ; RapidJson Serial dependency
         ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
-        ("node" ,node) ; For building NodeJS Port
+        ("metacall-node" ,metacall-node) ; For building NodeJS Port
         ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
         ("swig" ,swig) ; For building ports
         ; ("netcore-sdk" ,netcore-sdk) ; NetCore Loader dependency
