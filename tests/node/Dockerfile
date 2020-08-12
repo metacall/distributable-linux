@@ -53,10 +53,9 @@ RUN export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export NODE_ENV=debug \
 	&& printf 'load node test.js\ncall mock()\nexit' | ${METACALL_PATH}/metacallcli \
 	| grep \
-		-e 'Hello World'
-# \
-#	&& printf 'load node test.js\ncall python()\nexit' | ${METACALL_PATH}/metacallcli \
-#	| grep \
-#		-e '666667'
+		-e 'Hello World' \
+	&& printf 'load node test.js\ncall python()\nexit' | ${METACALL_PATH}/metacallcli \
+	| grep \
+		-e '666667'
 
 ENTRYPOINT ["sh", "-c"]
