@@ -523,12 +523,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.2.6")
+    (version "0.2.12")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "09m57ggk6lm1fhr6y7l9hs5zm94gh2d2vb3f0sg35pssw75nvsnj"))
+        (sha256 (base32 "183hvfy4ap2ac7vjbl267y4lnwqffzgi3c6f55bsg6lp7ddr0rjg"))
       )
     )
     (build-system cmake-build-system)
@@ -620,6 +620,9 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_LOADERS_JS=OFF" ; TODO: Implement V8 Loader
           "-DOPTION_BUILD_LOADERS_COB=ON"
 
+          ; NodeJS Addon API
+          (string-append "-DNODEJS_ADDON_API_INCLUDE_DIR=" (assoc-ref %build-inputs "node-addon-api") "/lib/node_modules/node-addon-api")
+
           ; TODO: Avoid harcoded versions of Ruby
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
           (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "dynruby") "/include/ruby-2.3.0")
@@ -627,9 +630,9 @@ a focus on simplicity and productivity.")
           (string-append "-DRUBY_VERSION=" "2.3.8")
 
           ; TODO: Avoid harcoded versions of NodeJS
-          (string-append "-DNODEJS_EXECUTABLE_CUSTOM=" (assoc-ref %build-inputs "nodejs") "/bin/node")
-          (string-append "-DNODEJS_INCLUDE_DIR_CUSTOM=" (assoc-ref %build-inputs "nodejs") "/include/node")
-          (string-append "-DNODEJS_LIBRARY_CUSTOM=" (assoc-ref %build-inputs "nodejs") "/lib/libnode.so.64")
+          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "nodejs") "/bin/node")
+          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "nodejs") "/include/node")
+          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "nodejs") "/lib/libnode.so.64")
           "-DNODEJS_CMAKE_DEBUG=ON"
           "-DNODEJS_SHARED_UV=ON"
 
