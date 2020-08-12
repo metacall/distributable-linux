@@ -54,8 +54,7 @@ RUN export LOADER_SCRIPT_PATH="/scripts/" \
 	&& printf 'load node test.js\ncall mock()\nexit' | ${METACALL_PATH}/metacallcli \
 	| grep \
 		-e 'Hello World'
-
-# TODO: Check why calling python function creates a deadlock
+# \
 #	&& printf 'load node test.js\ncall python()\nexit' | ${METACALL_PATH}/metacallcli \
 #	| grep \
 #		-e '666667'

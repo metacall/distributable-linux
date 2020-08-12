@@ -498,7 +498,7 @@ a focus on simplicity and productivity.")
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "13wxsps7xr6vfi6157y9vvscqwk23qsjkrgqm91y06dz7c42ij0k"))
+        (sha256 (base32 "1wj82qqlablma1c84ypkwdfdph040sb1i7vhdspylm00y20k40gp"))
       )
     )
     (build-system cmake-build-system)

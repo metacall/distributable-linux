@@ -48,11 +48,13 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& export PORT_LIBRARY_PATH="${METACALL_PATH}/lib" \
 	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
 	&& cd / \
+	&& echo "-Wl,-rpath=$(dirname `find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so' | head -n 1`)" \
 	&& gcc \
 		-I$METACALL_PATH/include \
 		test.c \
-		-Wl,-rpath=${METACALL_PATH}/lib \
+		-B$(dirname `find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so' | head -n 1`) \
 		-Wl,--dynamic-linker=`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so' | head -n 1` \
+		-Wl,-rpath=${METACALL_PATH}/lib \
 		-L$METACALL_PATH/lib \
 		-lmetacall \
 	&& ./a.out | grep \
