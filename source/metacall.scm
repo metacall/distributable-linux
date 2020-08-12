@@ -172,9 +172,9 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 )
 
 ; NodeJS
-(define-public metacall-node
+(define-public nodejs
   (package
-    (name "metacall-node")
+    (name "nodejs")
     (version "10.16.0")
     (source (origin
               (method url-fetch)
@@ -523,12 +523,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.2.5")
+    (version "0.2.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1wj82qqlablma1c84ypkwdfdph040sb1i7vhdspylm00y20k40gp"))
+        (sha256 (base32 "09m57ggk6lm1fhr6y7l9hs5zm94gh2d2vb3f0sg35pssw75nvsnj"))
       )
     )
     (build-system cmake-build-system)
@@ -627,9 +627,9 @@ a focus on simplicity and productivity.")
           (string-append "-DRUBY_VERSION=" "2.3.8")
 
           ; TODO: Avoid harcoded versions of NodeJS
-          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "metacall-node") "/bin/node")
-          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "metacall-node") "/include/node")
-          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "metacall-node") "/lib/libnode.so.64")
+          (string-append "-DNODEJS_EXECUTABLE_CUSTOM=" (assoc-ref %build-inputs "nodejs") "/bin/node")
+          (string-append "-DNODEJS_INCLUDE_DIR_CUSTOM=" (assoc-ref %build-inputs "nodejs") "/include/node")
+          (string-append "-DNODEJS_LIBRARY_CUSTOM=" (assoc-ref %build-inputs "nodejs") "/lib/libnode.so.64")
           "-DNODEJS_CMAKE_DEBUG=ON"
           "-DNODEJS_SHARED_UV=ON"
 
@@ -666,7 +666,7 @@ a focus on simplicity and productivity.")
      `(
         ("python" ,python) ; Python Loader dependency
         ("dynruby" ,dynruby) ; Ruby Loader dependency
-        ("metacall-node" ,metacall-node) ; NodeJS Loader dependency
+        ("nodejs" ,nodejs) ; NodeJS Loader dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("cherow" ,cherow) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency
@@ -679,7 +679,7 @@ a focus on simplicity and productivity.")
      `(
         ("rapidjson" ,rapidjson) ; RapidJson Serial dependency
         ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
-        ("metacall-node" ,metacall-node) ; For building NodeJS Port
+        ("nodejs" ,nodejs) ; For building NodeJS Port
         ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
         ("swig" ,swig) ; For building ports
         ; ("netcore-sdk" ,netcore-sdk) ; NetCore Loader dependency
