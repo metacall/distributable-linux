@@ -56,6 +56,6 @@ RUN export LOADER_SCRIPT_PATH="/scripts/" \
 		-e 'Hello World' \
 	&& printf 'load node test.js\ncall python()\nexit' | ${METACALL_PATH}/metacallcli \
 	| grep \
-		-e '666667'
+		-e '366667'
 
 ENTRYPOINT ["sh", "-c"]

@@ -52,7 +52,6 @@ RUN export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
 	&& printf 'load py script.py\ninspect\ncall test()\nexit' | ${METACALL_PATH}/metacallcli \
 	| grep \
-		-e 'Hello World' \
-	&& cat /root/metacall.log
+		-e 'Hello World'
 
 ENTRYPOINT ["sh", "-c"]

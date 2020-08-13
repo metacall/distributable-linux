@@ -36,7 +36,9 @@ module.exports = {
 		/* Python */
 		console.log(metacall_load_from_file('py', [ 'sum.py' ]));
 		console.log(metacall_inspect());
+		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 		console.log(metacall('sum', 111111, 222222, 33334));
+		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 	},
 };
 
