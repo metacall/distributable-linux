@@ -51,6 +51,7 @@
   #:use-module (guix utils)
 
   ; NodeJS
+  #:use-module (gnu packages node)
   #:use-module (gnu packages base)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages adns)
@@ -170,147 +171,6 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
     (license license:asl2.0)
   )
 )
-
-; NodeJS
-(define-public nodejs
-  (package
-    (name "nodejs")
-    (version "10.16.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://nodejs.org/dist/v" version
-                                  "/node-v" version ".tar.xz"))
-              (sha256
-               (base32
-                "0236jlb1hxhzqjlmmlxipcycrndiq92c8434iyy7zshh3n4pzqqq"))
-              (modules '((guix build utils)))
-              (snippet
-               `(begin
-                  ;; Remove bundled software.
-                  (for-each delete-file-recursively
-                            '("deps/cares"
-                              "deps/http_parser"
-                              "deps/icu-small"
-                              "deps/nghttp2"
-                              "deps/openssl"
-                              "deps/uv"
-                              "deps/zlib"))
-                  (substitute* "Makefile"
-                    ;; Remove references to bundled software.
-                    (("deps/http_parser/http_parser.gyp") "")
-                    (("deps/uv/include/\\*.h") "")
-                    (("deps/uv/uv.gyp") "")
-                    (("deps/zlib/zlib.gyp") ""))
-                  #t))))
-    (build-system gnu-build-system)
-    (arguments
-     ;; TODO: Purge the bundled copies from the source.
-     '(#:configure-flags '("--shared"
-                           "--shared-cares"
-                           "--shared-http-parser"
-                           "--shared-libuv"
-                           "--shared-nghttp2"
-                           "--shared-openssl"
-                           "--shared-zlib"
-                           "--without-snapshot"
-                           "--with-intl=system-icu")
-       ;; Run only the CI tests.  The default test target requires additional
-       ;; add-ons from NPM that are not distributed with the source.
-       #:test-target "test-ci-js"
-       #:tests? #f ; TODO: Enable tests by removing this line
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-files
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Fix hardcoded /bin/sh references.
-             (substitute* '("lib/child_process.js"
-                            "lib/internal/v8_prof_polyfill.js"
-                            "test/parallel/test-child-process-spawnsync-shell.js"
-                            "test/parallel/test-stdio-closed.js"
-                            "test/sequential/test-child-process-emfile.js")
-               (("'/bin/sh'")
-                (string-append "'" (which "sh") "'")))
-
-             ;; Fix hardcoded /usr/bin/env references.
-             (substitute* '("test/parallel/test-child-process-default-options.js"
-                            "test/parallel/test-child-process-env.js"
-                            "test/parallel/test-child-process-exec-env.js")
-               (("'/usr/bin/env'")
-                (string-append "'" (which "env") "'")))
-
-             ;; FIXME: These tests fail in the build container, but they don't
-             ;; seem to be indicative of real problems in practice.
-             (for-each delete-file
-                       '("test/parallel/test-cluster-master-error.js"
-                         "test/parallel/test-cluster-master-kill.js"
-                         ;; See also <https://github.com/nodejs/node/issues/25903>.
-                         "test/sequential/test-performance.js"))
-
-             ;; This requires a DNS resolver.
-             (delete-file "test/parallel/test-dns.js")
-
-             ;; These tests have an expiry date: they depend on the validity of
-             ;; TLS certificates that are bundled with the source.  We want this
-             ;; package to be reproducible forever, so remove those.
-             ;; TODO: Regenerate certs instead.
-             (for-each delete-file
-                       '("test/parallel/test-tls-passphrase.js"
-                         "test/parallel/test-tls-server-verify.js"))
-             #t))
-         (replace 'configure
-           ;; Node's configure script is actually a python script, so we can't
-           ;; run it with bash.
-           (lambda* (#:key outputs (configure-flags '()) inputs
-                     #:allow-other-keys)
-             (let* ((prefix (assoc-ref outputs "out"))
-                    (flags (cons (string-append "--prefix=" prefix)
-                                 configure-flags)))
-               (format #t "build directory: ~s~%" (getcwd))
-               (format #t "configure flags: ~s~%" flags)
-               ;; Node's configure script expects the CC environment variable to
-               ;; be set.
-               (setenv "CC" (string-append (assoc-ref inputs "gcc") "/bin/gcc"))
-               (apply invoke
-                      (string-append (assoc-ref inputs "python")
-                                     "/bin/python")
-                      "configure" flags))))
-         (add-after 'patch-shebangs 'patch-npm-shebang
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((bindir (string-append (assoc-ref outputs "out")
-                                           "/bin"))
-                    (npm    (string-append bindir "/npm"))
-                    (target (readlink npm)))
-               (with-directory-excursion bindir
-                 (patch-shebang target (list bindir))
-                 #t)))))))
-    (native-inputs
-     `(("python" ,python-2)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("procps" ,procps)
-       ("util-linux" ,util-linux)
-       ("which" ,which)))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "NODE_PATH")
-            (files '("lib/node_modules")))))
-    (inputs
-     `(("c-ares" ,c-ares)
-       ("http-parser" ,http-parser)
-       ("icu4c" ,icu4c)
-       ("libuv" ,libuv)
-       ("nghttp2" ,nghttp2 "lib")
-       ("openssl" ,openssl)
-       ("zlib" ,zlib)))
-    (synopsis "Evented I/O for V8 JavaScript")
-    (description "Node.js is a platform built on Chrome's JavaScript runtime
-for easily building fast, scalable network applications.  Node.js uses an
-event-driven, non-blocking I/O model that makes it lightweight and efficient,
-perfect for data-intensive real-time applications that run across distributed
-devices.")
-    (home-page "https://nodejs.org/")
-    (license expat)
-    (properties '((timeout . 3600))))) ; 1 h
 
 ; Ruby
 (define-public dynruby
@@ -630,9 +490,9 @@ a focus on simplicity and productivity.")
           (string-append "-DRUBY_VERSION=" "2.3.8")
 
           ; TODO: Avoid harcoded versions of NodeJS
-          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "nodejs") "/bin/node")
-          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "nodejs") "/include/node")
-          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "nodejs") "/lib/libnode.so.64")
+          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node") "/bin/node")
+          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "node") "/include/node")
+          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so.64")
           "-DNODEJS_CMAKE_DEBUG=ON"
           "-DNODEJS_SHARED_UV=ON"
 
@@ -669,7 +529,8 @@ a focus on simplicity and productivity.")
      `(
         ("python" ,python) ; Python Loader dependency
         ("dynruby" ,dynruby) ; Ruby Loader dependency
-        ("nodejs" ,nodejs) ; NodeJS Loader dependency
+        ("node" ,node) ; NodeJS NPM exports
+        ("libnode" ,libnode) ; NodeJS Loader dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("cherow" ,cherow) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency
