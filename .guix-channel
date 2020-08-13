@@ -17,13 +17,16 @@
 ;	limitations under the License.
 ;
 
-(list (channel
-       (name 'guix)
-       (url "https://git.savannah.gnu.org/git/guix.git")
-       (branch "master")
-       (commit "6b44b35a57d688da3791c08d65f27b6677da7b1f"))
-      (channel
-       (name 'nonguix)
-       (url "https://gitlab.com/nonguix/nonguix")
-       (branch "master")
-       (commit "95adb6ec077dc4139cf7e1956ad5caa1ff08f92b")))
+(channel
+  (version 0)
+  (dependencies
+    (channel
+      (name guix)
+      (branch "master")
+      (commit "6b44b35a57d688da3791c08d65f27b6677da7b1f")
+      (url "https://git.savannah.gnu.org/git/guix.git"))
+    (channel
+      (name nonguix)
+      (branch "master")
+      (commit "95adb6ec077dc4139cf7e1956ad5caa1ff08f92b")
+      (url "https://gitlab.com/nonguix/nonguix"))))
