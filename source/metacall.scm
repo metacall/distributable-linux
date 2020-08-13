@@ -673,27 +673,26 @@ a focus on simplicity and productivity.")
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("cherow" ,cherow) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency
-        ; ("netcore-runtime" ,netcore-runtime) ; NetCore Loader dependency
         ("gnucobol" ,gnucobol) ; Cobol Loader dependency
         ("gmp" ,gmp) ; Cobol Loader dependency
+        ; ("netcore-runtime" ,netcore-runtime) ; NetCore Loader dependency
+        ; ("netcore-sdk" ,netcore-sdk) ; NetCore Loader dependency
       )
     )
     (native-inputs
      `(
         ("rapidjson" ,rapidjson) ; RapidJson Serial dependency
         ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
-        ("nodejs" ,nodejs) ; For building NodeJS Port
         ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
         ("swig" ,swig) ; For building ports
-        ; ("netcore-sdk" ,netcore-sdk) ; NetCore Loader dependency
       )
     )
     (home-page "https://metacall.io/")
-    (synopsis "Inter-language foreign function interface call library")
+    (synopsis "Inter-language foreign function interface call library.")
     (description "METACALL is a library that allows calling functions,
 methods or procedures between programming languages.
 With METACALL you can transparently execute code from / to any
-programming language, for example, call Python code from JavaScript code")
+programming language, for example, call Python code from NodeJS code.")
     (license license:asl2.0)
   )
 )

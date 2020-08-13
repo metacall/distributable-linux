@@ -41,7 +41,7 @@ ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& export PATH="/gnu/bin:${PATH}" \
-	&& /gnu/bin/node /gnu/bin/npm install metacall
+	&& npm install metacall
 
 RUN export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export METACALL_PATH="/gnu/store/`ls /gnu/store/ | grep metacall | head -n 1`" \
