@@ -542,7 +542,7 @@ a focus on simplicity and productivity.")
     )
     (native-inputs
      `(
-        ("rapidjson" ,rapidjson) ; RapidJson Serial dependency
+        ("rapidjson" ,rapidjson) ; RapidJSON Serial dependency
         ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
         ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
         ("swig" ,swig) ; For building ports
