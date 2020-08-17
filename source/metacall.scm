@@ -67,16 +67,16 @@
   ; RapidJSON
   #:use-module (gnu packages web)
 
-  ; NetCore Dependencies
-  #:use-module (nonguix build-system binary)
-  #:use-module (gnu packages gcc)
-  #:use-module (gnu packages linux)
-  #:use-module (gnu packages curl)
-  #:use-module (gnu packages tls)
-  #:use-module (gnu packages kerberos)
-  #:use-module (gnu packages compression)
-  #:use-module (gnu packages icu4c)
-  #:use-module (gnu packages mono)
+  ; NetCore Dependencies (TODO)
+  ; #:use-module (nonguix build-system binary)
+  ; #:use-module (gnu packages gcc)
+  ; #:use-module (gnu packages linux)
+  ; #:use-module (gnu packages curl)
+  ; #:use-module (gnu packages tls)
+  ; #:use-module (gnu packages kerberos)
+  ; #:use-module (gnu packages compression)
+  ; #:use-module (gnu packages icu4c)
+  ; #:use-module (gnu packages mono)
 
   ; Cobol Dependencies
   #:use-module (gnu packages cobol)
