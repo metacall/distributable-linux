@@ -24,8 +24,10 @@
       (name guix)
       (url "https://git.savannah.gnu.org/git/guix.git")
       (commit "658d28987fc6c3f01ca04184c04c6252c5a9126a")) ; v1.1.0
-    (channel
-      (name nonguix)
-      (url "https://gitlab.com/nonguix/nonguix.git")
-      (branch "master")
-      (commit "95adb6ec077dc4139cf7e1956ad5caa1ff08f92b"))))
+; TODO:
+;     (channel
+;       (name nonguix)
+;       (url "https://gitlab.com/nonguix/nonguix.git")
+;       (branch "master")
+;       (commit "95adb6ec077dc4139cf7e1956ad5caa1ff08f92b"))
+      ))
