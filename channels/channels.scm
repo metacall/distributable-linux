@@ -20,10 +20,9 @@
 (list (channel
        (name 'guix)
        (url "https://git.savannah.gnu.org/git/guix.git")
-       (branch "master")
-       (commit "6b44b35a57d688da3791c08d65f27b6677da7b1f"))
+       (commit "658d28987fc6c3f01ca04184c04c6252c5a9126a")) ; v1.1.0
       (channel
        (name 'nonguix)
        (url "https://gitlab.com/nonguix/nonguix")
        (branch "master")
-       (commit "95adb6ec077dc4139cf7e1956ad5caa1ff08f92b")))
+       (commit "29290c3c31ef8f3b73c709811178d37002c1fbc9")))
