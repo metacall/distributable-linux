@@ -17,17 +17,8 @@
 *	limitations under the License.
 */
 
-using System;
+'use strict';
 
-namespace Scripts
-{
-	public class Program
-	{
-		public static string Say(string text)
-		{
-			Console.WriteLine(text);
-
-			return text;
-		}
-	}
+export function fibonacci(num: number): number {
+	return (num <= 1) ? 1 : fibonacci(num - 1) + fibonacci(num - 2);
 }
