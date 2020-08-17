@@ -26,6 +26,6 @@
       (commit "658d28987fc6c3f01ca04184c04c6252c5a9126a")) ; v1.1.0
     (channel
       (name nonguix)
-      (url "https://gitlab.com/nonguix/nonguix")
+      (url "https://gitlab.com/nonguix/nonguix.git")
       (branch "master")
-      (commit "29290c3c31ef8f3b73c709811178d37002c1fbc9"))))
+      (commit "95adb6ec077dc4139cf7e1956ad5caa1ff08f92b"))))
