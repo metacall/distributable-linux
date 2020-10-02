@@ -1,0 +1,70 @@
+---
+
+image: docker:19.03.12
+
+services:
+  - docker:19.03.12-dind
+
+variables:
+    ASSET_NAME: metacall-tarball-linux-amd64.tar.gz
+    # GH_TOKEN - from settings/ci_cd variables
+    # GH_REPO - from settings/ci_cd variables
+
+stages:
+    - prep
+    - test
+    - publish
+
+build:
+  stage: prep
+  script:
+      # Build the base image
+      - docker build -t metacall/distributable -f Dockerfile .
+      # Install the additional channels and pull (can't be cached)
+      - docker run --privileged --name tmp metacall/distributable sh -c 'guix pull'
+      # Commit changes
+      - docker commit tmp metacall/distributable && docker rm -f tmp
+      # Build dependencies
+      - docker run -d --privileged --name tmp metacall/distributable /metacall/scripts/deps.sh
+      # Commit changes
+      - docker commit tmp metacall/distributable && docker rm -f tmp
+      # Build tarball
+      - docker run --rm -v $PWD/out:/metacall/pack --privileged metacall/distributable /metacall/scripts/build.sh
+  only:
+    - tags
+  artifacts:
+    paths:
+      - out/
+    expire_in: 3h
+
+test:
+  stage: test
+  script:
+    # Generate a unique id for invalidating the cache of test layers
+    - CACHE_INVALIDATE=$(date +%s)
+    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:cli -f tests/cli/Dockerfile .
+    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:c -f tests/c/Dockerfile .
+    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:python -f tests/python/Dockerfile .
+    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:node -f tests/node/Dockerfile .
+    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:typescript -f tests/typescript/Dockerfile .
+  only:
+    - tags
+  needs:
+    - job: build
+      artifacts: true
+
+publish-github:
+  stage: publish
+  script:
+    # Install requirements
+    - apk --no-cache add curl
+    # Upload to github
+    - sh tools/release.sh
+  only:
+    - tags
+  needs:
+    - job: build
+      artifacts: true
+    - job: test
+
+
