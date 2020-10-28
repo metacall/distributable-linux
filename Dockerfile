@@ -31,6 +31,7 @@ COPY / /metacall/
 
 RUN chmod +x /metacall/scripts/build.sh \
 	&& chmod +x /metacall/scripts/deps.sh \
-	&& mkdir -p /metacall/pack
+	&& mkdir -p /metacall/pack \
+	&& mv /metacall/channels/channels.scm /root/.config/guix/channels.scm
 
 CMD ["sh"]
