@@ -25,8 +25,7 @@ make download
 ```
 
 ## GitLab CI settings
-make sure to increase the job timeout to 2h+ (build job takes about a litle over an hour)
-in order to publish the tarball on GitHub as auto release you need to define the following variables in GitLab CI/CD settings, variable submenu
+Make sure to increase the job timeout to 2h+ (build job takes about a litle over an hour) in order to publish the tarball on GitHub as auto release you need to define the following variables in GitLab CI/CD settings, variable submenu:
 
 * `GH_TOKEN` - a GitHub access token (select repo scope)
 * `GH_REPO` - a GitHub repo in the format of **OWNER/REPO** e.g. `metacall/distributable`
