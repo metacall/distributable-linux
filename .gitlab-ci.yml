@@ -62,7 +62,7 @@ publish-github:
     - apk --no-cache add curl
     - curl -sL https://github.com/tcnksm/ghr/releases/download/v${GHR_VERSION}/ghr_v${GHR_VERSION}_linux_amd64.tar.gz | tar zx
     - chmod +x ghr_v${GHR_VERSION}_linux_amd64/ghr
-    - sudo mv ghr_v${GHR_VERSION}_linux_amd64/ghr /usr/local/bin
+    - mv ghr_v${GHR_VERSION}_linux_amd64/ghr /usr/local/bin
     - GH_REPO_OWNER=${GH_REPO%/*}
     - GH_REPO_NAME=${GH_REPO#*/}
     - PREVIOUS_TAG=`git describe HEAD^1 --abbrev=0 --tags`
