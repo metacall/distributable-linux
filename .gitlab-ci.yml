@@ -59,7 +59,7 @@ test:
 publish-github:
   stage: publish
   script:
-    - apk --no-cache add curl
+    - apk --no-cache add curl git
     - curl -sL https://github.com/tcnksm/ghr/releases/download/v${GHR_VERSION}/ghr_v${GHR_VERSION}_linux_amd64.tar.gz | tar zx
     - chmod +x ghr_v${GHR_VERSION}_linux_amd64/ghr
     - mv ghr_v${GHR_VERSION}_linux_amd64/ghr /usr/local/bin
