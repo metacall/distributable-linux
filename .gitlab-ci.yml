@@ -19,6 +19,8 @@ stages:
 build:
   stage: prep
   script:
+      # This seems to be needed by GitLab CI
+      - chmod 1777 /tmp
       # Build the base image
       - docker build -t metacall/distributable -f Dockerfile .
       # Install the additional channels and pull (can't be cached)
