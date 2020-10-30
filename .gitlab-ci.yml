@@ -71,11 +71,8 @@ publish-github:
     - if [[ $CI_COMMIT_TAG == "" ]]; then CI_COMMIT_TAG=${PREVIOUS_TAG}; fi
     - RELEASE_DATE=`date '+%Y-%m-%d'`
     - mv ${PWD}/out/tarball.tar.gz ${PWD}/out/${ASSET_NAME}
-    - echo "MetaCall Distributable ${CI_COMMIT_TAG} [${RELEASE_DATE}]"
-    - |
-        ghr -t $GH_TOKEN -u $GH_REPO_OWNER -r $GH_REPO_NAME -c $CI_COMMIT_SHA \
-        -n "MetaCall Distributable ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace \
-        $CI_COMMIT_TAG ${PWD}/out/${ASSET_NAME}
+    - echo "MetaCall Distributable ${CI_COMMIT_TAG} [${RELEASE_DATE}] - ${GH_REPO_OWNER}/${GH_REPO_NAME}:${CI_COMMIT_SHA}"
+    - ghr -t ${GH_TOKEN} -u ${GH_REPO_OWNER} -r ${GH_REPO_NAME} -c ${CI_COMMIT_SHA} -n "MetaCall Distributable ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace $CI_COMMIT_TAG ${PWD}/out/${ASSET_NAME}
   only:
     - tags
   needs:
