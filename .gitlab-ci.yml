@@ -63,16 +63,18 @@ publish-github:
     - curl -sL https://github.com/tcnksm/ghr/releases/download/v${GHR_VERSION}/ghr_v${GHR_VERSION}_linux_amd64.tar.gz | tar zx
     - chmod +x ghr_v${GHR_VERSION}_linux_amd64/ghr
     - mv ghr_v${GHR_VERSION}_linux_amd64/ghr /usr/local/bin
-    - GH_REPO_OWNER=${GH_REPO%/*}
-    - GH_REPO_NAME=${GH_REPO#*/}
-    - PREVIOUS_TAG=`git describe HEAD^1 --abbrev=0 --tags`
-    - GIT_HISTORY=`git log --no-merges --format="- %s" ${PREVIOUS_TAG}..HEAD`
-    - if [[ $PREVIOUS_TAG == "" ]]; then GIT_HISTORY=`git log --no-merges --format="- %s"`; fi
-    - if [[ $CI_COMMIT_TAG == "" ]]; then CI_COMMIT_TAG=${PREVIOUS_TAG}; fi
-    - RELEASE_DATE=`date '+%Y-%m-%d'`
+    - export GH_REPO_OWNER=${GH_REPO%/*}
+    - export GH_REPO_NAME=${GH_REPO#*/}
+    - export PREVIOUS_TAG=`git describe HEAD^1 --abbrev=0 --tags`
+    - export GIT_HISTORY=`git log --no-merges --format="- %s" ${PREVIOUS_TAG}..HEAD`
+    - if [[ "${PREVIOUS_TAG}" == "" ]]; then export GIT_HISTORY=`git log --no-merges --format="- %s"`; fi
+    - if [[ "${CI_COMMIT_TAG}" == "" ]]; then export CI_COMMIT_TAG=${PREVIOUS_TAG}; fi
+    - export RELEASE_DATE=`date '+%Y-%m-%d'`
     - mv ${PWD}/out/tarball.tar.gz ${PWD}/out/${ASSET_NAME}
     - echo "MetaCall Distributable ${CI_COMMIT_TAG} [${RELEASE_DATE}] - ${GH_REPO_OWNER}/${GH_REPO_NAME}:${CI_COMMIT_SHA}"
-    - ghr -t ${GH_TOKEN} -u ${GH_REPO_OWNER} -r ${GH_REPO_NAME} -c ${CI_COMMIT_SHA} -n "MetaCall Distributable ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace $CI_COMMIT_TAG ${PWD}/out/${ASSET_NAME}
+    - echo "${GIT_HISTORY}"
+    - ls -la ${PWD}/out/${ASSET_NAME}
+    - ghr -t ${GH_TOKEN} -u ${GH_REPO_OWNER} -r ${GH_REPO_NAME} -c ${CI_COMMIT_SHA} -n "MetaCall Distributable ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -replace ${CI_COMMIT_TAG} ${PWD}/out/${ASSET_NAME}
   only:
     - tags
   needs:
