@@ -72,7 +72,7 @@ publish-github:
     # - export RELEASE_DATE=`date '+%Y-%m-%d'`
     # - mv ${PWD}/out/tarball.tar.gz ${PWD}/out/${ASSET_NAME}
     - echo "MetaCall Distributable ${CI_COMMIT_TAG} [${RELEASE_DATE}] - ${GH_REPO_OWNER}/${GH_REPO_NAME}:${CI_COMMIT_SHA}"
-    - echo "${GH_REPO}"
+    - if [[ "${GH_REPO}" == "metacall/distributable" ]]; then echo "GH_REPO is working!"; fi
     - echo "${GH_REPO_OWNER}"
     - echo "${GH_REPO_NAME}"
     # - touch ${PWD}/out/${ASSET_NAME}
