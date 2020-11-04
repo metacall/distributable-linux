@@ -113,34 +113,6 @@ self-hosted javascript parser with high focus on both performance and stability.
   )
 )
 
-; NodeJS Port Dependencies
-(define-public node-addon-api
-  (package
-    (name "node-addon-api")
-    (version "1.7.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/nodejs/node-addon-api/archive/" version ".tar.gz"))
-        (sha256 (base32 "0i3jc5ki4dlq8l2p1wn0rw1695kr47cjx1zlkzj6h4ymzyc0i1dk"))
-      )
-    )
-    (build-system node-build-system)
-    (arguments
-      `(
-        #:phases
-        (modify-phases %standard-phases
-          (delete 'check)
-        )
-      )
-    )
-    (home-page "https://github.com/nodejs/node-addon-api/")
-    (synopsis "Module for using N-API from C++")
-    (description "This module contains a header-only C++ wrapper classes ...")
-    (license license:expat)
-  )
-)
-
 ; TypeScript Loader Dependencies
 (define-public typescript
   (package
@@ -383,12 +355,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.2.18")
+    (version "0.3.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "12cj9ks20dnadw3dqgay3646vdnvm7dw9nlpa07f3nqvaxd691ay"))
+        (sha256 (base32 "0pwn354hjyjm5fyg1cj1g31k449v9cgwjpzf5i5dl3zk4c2b5zd4"))
       )
     )
     (build-system cmake-build-system)
@@ -480,9 +452,6 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_LOADERS_JS=OFF" ; TODO: Implement V8 Loader
           "-DOPTION_BUILD_LOADERS_COB=ON"
 
-          ; NodeJS Addon API
-          (string-append "-DNODEJS_ADDON_API_INCLUDE_DIR=" (assoc-ref %build-inputs "node-addon-api") "/lib/node_modules/node-addon-api")
-
           ; TODO: Avoid harcoded versions of Ruby
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
           (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "dynruby") "/include/ruby-2.3.0")
@@ -544,7 +513,6 @@ a focus on simplicity and productivity.")
      `(
         ("rapidjson" ,rapidjson) ; RapidJSON Serial dependency
         ("python2-gyp" ,python2-gyp) ; For building NodeJS Port
-        ("node-addon-api" ,node-addon-api) ; For building NodeJS Port
         ("swig" ,swig) ; For building ports
       )
     )

@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-.PHONY: all download base pull deps build test release help default
+.PHONY: all download base pull deps build test help default
 
 # Default target
 default: all
@@ -42,7 +42,6 @@ help:
 	@echo '    make deps         Build dependency images for caching the runtimes.'
 	@echo '    make build        Build the tarball for all platforms and architectures.'
 	@echo '    make test         Run integration tests for the already built tarballs.'
-	@echo '    make release      Releases the tarball into GitHub.'
 	@echo '    make clear        Clear all containers and images.'
 	@echo '    make help         Show verbose help.'
 	@echo
@@ -129,15 +128,6 @@ test:
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:python -f tests/python/Dockerfile .
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:node -f tests/node/Dockerfile .
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:typescript -f tests/typescript/Dockerfile .
-	@echo "Done"
-
-# Release tarballs
-release:
-	# Check if .netrc exists
-	@test -f `pwd`/.netrc || (echo "File .netrc does not exist, aborting release." && exit 1)
-
-	# TODO
-
 	@echo "Done"
 
 # Clear images and containers

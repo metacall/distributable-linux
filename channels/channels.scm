@@ -22,6 +22,7 @@
        (url "https://git.savannah.gnu.org/git/guix.git")
        (branch "master")
        (commit "1a9ebe3b0aa12584624dfa811c480c636a56e1b4"))
+
 ; TODO:
 ;       (channel
 ;        (name 'nonguix)
