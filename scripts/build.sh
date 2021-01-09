@@ -22,10 +22,10 @@
 export GUILE_WARN_DEPRECATED='detailed'
 
 # Generate a portable package tarball
-`# Build` guix build --fallback metacall -L /metacall/source \
+`# Build` guix build --fallback metacall glibc-utf8-locales nss-certs -L /metacall/source \
 `# Test` `# && guix package -i metacall -L /metacall/source` \
 `# Lint` `# && guix lint metacall` \
 `# Pack uses --no-grafts option in order to avoid conflicts between duplicated versions` \
-`# Pack` && guix pack --no-grafts -S /gnu/bin=bin -RR metacall -L /metacall/source | tee build.log \
+`# Pack` && guix pack --no-grafts -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -RR metacall glibc-utf8-locales nss-certs -L /metacall/source | tee build.log \
 `# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack/tarball.tar.gz \
 `# Exit` && exit 0 || exit 1
