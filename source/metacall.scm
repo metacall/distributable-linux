@@ -50,7 +50,7 @@
   #:use-module (gnu packages tcl)
   #:use-module (guix utils)
 
-  ; NodeJS
+  ; NodeJS Dependencies
   #:use-module (gnu packages node)
   #:use-module (gnu packages base)
   #:use-module (gnu packages xml)
@@ -81,6 +81,9 @@
   ; Cobol Dependencies
   #:use-module (gnu packages cobol)
   #:use-module (gnu packages multiprecision)
+
+  ; RPC Dependencies
+  #:use-module (gnu packages curl)
 )
 
 ; NodeJS Loader Dependencies
@@ -355,12 +358,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.3.11")
+    (version "0.3.13")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "0zy1xya3fdxrws9fwj1fh7vsx3inl52a7hjrsy2pwskmzcsv7pwg"))
+        (sha256 (base32 "145psrjyzb6y0rsidqygiwcyka5cfkxqv60anvkhjy9cyq6qyfp4"))
       )
     )
     (build-system cmake-build-system)
@@ -451,6 +454,7 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_LOADERS_CS=OFF" ; TODO: Implement C# Loader
           "-DOPTION_BUILD_LOADERS_JS=OFF" ; TODO: Implement V8 Loader
           "-DOPTION_BUILD_LOADERS_COB=ON"
+          "-DOPTION_BUILD_LOADERS_RPC=ON"
 
           ; TODO: Avoid harcoded versions of Ruby
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
@@ -474,6 +478,9 @@ a focus on simplicity and productivity.")
           (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
           (string-append "-DCOBOL_INCLUDE_DIR=" (assoc-ref %build-inputs "gnucobol") "/include")
           (string-append "-DCOBOL_LIBRARY=" (assoc-ref %build-inputs "gnucobol") "/lib/libcob.so.4.0.0")
+
+          ; RPC Loader
+          (string-append "-DCURL_INCLUDE_DIR=" (assoc-ref %build-inputs "libcurl") "/include/curl")
 
           ; TODO: Finish all loaders
           "-DOPTION_BUILD_SCRIPTS_JS=OFF"
@@ -507,6 +514,7 @@ a focus on simplicity and productivity.")
         ("gmp" ,gmp) ; Cobol Loader dependency
         ; ("netcore-runtime" ,netcore-runtime) ; NetCore Loader dependency
         ; ("netcore-sdk" ,netcore-sdk) ; NetCore Loader dependency
+        ("libcurl" ,curl-minimal) ; RPC Loader Dependency
       )
     )
     (native-inputs
