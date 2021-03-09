@@ -358,12 +358,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.3.15")
+    (version "0.3.17")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1nfj7hp46yp412nkbsnjyz90mw30wn9d3ykpnacbc2ixl92m469i"))
+        (sha256 (base32 "1a0dgz229vxafxj82ha7nx1syjn107zvd9k3pzs53513d3j952pm"))
       )
     )
     (build-system cmake-build-system)
@@ -417,9 +417,6 @@ a focus on simplicity and productivity.")
 
           ; Disable stack-smashing protection and source fortify in order to improve libc portability / compatibility
           "-DOPTION_BUILD_SECURITY=OFF"
-
-          ; Distributable libs
-          "-DOPTION_BUILD_DIST_LIBS=ON"
 
           ; Examples
           "-DOPTION_BUILD_EXAMPLES=ON"
