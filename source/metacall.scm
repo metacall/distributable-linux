@@ -120,12 +120,12 @@ self-hosted javascript parser with high focus on both performance and stability.
 (define-public typescript
   (package
     (name "typescript")
-    (version "3.9.7")
+    (version "4.2.3")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://registry.npmjs.org/typescript/-/typescript-" version ".tgz"))
-        (sha256 (base32 "1h0naj9x5g4lhhq4aiiqid4mvnqimjijxyni9zgphc6df91sinvd"))
+        (sha256 (base32 "0jpi7za7ak0ba8bm300219vhrr4raacx6s8rz3czlwxim1byyn6g"))
       )
     )
     (build-system node-build-system)
@@ -358,12 +358,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.3.17")
+    (version "0.4.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1a0dgz229vxafxj82ha7nx1syjn107zvd9k3pzs53513d3j952pm"))
+        (sha256 (base32 "0bf8y0r1d6sikcqndgbggl15p4y3mflp844mq83xvrjfvc4mhayb"))
       )
     )
     (build-system cmake-build-system)
