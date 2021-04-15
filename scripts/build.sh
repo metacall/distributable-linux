@@ -29,3 +29,6 @@ export GUILE_WARN_DEPRECATED='detailed'
 `# Pack` && guix pack --no-grafts -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -RR metacall glibc-utf8-locales nss-certs -L /metacall/source | tee build.log \
 `# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack/tarball.tar.gz \
 `# Exit` && exit 0 || exit 1
+
+# TODO: Apparently this should be the standard way of finding the environment variables but it does not work
+# `# Search Paths` && guix package --search-paths &> /metacall/pack/search-paths \
