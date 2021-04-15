@@ -33,13 +33,17 @@ RUN cd / \
 	&& tar -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-COPY tests/scripts/fib.ts /scripts/
+COPY tests/tsx/test.tsx /scripts/
+COPY tests/tsx/tsconfig.json /scripts/
+
+# Needed in order to load the tsconfig.json
+WORKDIR /scripts/
 
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& export PATH="/gnu/bin:${PATH}" \
-	&& npm install metacall
+	&& npm install metacall react react-dom
 
 RUN export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export METACALL_PATH="/gnu/store/`ls /gnu/store/ | grep metacall | head -n 1`" \
@@ -49,8 +53,8 @@ RUN export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export PORT_LIBRARY_PATH="${METACALL_PATH}/lib" \
 	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
 	&& export NODE_ENV=debug \
-	&& printf 'load ts fib.ts\ncall fibonacci(10)\nexit' | ${METACALL_PATH}/metacallcli \
+	&& printf 'load ts test.tsx\ninspect\ncall hello("world")\nexit' | ${METACALL_PATH}/metacallcli \
 	| grep \
-		-e '89'
+		-e '<h1>Hello world</h1>'
 
 ENTRYPOINT ["sh", "-c"]

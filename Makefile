@@ -128,6 +128,8 @@ test:
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:python -f tests/python/Dockerfile .
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:node -f tests/node/Dockerfile .
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:typescript -f tests/typescript/Dockerfile .
+	# TODO:
+	# @docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:tsx -f tests/tsx/Dockerfile .
 	@echo "Done"
 
 # Clear images and containers
