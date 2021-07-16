@@ -23,5 +23,5 @@ export GUILE_WARN_DEPRECATED='detailed'
 
 # Build dependencies
 `# Build (Node Build System)` guix build cherow typescript -L /metacall/source \
-`# Build (GNU Build System)` && guix build dynruby `# netcore-runtime netcore-sdk` -L /metacall/source \
+`# Build (GNU Build System)` && guix build dynruby netcore -L /metacall/source \
 `# Exit` && exit 0 || exit 1

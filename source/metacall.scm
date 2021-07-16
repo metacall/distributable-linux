@@ -67,16 +67,8 @@
   ; RapidJSON
   #:use-module (gnu packages web)
 
-  ; NetCore Dependencies (TODO)
-  ; #:use-module (nonguix build-system binary)
-  ; #:use-module (gnu packages gcc)
-  ; #:use-module (gnu packages linux)
-  ; #:use-module (gnu packages curl)
-  ; #:use-module (gnu packages tls)
-  ; #:use-module (gnu packages kerberos)
-  ; #:use-module (gnu packages compression)
-  ; #:use-module (gnu packages icu4c)
-  ; #:use-module (gnu packages mono)
+  ; NetCore Dependencies
+  #:use-module (nongnu packages dotnet)
 
   ; Cobol Dependencies
   #:use-module (gnu packages cobol)
@@ -212,145 +204,6 @@ a focus on simplicity and productivity.")
     (home-page "https://www.ruby-lang.org")
     (license license:ruby)))
 
-; ; NetCore SDK (https://dotnet.microsoft.com/download/dotnet-core/2.2)
-; (define-public netcore-sdk
-;   (package
-;     (name "netcore-sdk")
-;     (version "2.2.207")
-;     (source
-;       (origin
-;         (method url-fetch)
-;         (uri (string-append "https://download.visualstudio.microsoft.com/download/pr/"
-;           "022d9abf-35f0-4fd5-8d1c-86056df76e89/477f1ebb70f314054129a9f51e9ec8ec"
-;           "/dotnet-sdk-"
-;           version
-;           "-"
-;           "linux-x64"
-;           ".tar.gz"))
-;         (sha256 (base32 "1k98p9bs0flgcfw6xiqmyxs9ipvnqrjwr4zhxv1ikq79asczpdag"))
-;       )
-;     )
-;     (build-system binary-build-system)
-;     (supported-systems '("x86_64-linux"))
-;     (arguments
-;      '(#:phases
-;         (let ((old-patchelf (assoc-ref %standard-phases 'patchelf)))
-;           (modify-phases %standard-phases
-;           (replace 'unpack
-;             (lambda* (#:key source #:allow-other-keys)
-;               (invoke "tar" "xvf" source)))
-;           (replace 'patchelf
-;             (lambda args
-;               (apply old-patchelf (append args (list
-;               #:patchelf-plan
-;                 (map (lambda (x)
-;                   (list x (list "gcc:lib" "glibc" "lttng-ust" "libcurl" "openssl" "mit-krb5" "zlib" "icu4c" "libgdiplus")))
-;                   (append (find-files "." "\\.so$") '("dotnet")))
-;                   )))))))
-;        #:system "x86_64-linux"
-;        #:install-plan
-;        '(("host" "host")
-;         ("shared" "shared")
-;         ("sdk" "sdk")
-;         ("dotnet" "dotnet")
-;         ("ThirdPartyNotices.txt" "share/doc/ThirdPartyNotices.txt"))
-;       )
-;     )
-;     (inputs
-;      `(("gcc:lib" ,gcc "lib")
-;        ("glibc" ,glibc)
-;        ("lttng-ust" ,lttng-ust)
-;        ("libcurl" ,curl)
-;        ("openssl" ,openssl)
-;        ("mit-krb5" ,mit-krb5)
-;        ("zlib" ,zlib)
-;        ("icu4c" ,icu4c)
-;        ("libgdiplus" ,libgdiplus)))
-;     (home-page "https://dotnet.microsoft.com/")
-;     (synopsis ".NET Core SDK")
-;     (description ".NET Core is a free and open-source, managed computer software framework for Windows,
-; Linux, and macOS operating systems. It is a cross-platform successor to .NET Framework.
-; The project is primarily developed by Microsoft and released under the MIT License.")
-;     (license license:expat)
-;   )
-; )
-
-; ; NetCore (https://dotnet.microsoft.com/download/dotnet-core/2.2)
-; (define-public netcore-runtime
-;   (package
-;     (name "netcore-runtime")
-;     ; (version "2.1.17")
-;     ; (source
-;     ;   (origin
-;     ;     (method url-fetch)
-;     ;     (uri (string-append "https://download.visualstudio.microsoft.com/download/pr/"
-;     ;       "a668ac5e-ffcc-419a-8c82-9e5feb7b2619/4108ef8aede75bbb569a359dff689c5c"
-;     ;       "/dotnet-runtime-"
-;     ;       version
-;     ;       "-"
-;     ;       "linux-x64"
-;     ;       ".tar.gz"))
-;     ;     (sha256 (base32 "0g7azv4f1acjsjxrqdwmsxhv6x7kgnb3kjrd624sjxq9j9ygmqpn"))
-;     ;   )
-;     ; )
-;     (version "2.2.8")
-;     (source
-;       (origin
-;         (method url-fetch)
-;         (uri (string-append "https://download.visualstudio.microsoft.com/download/pr/"
-;           "3fbca771-e7d3-45bf-8e77-cfc1c5c41810/e118d44f5a6df21714abd8316e2e042b"
-;           "/dotnet-runtime-"
-;           version
-;           "-"
-;           "linux-x64"
-;           ".tar.gz"))
-;         (sha256 (base32 "0vwc96jwagqxw2ybfxb932vxsa8jbd6052yfn4v40zrxac6d6igf"))
-;       )
-;     )
-;     (build-system binary-build-system)
-;     (supported-systems '("x86_64-linux"))
-;     (arguments
-;      '(#:phases
-;         (let ((old-patchelf (assoc-ref %standard-phases 'patchelf)))
-;           (modify-phases %standard-phases
-;           (replace 'unpack
-;             (lambda* (#:key source #:allow-other-keys)
-;               (invoke "tar" "xvf" source)))
-;           (replace 'patchelf
-;             (lambda args
-;               (apply old-patchelf (append args (list
-;               #:patchelf-plan
-;                 (map (lambda (x)
-;                   (list x (list "gcc:lib" "glibc" "lttng-ust" "libcurl" "openssl" "mit-krb5" "zlib" "icu4c" "libgdiplus")))
-;                   (append (find-files "." "\\.so$") '("dotnet")))
-;                   )))))))
-;        #:system "x86_64-linux"
-;        #:install-plan
-;        '(("host" "host")
-;         ("shared" "shared")
-;         ("dotnet" "dotnet")
-;         ("ThirdPartyNotices.txt" "share/doc/ThirdPartyNotices.txt"))
-;       )
-;     )
-;     (inputs
-;      `(("gcc:lib" ,gcc "lib")
-;        ("glibc" ,glibc)
-;        ("lttng-ust" ,lttng-ust)
-;        ("libcurl" ,curl)
-;        ("openssl" ,openssl)
-;        ("mit-krb5" ,mit-krb5)
-;        ("zlib" ,zlib)
-;        ("icu4c" ,icu4c)
-;        ("libgdiplus" ,libgdiplus)))
-;     (home-page "https://dotnet.microsoft.com/")
-;     (synopsis ".NET Core")
-;     (description ".NET Core is a free and open-source, managed computer software framework for Windows,
-; Linux, and macOS operating systems. It is a cross-platform successor to .NET Framework.
-; The project is primarily developed by Microsoft and released under the MIT License.")
-;     (license license:expat)
-;   )
-; )
-
 ; TODO: MetaCall CLI should set some enviroment variables in order to make it work for Guixers
 ; See metacall/install CLI script for knowing the needed variables and paths
 
@@ -448,7 +301,7 @@ a focus on simplicity and productivity.")
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
           "-DOPTION_BUILD_LOADERS_TS=ON"
-          "-DOPTION_BUILD_LOADERS_CS=OFF" ; TODO: Implement C# Loader
+          "-DOPTION_BUILD_LOADERS_CS=ON"
           "-DOPTION_BUILD_LOADERS_JS=OFF" ; TODO: Implement V8 Loader
           "-DOPTION_BUILD_LOADERS_COB=ON"
           "-DOPTION_BUILD_LOADERS_RPC=ON"
@@ -466,10 +319,9 @@ a focus on simplicity and productivity.")
           "-DNODEJS_CMAKE_DEBUG=ON"
           "-DNODEJS_SHARED_UV=ON"
 
-          ; ; TODO: Avoid harcoded versions of NetCore
-          ; (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "netcore-sdk") "/dotnet")
-          ; ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore-runtime") "/shared/Microsoft.NETCore.App/2.1.17/")
-          ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "netcore-runtime") "/shared/Microsoft.NETCore.App/2.2.8/")
+          ; TODO: Avoid harcoded versions of NetCore
+          (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/dotnet")
+          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "dotnet") "/shared/Microsoft.NETCore.App/5.0.4/")
 
           ; TODO: Avoid harcoded versions of Cobol
           (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
