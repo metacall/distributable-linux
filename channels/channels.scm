@@ -17,16 +17,9 @@
 ;	limitations under the License.
 ;
 
-(list
-      (channel
+(list (channel
        (name 'guix)
        (url "https://git.savannah.gnu.org/git/guix.git")
        (branch "master")
        (commit "1a9ebe3b0aa12584624dfa811c480c636a56e1b4"))
-
-      (channel
-       (name 'nonguix)
-       (url "https://gitlab.com/nonguix/nonguix.git")
-       (branch "master")
-       (commit "168f2fcfb2bb78565175807686c08794237a6e42"))
-)
+       )

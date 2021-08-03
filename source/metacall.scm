@@ -204,6 +204,49 @@ a focus on simplicity and productivity.")
     (home-page "https://www.ruby-lang.org")
     (license license:ruby)))
 
+; NetCore Loader Dependencies
+(define-public codeanalysis
+  (package
+    (name "codeanalysis")
+    (version "3.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis." version ".nupkg"))
+        (sha256 (base32 "189dlaw8s957iny60m63djsaagknlqwr1y1kyky3pm377wv1gl0x"))
+      )
+    )
+    (build-system trivial-build-system)
+    (arguments
+      `(
+        #:phases
+        (modify-phases %standard-phases
+          ; TODO: dotnet nuget add --source (string-append (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/") (assoc-ref %build-inputs "source")
+          ; Usar como source el dotnet o sino usar el path actual del paquete
+          ; TODO: Avoid harcoded versions of NetCore
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* (
+                (command (string-append (assoc-ref %build-inputs "dotnet") "/bin/dotnet"))
+                (src (string-append (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))
+                (nupkg (assoc-ref %build-inputs "source"))
+                (invoke command "nuget" "add" "--source" src nupkg)
+              ))))
+        )
+      )
+    )
+    (inputs
+     `(
+        ("dotnet" ,dotnet)
+      )
+    )
+    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis")
+    (synopsis ".NET Compiler Platform ("Roslyn").")
+    (description ".NET Compiler Platform ("Roslyn").")
+    (license license:expat)
+  )
+)
+
 ; TODO: MetaCall CLI should set some enviroment variables in order to make it work for Guixers
 ; See metacall/install CLI script for knowing the needed variables and paths
 
@@ -230,17 +273,14 @@ a focus on simplicity and productivity.")
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
                 #t)))
-          (add-before 'configure 'setenv
-            ; TODO: Workaround for HOME directory, move this to netcore build system in the future
-            (lambda _
-              ; (let ((home (string-append (getenv "NIX_BUILD_TOP") "/dotnet-home")))
-              (let ((home "/tmp")
-                    (packages "/tmp/.nuget/packages"))
-                    (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
-                    (setenv "HOME" home)
-                    (mkdir-p home)
-                    (mkdir-p packages))
-            #t))
+          ;(add-before 'configure 'dotnet-packages
+          ;  (lambda* (#:key inputs #:allow-other-keys)
+          ;      ; TODO: Avoid harcoded versions of NetCore
+          ;      ; (setenv "NUGET_PACKAGES" (string-append (assoc-ref inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))
+          ;      (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
+          ;      (setenv "HOME" "/tmp")
+          ;      (mkdir-p "/tmp/.nuget/packages")
+          ;      #t))
           (add-after 'build 'build-node-loader-bootstrap-cherow
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((output (string-append (getcwd) "/node_modules/cherow"))
@@ -320,8 +360,8 @@ a focus on simplicity and productivity.")
           "-DNODEJS_SHARED_UV=ON"
 
           ; TODO: Avoid harcoded versions of NetCore
-          (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/dotnet")
-          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "dotnet") "/shared/Microsoft.NETCore.App/5.0.4/")
+          (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/bin/dotnet")
+          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/")
 
           ; TODO: Avoid harcoded versions of Cobol
           (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
@@ -361,8 +401,8 @@ a focus on simplicity and productivity.")
         ("typescript" ,typescript) ; TypeScript Loader dependency
         ("gnucobol" ,gnucobol) ; Cobol Loader dependency
         ("gmp" ,gmp) ; Cobol Loader dependency
-        ; ("netcore-runtime" ,netcore-runtime) ; NetCore Loader dependency
-        ; ("netcore-sdk" ,netcore-sdk) ; NetCore Loader dependency
+        ("dotnet" ,dotnet) ; NetCore Loader dependency
+        ("codeanalysis" ,codeanalysis) ; NetCore Loader dependency
         ("libcurl" ,curl-minimal) ; RPC Loader Dependency
       )
     )
