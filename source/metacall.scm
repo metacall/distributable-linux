@@ -69,6 +69,7 @@
 
   ; NetCore Dependencies
   #:use-module (nongnu packages dotnet)
+  #:use-module (nonguix build-system binary)
 
   ; Cobol Dependencies
   #:use-module (gnu packages cobol)
@@ -96,6 +97,7 @@
         #:phases
         (modify-phases %standard-phases
           (delete 'check)
+          (delete 'configure)
           (delete 'build)
         )
       )
@@ -126,6 +128,7 @@ self-hosted javascript parser with high focus on both performance and stability.
         #:phases
         (modify-phases %standard-phases
           (delete 'check)
+          (delete 'configure)
           (delete 'build)
         )
       )
@@ -212,37 +215,65 @@ a focus on simplicity and productivity.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis." version ".nupkg"))
-        (sha256 (base32 "189dlaw8s957iny60m63djsaagknlqwr1y1kyky3pm377wv1gl0x"))
+        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.csharp." version ".nupkg"))
+        (sha256 (base32 "02kyh5xsr3ciw71afzyis91m18iys1kpndl6h6ykayg9w36z9rz7"))
       )
     )
-    (build-system trivial-build-system)
+    (build-system binary-build-system)
     (arguments
-      `(
-        #:phases
+      `(#:phases
         (modify-phases %standard-phases
-          ; TODO: dotnet nuget add --source (string-append (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/") (assoc-ref %build-inputs "source")
-          ; Usar como source el dotnet o sino usar el path actual del paquete
-          ; TODO: Avoid harcoded versions of NetCore
-          (replace 'build
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let* (
-                (command (string-append (assoc-ref %build-inputs "dotnet") "/bin/dotnet"))
-                (src (string-append (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))
-                (nupkg (assoc-ref %build-inputs "source"))
-                (invoke command "nuget" "add" "--source" src nupkg)
-              ))))
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "unzip" source)
+              (display "\n\n-----------------------------------------------\n\n")
+              (invoke "ls" source)
+              (display "\n\n-----------------------------------------------\n\n")
+              (invoke "ls" (getcwd))
+              (display "\n\n-----------------------------------------------\n\n")
+              (copy-file (getcwd) source)
+            )
+          )
         )
       )
     )
+    ; (arguments
+    ;   `(#:modules ((guix build utils))
+    ;     #:builder
+    ;     (begin
+    ;       (use-modules (guix build utils))
+    ;       ; TODO: dotnet nuget add --source (string-append (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/") (assoc-ref %build-inputs "source")
+    ;       ; Usar como source el dotnet o sino usar el path actual del paquete
+    ;       (let*
+    ;         (
+    ;           ; (command (string-append (assoc-ref %build-inputs "dotnet") "/bin/dotnet"))
+    ;           ; TODO: Avoid harcoded versions of NetCore
+    ;           (dst (string-append (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))
+    ;           (src (string-append (assoc-ref %build-inputs "source") "/lib/netstandard2.0"))
+    ;         )
+    ;         ; (invoke "ls" "-la" (assoc-ref %build-inputs "source"))
+    ;         ; (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
+    ;         ; (setenv "HOME" "/tmp")
+    ;         ; (mkdir-p "/tmp/.nuget/packages")
+    ;         (mkdir-p (assoc-ref %build-inputs "source"))
+    ;         ; (invoke command "nuget" "add" nupkg) ; "--source" src
+    ;       #t)
+    ;     )
+    ;   )
+    ; )
+    ; (inputs
+    ;  `(
+    ;     ("dotnet" ,dotnet)
+    ;   )
+    ; )
     (inputs
      `(
-        ("dotnet" ,dotnet)
+        ("unzip" ,unzip)
       )
     )
     (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis")
-    (synopsis ".NET Compiler Platform ("Roslyn").")
-    (description ".NET Compiler Platform ("Roslyn").")
+    (synopsis ".NET Compiler Platform (Roslyn).")
+    (description ".NET Compiler Platform (Roslyn).")
     (license license:expat)
   )
 )
@@ -273,14 +304,16 @@ a focus on simplicity and productivity.")
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
                 #t)))
-          ;(add-before 'configure 'dotnet-packages
-          ;  (lambda* (#:key inputs #:allow-other-keys)
-          ;      ; TODO: Avoid harcoded versions of NetCore
-          ;      ; (setenv "NUGET_PACKAGES" (string-append (assoc-ref inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))
-          ;      (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
-          ;      (setenv "HOME" "/tmp")
-          ;      (mkdir-p "/tmp/.nuget/packages")
-          ;      #t))
+          (add-before 'configure 'dotnet-packages
+           (lambda* (#:key inputs #:allow-other-keys)
+              ; TODO: Avoid harcoded versions of NetCore
+              (let ((codeanalysis "/tmp/.nuget/packages/Microsoft.CodeAnalysis.CSharp/3.2.1"))
+              ; (setenv "NUGET_PACKAGES" (assoc-ref inputs "codeanalysis"))
+              (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
+              (setenv "HOME" "/tmp")
+              (mkdir-p codeanalysis)
+              (copy-recursively (assoc-ref inputs "codeanalysis") codeanalysis)
+              #t)))
           (add-after 'build 'build-node-loader-bootstrap-cherow
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((output (string-append (getcwd) "/node_modules/cherow"))
