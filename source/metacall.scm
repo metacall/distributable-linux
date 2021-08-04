@@ -337,14 +337,6 @@
                 (mkdir-p additional-pkgs)
                 (display "-------------------------------------------------------------\n\n")
                 (display "-------------------------------------------------------------\n\n")
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <packageSources>
-    <!--To inherit the global NuGet package sources remove the <clear/> line below -->
-    <clear />
-    <add key="nuget" value="https://api.nuget.org/v3/index.json" />
-  </packageSources>
-</configuration>
                 (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-sdks")
                 (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-runtimes")
                 (display "-------------------------------------------------------------\n\n")
