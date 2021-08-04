@@ -79,138 +79,138 @@
   #:use-module (gnu packages curl)
 )
 
-; NodeJS Loader Dependencies
-(define-public cherow
-  (package
-    (name "cherow")
-    (version "1.6.9")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://registry.npmjs.org/cherow/-/cherow-" version ".tgz"))
-        (sha256 (base32 "1m397n6lzj49rhr8742c2cbcyqjrrxa56l197xvrx1sk4jgmzymf"))
-      )
-    )
-    (build-system node-build-system)
-    (arguments
-      `(
-        #:phases
-        (modify-phases %standard-phases
-          (delete 'check)
-          (delete 'configure)
-          (delete 'build)
-        )
-      )
-    )
-    (home-page "https://github.com/cherow/cherow")
-    (synopsis "A very fast and lightweight, self-hosted javascript parser.")
-    (description "A very fast and lightweight, standards-compliant,
-self-hosted javascript parser with high focus on both performance and stability.")
-    (license license:expat)
-  )
-)
+; ; NodeJS Loader Dependencies
+; (define-public cherow
+;   (package
+;     (name "cherow")
+;     (version "1.6.9")
+;     (source
+;       (origin
+;         (method url-fetch)
+;         (uri (string-append "https://registry.npmjs.org/cherow/-/cherow-" version ".tgz"))
+;         (sha256 (base32 "1m397n6lzj49rhr8742c2cbcyqjrrxa56l197xvrx1sk4jgmzymf"))
+;       )
+;     )
+;     (build-system node-build-system)
+;     (arguments
+;       `(
+;         #:phases
+;         (modify-phases %standard-phases
+;           (delete 'check)
+;           (delete 'configure)
+;           (delete 'build)
+;         )
+;       )
+;     )
+;     (home-page "https://github.com/cherow/cherow")
+;     (synopsis "A very fast and lightweight, self-hosted javascript parser.")
+;     (description "A very fast and lightweight, standards-compliant,
+; self-hosted javascript parser with high focus on both performance and stability.")
+;     (license license:expat)
+;   )
+; )
 
-; TypeScript Loader Dependencies
-(define-public typescript
-  (package
-    (name "typescript")
-    (version "4.2.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://registry.npmjs.org/typescript/-/typescript-" version ".tgz"))
-        (sha256 (base32 "0jpi7za7ak0ba8bm300219vhrr4raacx6s8rz3czlwxim1byyn6g"))
-      )
-    )
-    (build-system node-build-system)
-    (arguments
-      `(
-        #:phases
-        (modify-phases %standard-phases
-          (delete 'check)
-          (delete 'configure)
-          (delete 'build)
-        )
-      )
-    )
-    (home-page "https://www.typescriptlang.org/")
-    (synopsis "TypeScript extends JavaScript by adding types to the language. ")
-    (description "TypeScript is a language for application-scale JavaScript.
-TypeScript adds optional types to JavaScript that support tools for large-scale JavaScript applications for any browser,
-for any host, on any OS. TypeScript compiles to readable, standards-based JavaScript.")
-    (license license:asl2.0)
-  )
-)
+; ; TypeScript Loader Dependencies
+; (define-public typescript
+;   (package
+;     (name "typescript")
+;     (version "4.2.3")
+;     (source
+;       (origin
+;         (method url-fetch)
+;         (uri (string-append "https://registry.npmjs.org/typescript/-/typescript-" version ".tgz"))
+;         (sha256 (base32 "0jpi7za7ak0ba8bm300219vhrr4raacx6s8rz3czlwxim1byyn6g"))
+;       )
+;     )
+;     (build-system node-build-system)
+;     (arguments
+;       `(
+;         #:phases
+;         (modify-phases %standard-phases
+;           (delete 'check)
+;           (delete 'configure)
+;           (delete 'build)
+;         )
+;       )
+;     )
+;     (home-page "https://www.typescriptlang.org/")
+;     (synopsis "TypeScript extends JavaScript by adding types to the language. ")
+;     (description "TypeScript is a language for application-scale JavaScript.
+; TypeScript adds optional types to JavaScript that support tools for large-scale JavaScript applications for any browser,
+; for any host, on any OS. TypeScript compiles to readable, standards-based JavaScript.")
+;     (license license:asl2.0)
+;   )
+; )
 
-; Ruby
-(define-public dynruby
-  (package
-    (name "dynruby")
-    (version "2.3.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
-                           (version-major+minor version)
-                           "/ruby-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1zhxbjff08pvbnxvn58krns6q0p6g4977q6ykfn823gxhifn63wi"))
-       (modules '((guix build utils)))
-       (snippet `(begin
-                   ;; Remove bundled libffi
-                   (delete-file-recursively "ext/fiddle/libffi-3.2.1")
-                   #t))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:test-target "test"
-       #:tests? #f ; TODO: Enable tests by removing this line
-       #:configure-flags
-       (list
-         "--enable-shared"
-       )
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'replace-bin-sh-and-remove-libffi
-           (lambda _
-             (substitute* '("Makefile.in"
-                            "ext/pty/pty.c"
-                            "io.c"
-                            "lib/mkmf.rb"
-                            "process.c"
-                            "test/rubygems/test_gem_ext_configure_builder.rb"
-                            "test/rdoc/test_rdoc_parser.rb"
-                            "test/ruby/test_rubyoptions.rb"
-                            "test/ruby/test_process.rb"
-                            "test/ruby/test_system.rb"
-                            "tool/rbinstall.rb")
-               (("/bin/sh") (which "sh")))
-             #t)))))
-    (inputs
-     `(("readline" ,readline)
-       ("openssl" ,openssl)
-       ("bzip2" ,bzip2)
-       ("libffi" ,libffi)
-       ("gdbm" ,gdbm)
-       ("libyaml" ,libyaml)
-       ("ncurses" ,ncurses)
-       ("tcl" ,tcl)
-       ("tk" ,tk) ; TODO: This still fails, Ruby is not able to locate Tk/Tcl lib
-       ("zlib" ,zlib)))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "GEM_PATH")
-            (files (list (string-append "lib/ruby/vendor_ruby"))))))
-    (synopsis "Programming language interpreter")
-    (description "Ruby is a dynamic object-oriented programming language with
-a focus on simplicity and productivity.")
-    (home-page "https://www.ruby-lang.org")
-    (license license:ruby)))
+; ; Ruby
+; (define-public dynruby
+;   (package
+;     (name "dynruby")
+;     (version "2.3.8")
+;     (source
+;      (origin
+;        (method url-fetch)
+;        (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+;                            (version-major+minor version)
+;                            "/ruby-" version ".tar.xz"))
+;        (sha256
+;         (base32
+;          "1zhxbjff08pvbnxvn58krns6q0p6g4977q6ykfn823gxhifn63wi"))
+;        (modules '((guix build utils)))
+;        (snippet `(begin
+;                    ;; Remove bundled libffi
+;                    (delete-file-recursively "ext/fiddle/libffi-3.2.1")
+;                    #t))))
+;     (build-system gnu-build-system)
+;     (arguments
+;      `(#:test-target "test"
+;        #:tests? #f ; TODO: Enable tests by removing this line
+;        #:configure-flags
+;        (list
+;          "--enable-shared"
+;        )
+;        #:phases
+;        (modify-phases %standard-phases
+;          (add-before 'configure 'replace-bin-sh-and-remove-libffi
+;            (lambda _
+;              (substitute* '("Makefile.in"
+;                             "ext/pty/pty.c"
+;                             "io.c"
+;                             "lib/mkmf.rb"
+;                             "process.c"
+;                             "test/rubygems/test_gem_ext_configure_builder.rb"
+;                             "test/rdoc/test_rdoc_parser.rb"
+;                             "test/ruby/test_rubyoptions.rb"
+;                             "test/ruby/test_process.rb"
+;                             "test/ruby/test_system.rb"
+;                             "tool/rbinstall.rb")
+;                (("/bin/sh") (which "sh")))
+;              #t)))))
+;     (inputs
+;      `(("readline" ,readline)
+;        ("openssl" ,openssl)
+;        ("bzip2" ,bzip2)
+;        ("libffi" ,libffi)
+;        ("gdbm" ,gdbm)
+;        ("libyaml" ,libyaml)
+;        ("ncurses" ,ncurses)
+;        ("tcl" ,tcl)
+;        ("tk" ,tk) ; TODO: This still fails, Ruby is not able to locate Tk/Tcl lib
+;        ("zlib" ,zlib)))
+;     (native-search-paths
+;      (list (search-path-specification
+;             (variable "GEM_PATH")
+;             (files (list (string-append "lib/ruby/vendor_ruby"))))))
+;     (synopsis "Programming language interpreter")
+;     (description "Ruby is a dynamic object-oriented programming language with
+; a focus on simplicity and productivity.")
+;     (home-page "https://www.ruby-lang.org")
+;     (license license:ruby)))
 
 ; NetCore Loader Dependencies
-(define-public codeanalysis
+(define-public codeanalysis-csharp
   (package
-    (name "codeanalysis")
+    (name "codeanalysis-csharp")
     (version "3.2.1")
     (source
       (origin
@@ -225,53 +225,73 @@ a focus on simplicity and productivity.")
         (modify-phases %standard-phases
           (replace 'unpack
             (lambda* (#:key source #:allow-other-keys)
-              (invoke "unzip" source)
-              (display "\n\n-----------------------------------------------\n\n")
-              (invoke "ls" source)
-              (display "\n\n-----------------------------------------------\n\n")
-              (invoke "ls" (getcwd))
-              (display "\n\n-----------------------------------------------\n\n")
-              (copy-file (getcwd) source)
+              (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.csharp.3.2.1.nupkg"))
             )
           )
         )
       )
     )
-    ; (arguments
-    ;   `(#:modules ((guix build utils))
-    ;     #:builder
-    ;     (begin
-    ;       (use-modules (guix build utils))
-    ;       ; TODO: dotnet nuget add --source (string-append (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/") (assoc-ref %build-inputs "source")
-    ;       ; Usar como source el dotnet o sino usar el path actual del paquete
-    ;       (let*
-    ;         (
-    ;           ; (command (string-append (assoc-ref %build-inputs "dotnet") "/bin/dotnet"))
-    ;           ; TODO: Avoid harcoded versions of NetCore
-    ;           (dst (string-append (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))
-    ;           (src (string-append (assoc-ref %build-inputs "source") "/lib/netstandard2.0"))
-    ;         )
-    ;         ; (invoke "ls" "-la" (assoc-ref %build-inputs "source"))
-    ;         ; (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
-    ;         ; (setenv "HOME" "/tmp")
-    ;         ; (mkdir-p "/tmp/.nuget/packages")
-    ;         (mkdir-p (assoc-ref %build-inputs "source"))
-    ;         ; (invoke command "nuget" "add" nupkg) ; "--source" src
-    ;       #t)
-    ;     )
-    ;   )
-    ; )
-    ; (inputs
-    ;  `(
-    ;     ("dotnet" ,dotnet)
-    ;   )
-    ; )
-    (inputs
-     `(
-        ("unzip" ,unzip)
+    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.CSharp")
+    (synopsis ".NET Compiler Platform (Roslyn).")
+    (description ".NET Compiler Platform (Roslyn).")
+    (license license:expat)
+  )
+)
+
+(define-public codeanalysis-common
+  (package
+    (name "codeanalysis-common")
+    (version "3.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.common." version ".nupkg"))
+        (sha256 (base32 "1n3jc5fz78f7smzjanmq00iv3pdifnhkgmmsb9czrfbzc3v4c3d2"))
       )
     )
-    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis")
+    (build-system binary-build-system)
+    (arguments
+      `(#:phases
+        (modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.common.3.2.1.nupkg"))
+            )
+          )
+        )
+      )
+    )
+    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.Common")
+    (synopsis ".NET Compiler Platform (Roslyn).")
+    (description ".NET Compiler Platform (Roslyn).")
+    (license license:expat)
+  )
+)
+
+(define-public codeanalysis-analyzers
+  (package
+    (name "codeanalysis-analyzers")
+    (version "2.9.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.analyzers." version ".nupkg"))
+        (sha256 (base32 "1kskwc9gyd2sx3zwx52qwfsl7s0xhaclmlnxvjsb4jgvpydv3xii"))
+      )
+    )
+    (build-system binary-build-system)
+    (arguments
+      `(#:phases
+        (modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.analyzers.2.9.3.nupkg"))
+            )
+          )
+        )
+      )
+    )
+    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.Analyzers")
     (synopsis ".NET Compiler Platform (Roslyn).")
     (description ".NET Compiler Platform (Roslyn).")
     (license license:expat)
@@ -285,12 +305,12 @@ a focus on simplicity and productivity.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.4.14")
+    (version "0.4.17")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "0w415byx1zm3mx7qpzs8sclx6ysd2yqnv31j5b8031blcvximpr9"))
+        (sha256 (base32 "19wz5a3q8vndiwr06qrmrz11xy0rc1lxw5kgl53bgqndwik00nq7"))
       )
     )
     (build-system cmake-build-system)
@@ -306,13 +326,33 @@ a focus on simplicity and productivity.")
                 #t)))
           (add-before 'configure 'dotnet-packages
            (lambda* (#:key inputs #:allow-other-keys)
-              ; TODO: Avoid harcoded versions of NetCore
-              (let ((codeanalysis "/tmp/.nuget/packages/Microsoft.CodeAnalysis.CSharp/3.2.1"))
-              ; (setenv "NUGET_PACKAGES" (assoc-ref inputs "codeanalysis"))
-              (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
-              (setenv "HOME" "/tmp")
-              (mkdir-p codeanalysis)
-              (copy-recursively (assoc-ref inputs "codeanalysis") codeanalysis)
+              (let (
+                    (global-pkgs "/tmp/.nuget/packages")
+                    (additional-pkgs "/tmp/.nuget/nupkgs")
+                   )
+                (setenv "NUGET_PACKAGES" global-pkgs)
+                (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
+                (setenv "HOME" "/tmp")
+                (mkdir-p global-pkgs)
+                (mkdir-p additional-pkgs)
+                (display "-------------------------------------------------------------\n\n")
+                (display "-------------------------------------------------------------\n\n")
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <!--To inherit the global NuGet package sources remove the <clear/> line below -->
+    <clear />
+    <add key="nuget" value="https://api.nuget.org/v3/index.json" />
+  </packageSources>
+</configuration>
+                (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-sdks")
+                (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-runtimes")
+                (display "-------------------------------------------------------------\n\n")
+                (display "-------------------------------------------------------------\n\n")
+                ; TODO: Avoid harcoded versions of CodeAnalysis
+                (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-csharp") "/microsoft.codeanalysis.csharp.3.2.1.nupkg") additional-pkgs)
+                (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-common") "/microsoft.codeanalysis.common.3.2.1.nupkg") additional-pkgs)
+                (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-analyzers") "/microsoft.codeanalysis.analyzers.2.9.3.nupkg") additional-pkgs)
               #t)))
           (add-after 'build 'build-node-loader-bootstrap-cherow
             (lambda* (#:key inputs #:allow-other-keys)
@@ -369,51 +409,52 @@ a focus on simplicity and productivity.")
           ; Loaders
           "-DOPTION_BUILD_LOADERS=ON"
           "-DOPTION_BUILD_LOADERS_MOCK=ON"
-          "-DOPTION_BUILD_LOADERS_PY=ON"
-          "-DOPTION_BUILD_LOADERS_RB=ON"
-          "-DOPTION_BUILD_LOADERS_FILE=ON"
-          "-DOPTION_BUILD_LOADERS_NODE=ON"
-          "-DOPTION_BUILD_LOADERS_TS=ON"
+          "-DOPTION_BUILD_LOADERS_PY=OFF";ON"
+          "-DOPTION_BUILD_LOADERS_RB=OFF";ON"
+          "-DOPTION_BUILD_LOADERS_FILE=OFF";ON"
+          "-DOPTION_BUILD_LOADERS_NODE=OFF";ON"
+          "-DOPTION_BUILD_LOADERS_TS=OFF";ON"
           "-DOPTION_BUILD_LOADERS_CS=ON"
           "-DOPTION_BUILD_LOADERS_JS=OFF" ; TODO: Implement V8 Loader
-          "-DOPTION_BUILD_LOADERS_COB=ON"
-          "-DOPTION_BUILD_LOADERS_RPC=ON"
+          "-DOPTION_BUILD_LOADERS_COB=OFF";ON"
+          "-DOPTION_BUILD_LOADERS_RPC=OFF";ON"
 
-          ; TODO: Avoid harcoded versions of Ruby
-          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "dynruby") "/include/ruby-2.3.0")
-          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "dynruby") "/lib/libruby.so")
-          (string-append "-DRUBY_VERSION=" "2.3.8")
+          ; ; TODO: Avoid harcoded versions of Ruby
+          ; (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "dynruby") "/bin/ruby")
+          ; (string-append "-DRUBY_INCLUDE_DIR=" (assoc-ref %build-inputs "dynruby") "/include/ruby-2.3.0")
+          ; (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "dynruby") "/lib/libruby.so")
+          ; (string-append "-DRUBY_VERSION=" "2.3.8")
 
-          ; TODO: Avoid harcoded versions of NodeJS
-          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node") "/bin/node")
-          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "node") "/include/node")
-          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so.64")
-          "-DNODEJS_CMAKE_DEBUG=ON"
-          "-DNODEJS_SHARED_UV=ON"
+          ; ; TODO: Avoid harcoded versions of NodeJS
+          ; (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node") "/bin/node")
+          ; (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "node") "/include/node")
+          ; (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode") "/lib/libnode.so.64")
+          ; "-DNODEJS_CMAKE_DEBUG=ON"
+          ; "-DNODEJS_SHARED_UV=ON"
 
           ; TODO: Avoid harcoded versions of NetCore
           (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/bin/dotnet")
           (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/")
+          "-DDOTNET_ADDITIONAL_PACKAGES=/tmp/.nuget/nupkgs/"
 
-          ; TODO: Avoid harcoded versions of Cobol
-          (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
-          (string-append "-DCOBOL_INCLUDE_DIR=" (assoc-ref %build-inputs "gnucobol") "/include")
-          (string-append "-DCOBOL_LIBRARY=" (assoc-ref %build-inputs "gnucobol") "/lib/libcob.so.4.0.0")
+          ; ; TODO: Avoid harcoded versions of Cobol
+          ; (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
+          ; (string-append "-DCOBOL_INCLUDE_DIR=" (assoc-ref %build-inputs "gnucobol") "/include")
+          ; (string-append "-DCOBOL_LIBRARY=" (assoc-ref %build-inputs "gnucobol") "/lib/libcob.so.4.0.0")
 
-          ; RPC Loader
-          (string-append "-DCURL_INCLUDE_DIR=" (assoc-ref %build-inputs "libcurl") "/include/curl")
+          ; ; RPC Loader
+          ; (string-append "-DCURL_INCLUDE_DIR=" (assoc-ref %build-inputs "libcurl") "/include/curl")
 
           ; TODO: Finish all loaders
           "-DOPTION_BUILD_SCRIPTS_JS=OFF"
 
-          ; Ports
-          "-DOPTION_BUILD_PORTS=ON"
-          "-DOPTION_BUILD_PORTS_PY=ON"
-          "-DOPTION_BUILD_PORTS_RB=ON"
-          "-DOPTION_BUILD_PORTS_NODE=ON"
-          "-DOPTION_BUILD_PORTS_TS=OFF" ; TODO: Not implemented yet
-          "-DOPTION_BUILD_PORTS_CS=ON"
+          ; ; Ports
+          ; "-DOPTION_BUILD_PORTS=ON"
+          ; "-DOPTION_BUILD_PORTS_PY=ON"
+          ; "-DOPTION_BUILD_PORTS_RB=ON"
+          ; "-DOPTION_BUILD_PORTS_NODE=ON"
+          ; "-DOPTION_BUILD_PORTS_TS=OFF" ; TODO: Not implemented yet
+          ; "-DOPTION_BUILD_PORTS_CS=ON"
 
           ; Disable coverage
           "-DOPTION_COVERAGE=OFF"
@@ -425,18 +466,20 @@ a focus on simplicity and productivity.")
     )
     (propagated-inputs
      `(
-        ("python" ,python) ; Python Loader dependency
-        ("dynruby" ,dynruby) ; Ruby Loader dependency
-        ("node" ,node) ; NodeJS NPM exports
-        ("libnode" ,libnode) ; NodeJS Loader dependency
-        ("libuv" ,libuv) ; NodeJS Loader dependency
-        ("cherow" ,cherow) ; NodeJS Loader dependency
-        ("typescript" ,typescript) ; TypeScript Loader dependency
-        ("gnucobol" ,gnucobol) ; Cobol Loader dependency
-        ("gmp" ,gmp) ; Cobol Loader dependency
+        ; ("python" ,python) ; Python Loader dependency
+        ; ("dynruby" ,dynruby) ; Ruby Loader dependency
+        ; ("node" ,node) ; NodeJS NPM exports
+        ; ("libnode" ,libnode) ; NodeJS Loader dependency
+        ; ("libuv" ,libuv) ; NodeJS Loader dependency
+        ; ("cherow" ,cherow) ; NodeJS Loader dependency
+        ; ("typescript" ,typescript) ; TypeScript Loader dependency
+        ; ("gnucobol" ,gnucobol) ; Cobol Loader dependency
+        ; ("gmp" ,gmp) ; Cobol Loader dependency
         ("dotnet" ,dotnet) ; NetCore Loader dependency
-        ("codeanalysis" ,codeanalysis) ; NetCore Loader dependency
-        ("libcurl" ,curl-minimal) ; RPC Loader Dependency
+        ("codeanalysis-csharp" ,codeanalysis-csharp) ; NetCore Loader dependency
+        ("codeanalysis-common" ,codeanalysis-common) ; NetCore Loader dependency
+        ("codeanalysis-analyzers" ,codeanalysis-analyzers) ; NetCore Loader dependency
+        ; ("libcurl" ,curl-minimal) ; RPC Loader Dependency
       )
     )
     (native-inputs
