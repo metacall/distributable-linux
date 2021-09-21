@@ -21,7 +21,15 @@
 
 export GUILE_WARN_DEPRECATED='detailed'
 
-# Build dependencies
-`# Build (Node Build System)` guix build cherow typescript -L /metacall/source \
-`# Build (GNU Build System)` && guix build dynruby `# netcore-runtime netcore-sdk` -L /metacall/source \
+`# Clone nonguix` apk --update-cache add --virtual git-deps git \
+    && rm -rf /metacall/nonguix \
+    && git clone https://gitlab.com/nonguix/nonguix /metacall/nonguix \
+    && cd /metacall/nonguix \
+    && `# Fix nonguix version` git checkout bdad9592bb425647b5535a9758f27127f586bc28 \
+    && apk del git-deps \
+`# Build` && guix build --fallback \
+    `# dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers` \
+    python ruby libuv node-lts gnucobol gmp libcurl rapidjson swig \
+    cherow typescript libnode-lts \
+    -L /metacall/nonguix -L /metacall/source \
 `# Exit` && exit 0 || exit 1
