@@ -250,12 +250,12 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.5.2")
+    (version "0.5.3")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "035ml2zrz521xlvfkqbjxpxdbkwynm3gk26hvg9758v2wgwss1pj"))
+        (sha256 (base32 "02rh5xhzymzzdcgra0b512nqmb2cxqayz8kgbixg54pmdwlx9rs8"))
       )
     )
     (build-system cmake-build-system)
@@ -269,18 +269,22 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
                 #t)))
-          (add-before 'configure 'ruby-include-workaround
+          (add-before 'configure 'ruby-workaround
             (lambda* (#:key inputs #:allow-other-keys)
-              ; For some reason, after Ruby 3.0 includes are not working anymore
-              ; Patch the includes here directly meanwhile the problem is solved
+              ; For some reason, FincRuby.cmake is working anymore, patch here
+              ; the lib and include paths here directly meanwhile the problem is solved
               (substitute* "source/loaders/rb_loader/CMakeLists.txt"
                 (("\\$\\{Ruby_INCLUDE_DIRS\\}") (string-append
-                  (assoc-ref inputs "ruby") "/include/ruby-3.0.0" "\n"
-                  (assoc-ref inputs "ruby") "/include/ruby-3.0.0/" ,(or (%current-target-system) (%current-system)))))
-              (substitute* "source/ports/rb_port/CMakeLists.txt"
-                (("\\$\\{Ruby_INCLUDE_DIRS\\}") (string-append
-                  (assoc-ref inputs "ruby") "/include/ruby-3.0.0" "\n"
-                  (assoc-ref inputs "ruby") "/include/ruby-3.0.0/" ,(or (%current-target-system) (%current-system)))))
+                  (assoc-ref inputs "ruby") "/include/ruby-2.7.0" "\n"
+                  (assoc-ref inputs "ruby") "/include/ruby-2.7.0/" ,(or (%current-target-system) (%current-system))))
+                (("\\$\\{Ruby_LIBRARY\\}") (string-append
+                  (assoc-ref inputs "ruby") "/lib/libruby.so")))
+                (substitute* "source/ports/rb_port/CMakeLists.txt"
+                  (("\\$\\{Ruby_INCLUDE_DIRS\\}") (string-append
+                    (assoc-ref inputs "ruby") "/include/ruby-2.7.0" "\n"
+                    (assoc-ref inputs "ruby") "/include/ruby-2.7.0/" ,(or (%current-target-system) (%current-system))))
+                  (("\\$\\{Ruby_LIBRARY\\}") (string-append
+                    (assoc-ref inputs "ruby") "/lib/libruby.so")))
                 #t))
           ; (add-before 'configure 'dotnet-packages
           ;  (lambda* (#:key inputs #:allow-other-keys)
@@ -369,10 +373,11 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DOPTION_BUILD_LOADERS_COB=ON"
           "-DOPTION_BUILD_LOADERS_RPC=ON"
 
+          ; TODO: This stopped working properly, delete the 'ruby-workaround
           (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby") "/include/ruby-3.0.0")
+          (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.7.0")
           (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
-          (string-append "-DRUBY_VERSION=" "3.0.0")
+          (string-append "-DRUBY_VERSION=" "2.7.2")
 
           (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node-lts") "/bin/node")
           (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "node-lts") "/include/node")
@@ -413,7 +418,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
     (propagated-inputs
      `(
         ("python" ,python-3.9) ; Python Loader dependency
-        ("ruby" ,ruby-3.0) ; Ruby Loader dependency
+        ("ruby" ,ruby-2.7) ; Ruby Loader dependency
         ("node-lts" ,node-lts) ; NodeJS Loader dependency
         ("libnode-lts" ,libnode-lts) ; NodeJS Loader dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
