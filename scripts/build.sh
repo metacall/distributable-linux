@@ -22,7 +22,7 @@
 export GUILE_WARN_DEPRECATED='detailed'
 
 # Generate a portable package tarball
-`# Build` guix build metacall -L /metacall/nonguix -L /metacall/source \
+`# Build` guix build --cores=$(nproc --all) --max-jobs=$(nproc --all) --fallback metacall -L /metacall/nonguix -L /metacall/source \
 `# Test` `# && guix package -i metacall -L /metacall/source` \
 `# Lint` `# && guix lint metacall` \
 `# Pack uses --no-grafts option in order to avoid conflicts between duplicated versions` \
