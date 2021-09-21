@@ -66,8 +66,8 @@
   #:use-module (gnu packages web)
 
   ; NetCore Dependencies
-  ; #:use-module (nongnu packages dotnet)
-  ; #:use-module (nonguix build-system binary)
+  #:use-module (nongnu packages dotnet)
+  #:use-module (nonguix build-system binary)
 
   ; Cobol Dependencies
   #:use-module (gnu packages cobol)
@@ -152,96 +152,96 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
   )
 )
 
-; ; NetCore Loader Dependencies
-; (define-public codeanalysis-csharp
-;   (package
-;     (name "codeanalysis-csharp")
-;     (version "3.2.1")
-;     (source
-;       (origin
-;         (method url-fetch)
-;         (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.csharp." version ".nupkg"))
-;         (sha256 (base32 "02kyh5xsr3ciw71afzyis91m18iys1kpndl6h6ykayg9w36z9rz7"))
-;       )
-;     )
-;     (build-system binary-build-system)
-;     (arguments
-;       `(#:phases
-;         (modify-phases %standard-phases
-;           (replace 'unpack
-;             (lambda* (#:key source #:allow-other-keys)
-;               (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.csharp.3.2.1.nupkg"))
-;             )
-;           )
-;         )
-;       )
-;     )
-;     (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.CSharp")
-;     (synopsis ".NET Compiler Platform (Roslyn).")
-;     (description ".NET Compiler Platform (Roslyn).")
-;     (license license:expat)
-;   )
-; )
+; NetCore Loader Dependencies
+(define-public codeanalysis-csharp
+  (package
+    (name "codeanalysis-csharp")
+    (version "3.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.csharp." version ".nupkg"))
+        (sha256 (base32 "02kyh5xsr3ciw71afzyis91m18iys1kpndl6h6ykayg9w36z9rz7"))
+      )
+    )
+    (build-system binary-build-system)
+    (arguments
+      `(#:phases
+        (modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.csharp.3.2.1.nupkg"))
+            )
+          )
+        )
+      )
+    )
+    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.CSharp")
+    (synopsis ".NET Compiler Platform (Roslyn).")
+    (description ".NET Compiler Platform (Roslyn).")
+    (license license:expat)
+  )
+)
 
-; (define-public codeanalysis-common
-;   (package
-;     (name "codeanalysis-common")
-;     (version "3.2.1")
-;     (source
-;       (origin
-;         (method url-fetch)
-;         (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.common." version ".nupkg"))
-;         (sha256 (base32 "1n3jc5fz78f7smzjanmq00iv3pdifnhkgmmsb9czrfbzc3v4c3d2"))
-;       )
-;     )
-;     (build-system binary-build-system)
-;     (arguments
-;       `(#:phases
-;         (modify-phases %standard-phases
-;           (replace 'unpack
-;             (lambda* (#:key source #:allow-other-keys)
-;               (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.common.3.2.1.nupkg"))
-;             )
-;           )
-;         )
-;       )
-;     )
-;     (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.Common")
-;     (synopsis ".NET Compiler Platform (Roslyn).")
-;     (description ".NET Compiler Platform (Roslyn).")
-;     (license license:expat)
-;   )
-; )
+(define-public codeanalysis-common
+  (package
+    (name "codeanalysis-common")
+    (version "3.2.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.common." version ".nupkg"))
+        (sha256 (base32 "1n3jc5fz78f7smzjanmq00iv3pdifnhkgmmsb9czrfbzc3v4c3d2"))
+      )
+    )
+    (build-system binary-build-system)
+    (arguments
+      `(#:phases
+        (modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.common.3.2.1.nupkg"))
+            )
+          )
+        )
+      )
+    )
+    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.Common")
+    (synopsis ".NET Compiler Platform (Roslyn).")
+    (description ".NET Compiler Platform (Roslyn).")
+    (license license:expat)
+  )
+)
 
-; (define-public codeanalysis-analyzers
-;   (package
-;     (name "codeanalysis-analyzers")
-;     (version "2.9.3")
-;     (source
-;       (origin
-;         (method url-fetch)
-;         (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.analyzers." version ".nupkg"))
-;         (sha256 (base32 "1kskwc9gyd2sx3zwx52qwfsl7s0xhaclmlnxvjsb4jgvpydv3xii"))
-;       )
-;     )
-;     (build-system binary-build-system)
-;     (arguments
-;       `(#:phases
-;         (modify-phases %standard-phases
-;           (replace 'unpack
-;             (lambda* (#:key source #:allow-other-keys)
-;               (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.analyzers.2.9.3.nupkg"))
-;             )
-;           )
-;         )
-;       )
-;     )
-;     (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.Analyzers")
-;     (synopsis ".NET Compiler Platform (Roslyn).")
-;     (description ".NET Compiler Platform (Roslyn).")
-;     (license license:expat)
-;   )
-; )
+(define-public codeanalysis-analyzers
+  (package
+    (name "codeanalysis-analyzers")
+    (version "2.9.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.analyzers." version ".nupkg"))
+        (sha256 (base32 "1kskwc9gyd2sx3zwx52qwfsl7s0xhaclmlnxvjsb4jgvpydv3xii"))
+      )
+    )
+    (build-system binary-build-system)
+    (arguments
+      `(#:phases
+        (modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.analyzers.2.9.3.nupkg"))
+            )
+          )
+        )
+      )
+    )
+    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.Analyzers")
+    (synopsis ".NET Compiler Platform (Roslyn).")
+    (description ".NET Compiler Platform (Roslyn).")
+    (license license:expat)
+  )
+)
 
 ; TODO: MetaCall CLI should set some enviroment variables in order to make it work for Guixers
 ; See metacall/install CLI script for knowing the needed variables and paths
@@ -286,28 +286,29 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
                   (("\\$\\{Ruby_LIBRARY\\}") (string-append
                     (assoc-ref inputs "ruby") "/lib/libruby.so")))
                 #t))
-          ; (add-before 'configure 'dotnet-packages
-          ;  (lambda* (#:key inputs #:allow-other-keys)
-          ;     (let (
-          ;           (global-pkgs "/tmp/.nuget/packages")
-          ;           (additional-pkgs "/tmp/.nuget/nupkgs")
-          ;          )
-          ;       (setenv "NUGET_PACKAGES" global-pkgs)
-          ;       (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
-          ;       (setenv "HOME" "/tmp")
-          ;       (mkdir-p global-pkgs)
-          ;       (mkdir-p additional-pkgs)
-          ;       (display "-------------------------------------------------------------\n\n")
-          ;       (display "-------------------------------------------------------------\n\n")
-          ;       (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-sdks")
-          ;       (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-runtimes")
-          ;       (display "-------------------------------------------------------------\n\n")
-          ;       (display "-------------------------------------------------------------\n\n")
-          ;       ; TODO: Avoid harcoded versions of CodeAnalysis
-          ;       (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-csharp") "/microsoft.codeanalysis.csharp.3.2.1.nupkg") additional-pkgs)
-          ;       (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-common") "/microsoft.codeanalysis.common.3.2.1.nupkg") additional-pkgs)
-          ;       (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-analyzers") "/microsoft.codeanalysis.analyzers.2.9.3.nupkg") additional-pkgs)
-          ;     #t)))
+          (add-before 'configure 'dotnet-packages
+           (lambda* (#:key inputs #:allow-other-keys)
+              (let (
+                    (global-pkgs "/tmp/.nuget/packages")
+                    (additional-pkgs "/tmp/.nuget/nupkgs")
+                   )
+                (setenv "NUGET_PACKAGES" global-pkgs)
+                (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
+                (setenv "HOME" "/tmp")
+                (mkdir-p global-pkgs)
+                (mkdir-p additional-pkgs)
+                ; TODO: Remove the debug info once it is working
+                (display "-------------------------------------------------------------\n\n")
+                (display "-------------------------------------------------------------\n\n")
+                (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-sdks")
+                (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-runtimes")
+                (display "-------------------------------------------------------------\n\n")
+                (display "-------------------------------------------------------------\n\n")
+                ; TODO: Avoid harcoded versions of CodeAnalysis
+                (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-csharp") "/microsoft.codeanalysis.csharp.3.2.1.nupkg") additional-pkgs)
+                (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-common") "/microsoft.codeanalysis.common.3.2.1.nupkg") additional-pkgs)
+                (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-analyzers") "/microsoft.codeanalysis.analyzers.2.9.3.nupkg") additional-pkgs)
+              #t)))
           (add-after 'build 'build-node-loader-bootstrap-cherow
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((output (string-append (getcwd) "/node_modules/cherow"))
@@ -368,7 +369,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
           "-DOPTION_BUILD_LOADERS_TS=ON"
-          "-DOPTION_BUILD_LOADERS_CS=OFF";ON"
+          "-DOPTION_BUILD_LOADERS_CS=ON"
           "-DOPTION_BUILD_LOADERS_JS=OFF" ; TODO: Implement V8 Loader
           "-DOPTION_BUILD_LOADERS_COB=ON"
           "-DOPTION_BUILD_LOADERS_RPC=ON"
@@ -385,9 +386,9 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DNODEJS_CMAKE_DEBUG=ON"
           "-DNODEJS_SHARED_UV=ON"
 
-          ; (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/bin/dotnet")
-          ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/")
-          ; "-DDOTNET_ADDITIONAL_PACKAGES=/tmp/.nuget/nupkgs/"
+          (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/bin/dotnet")
+          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/")
+          "-DDOTNET_ADDITIONAL_PACKAGES=/tmp/.nuget/nupkgs/"
 
           (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
           (string-append "-DCOBOL_INCLUDE_DIR=" (assoc-ref %build-inputs "gnucobol") "/include")
@@ -405,7 +406,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DOPTION_BUILD_PORTS_RB=ON"
           "-DOPTION_BUILD_PORTS_NODE=ON"
           "-DOPTION_BUILD_PORTS_TS=OFF" ; TODO: Not implemented yet
-          ; "-DOPTION_BUILD_PORTS_CS=ON"
+          "-DOPTION_BUILD_PORTS_CS=ON"
 
           ; Disable coverage
           "-DOPTION_COVERAGE=OFF"
