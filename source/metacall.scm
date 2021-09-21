@@ -271,7 +271,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
                 #t)))
           (add-before 'configure 'ruby-workaround
             (lambda* (#:key inputs #:allow-other-keys)
-              ; For some reason, FincRuby.cmake is working anymore, patch here
+              ; For some reason, FindRuby.cmake is working anymore, patch here
               ; the lib and include paths here directly meanwhile the problem is solved
               (substitute* "source/loaders/rb_loader/CMakeLists.txt"
                 (("\\$\\{Ruby_INCLUDE_DIRS\\}") (string-append
