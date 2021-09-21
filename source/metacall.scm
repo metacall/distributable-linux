@@ -269,6 +269,19 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
                 #t)))
+          (add-before 'configure 'ruby-include-workaround
+            (lambda* (#:key inputs #:allow-other-keys)
+              ; For some reason, after Ruby 3.0 includes are not working anymore
+              ; Patch the includes here directly meanwhile the problem is solved
+              (substitute* "source/loaders/rb_loader/CMakeLists.txt"
+                (("\\$\\{Ruby_INCLUDE_DIRS\\}") (string-append
+                  (assoc-ref inputs "ruby") "/include/ruby-3.0.0" "\n"
+                  (assoc-ref inputs "ruby") "/include/ruby-3.0.0/" ,(or (%current-target-system) (%current-system)))))
+              (substitute* "source/ports/rb_port/CMakeLists.txt"
+                (("\\$\\{Ruby_INCLUDE_DIRS\\}") (string-append
+                  (assoc-ref inputs "ruby") "/include/ruby-3.0.0" "\n"
+                  (assoc-ref inputs "ruby") "/include/ruby-3.0.0/" ,(or (%current-target-system) (%current-system)))))
+                #t))
           ; (add-before 'configure 'dotnet-packages
           ;  (lambda* (#:key inputs #:allow-other-keys)
           ;     (let (
@@ -373,7 +386,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 
           (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
           (string-append "-DCOBOL_INCLUDE_DIR=" (assoc-ref %build-inputs "gnucobol") "/include")
-          (string-append "-DCOBOL_LIBRARY=" (assoc-ref %build-inputs "gnucobol") "/lib/libcob.so.4.0.0")
+          (string-append "-DCOBOL_LIBRARY=" (assoc-ref %build-inputs "gnucobol") "/lib/libcob.so")
 
           ; RPC Loader
           (string-append "-DCURL_INCLUDE_DIR=" (assoc-ref %build-inputs "libcurl") "/include/curl")
