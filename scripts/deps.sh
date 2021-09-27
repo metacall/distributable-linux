@@ -29,7 +29,6 @@ export GUILE_WARN_DEPRECATED='detailed'
     && apk del git-deps \
 `# Build` && guix build --fallback \
     dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers \
-    python ruby libuv node-lts gnucobol gmp libcurl rapidjson swig \
     cherow typescript libnode-lts \
     -L /metacall/nonguix -L /metacall/source \
 `# Exit` && exit 0 || exit 1

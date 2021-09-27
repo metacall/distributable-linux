@@ -297,17 +297,24 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
                 (setenv "HOME" "/tmp")
                 (mkdir-p global-pkgs)
                 (mkdir-p additional-pkgs)
-                ; TODO: Remove the debug info once it is working
-                (display "-------------------------------------------------------------\n\n")
-                (display "-------------------------------------------------------------\n\n")
-                (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-sdks")
-                (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-runtimes")
-                (display "-------------------------------------------------------------\n\n")
-                (display "-------------------------------------------------------------\n\n")
-                ; TODO: Avoid harcoded versions of CodeAnalysis
                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-csharp") "/microsoft.codeanalysis.csharp.3.2.1.nupkg") additional-pkgs)
                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-common") "/microsoft.codeanalysis.common.3.2.1.nupkg") additional-pkgs)
                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-analyzers") "/microsoft.codeanalysis.analyzers.2.9.3.nupkg") additional-pkgs)
+                (with-output-to-file "source/loaders/cs_loader/netcore/source/NuGet.Config"
+                (lambda ()
+                  (format #t "<?xml version=\"1.0\" encoding=\"utf-8\"?>
+<configuration>
+  <trustedSigners>
+    <author name=\"Microsoft\">
+      <certificate fingerprint=\"3F9001EA83C560D712C24CF213C3D312CB3BFF51EE89435D3430BD06B5D0EECE\" hashAlgorithm=\"SHA256\" allowUntrustedRoot=\"false\" />
+      <certificate fingerprint=\"AA12DA22A49BCE7D5C1AE64CC1F3D892F150DA76140F210ABD2CBFFCA2C18A27\" hashAlgorithm=\"SHA256\" allowUntrustedRoot=\"false\" />
+    </author>
+  </trustedSigners>
+  <packageSources>
+    <add key=\"additional-pkgs\" value=\"~a\" />
+    <add key=\"dotnet-pkgs\" value=\"~a\" />
+  </packageSources>
+</configuration>" additional-pkgs (string-append (assoc-ref inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))))
               #t)))
           (add-after 'build 'build-node-loader-bootstrap-cherow
             (lambda* (#:key inputs #:allow-other-keys)
@@ -427,10 +434,10 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
         ("typescript" ,typescript) ; TypeScript Loader dependency
         ("gnucobol" ,gnucobol) ; Cobol Loader dependency
         ("gmp" ,gmp) ; Cobol Loader dependency
-        ; ("dotnet" ,dotnet) ; NetCore Loader dependency
-        ; ("codeanalysis-csharp" ,codeanalysis-csharp) ; NetCore Loader dependency
-        ; ("codeanalysis-common" ,codeanalysis-common) ; NetCore Loader dependency
-        ; ("codeanalysis-analyzers" ,codeanalysis-analyzers) ; NetCore Loader dependency
+        ("dotnet" ,dotnet) ; NetCore Loader dependency
+        ("codeanalysis-csharp" ,codeanalysis-csharp) ; NetCore Loader dependency
+        ("codeanalysis-common" ,codeanalysis-common) ; NetCore Loader dependency
+        ("codeanalysis-analyzers" ,codeanalysis-analyzers) ; NetCore Loader dependency
         ("libcurl" ,curl-minimal) ; RPC Loader Dependency
       )
     )
