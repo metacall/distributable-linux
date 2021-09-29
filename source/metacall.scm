@@ -297,6 +297,17 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
                 (setenv "HOME" "/tmp")
                 (mkdir-p global-pkgs)
                 (mkdir-p additional-pkgs)
+                ; ; TODO: Remove the debug info once it is working
+                ; (display "-------------------------------------------------------------\n\n")
+                ; (display "-------------------------------------------------------------\n\n")
+                ; (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-sdks")
+                ; ; (invoke "cat" "source/loaders/cs_loader/netcore/source/NuGet.Config")
+                ; ; (display "-------------------------------------------------------------\n\n")
+                ; ; (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-runtimes")
+                ; ;(invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--info")
+                ; (display "-------------------------------------------------------------\n\n")
+                ; (display "-------------------------------------------------------------\n\n")
+                ; TODO: Avoid harcoded versions of CodeAnalysis
                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-csharp") "/microsoft.codeanalysis.csharp.3.2.1.nupkg") additional-pkgs)
                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-common") "/microsoft.codeanalysis.common.3.2.1.nupkg") additional-pkgs)
                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-analyzers") "/microsoft.codeanalysis.analyzers.2.9.3.nupkg") additional-pkgs)
@@ -311,10 +322,10 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
     </author>
   </trustedSigners>
   <packageSources>
-    <add key=\"additional-pkgs\" value=\"~a\" />
+    <clear />
     <add key=\"dotnet-pkgs\" value=\"~a\" />
   </packageSources>
-</configuration>" additional-pkgs (string-append (assoc-ref inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))))
+</configuration>" (string-append (assoc-ref inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))))
               #t)))
           (add-after 'build 'build-node-loader-bootstrap-cherow
             (lambda* (#:key inputs #:allow-other-keys)
