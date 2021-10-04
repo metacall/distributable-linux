@@ -295,18 +295,9 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
                 (setenv "NUGET_PACKAGES" global-pkgs)
                 (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
                 (setenv "HOME" "/tmp")
+                (setenv "DOTNET_ROOT" (string-append (assoc-ref inputs "dotnet") "/share/dotnet"))
                 (mkdir-p global-pkgs)
                 (mkdir-p additional-pkgs)
-                ; ; TODO: Remove the debug info once it is working
-                ; (display "-------------------------------------------------------------\n\n")
-                ; (display "-------------------------------------------------------------\n\n")
-                ; (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-sdks")
-                ; ; (invoke "cat" "source/loaders/cs_loader/netcore/source/NuGet.Config")
-                ; ; (display "-------------------------------------------------------------\n\n")
-                ; ; (invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--list-runtimes")
-                ; ;(invoke (string-append (assoc-ref inputs "dotnet") "/bin/dotnet") "--info")
-                ; (display "-------------------------------------------------------------\n\n")
-                ; (display "-------------------------------------------------------------\n\n")
                 ; TODO: Avoid harcoded versions of CodeAnalysis
                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-csharp") "/microsoft.codeanalysis.csharp.3.2.1.nupkg") additional-pkgs)
                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-common") "/microsoft.codeanalysis.common.3.2.1.nupkg") additional-pkgs)
@@ -404,7 +395,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DNODEJS_CMAKE_DEBUG=ON"
           "-DNODEJS_SHARED_UV=ON"
 
-          (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/bin/dotnet")
+          (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/dotnet")
           (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/")
           "-DDOTNET_ADDITIONAL_PACKAGES=/tmp/.nuget/nupkgs/"
 
