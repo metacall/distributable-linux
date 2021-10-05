@@ -28,8 +28,7 @@ export GUILE_WARN_DEPRECATED='detailed'
     && `# Fix nonguix version` git checkout bdad9592bb425647b5535a9758f27127f586bc28 \
     && apk del git-deps \
 `# Build` && guix build --fallback \
-    `# dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers` \
-    python ruby libuv node-lts gnucobol gmp libcurl rapidjson swig \
+    dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers \
     cherow typescript libnode-lts \
     -L /metacall/nonguix -L /metacall/source \
 `# Exit` && exit 0 || exit 1
