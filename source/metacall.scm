@@ -65,9 +65,9 @@
   ; RapidJSON
   #:use-module (gnu packages web)
 
-  ; NetCore Dependencies
-  #:use-module (nongnu packages dotnet)
-  #:use-module (nonguix build-system binary)
+  ; NetCore Dependencies (TODO)
+  ; #:use-module (nongnu packages dotnet)
+  ; #:use-module (nonguix build-system binary)
 
   ; Cobol Dependencies
   #:use-module (gnu packages cobol)
@@ -152,96 +152,96 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
   )
 )
 
-; NetCore Loader Dependencies
-(define-public codeanalysis-csharp
-  (package
-    (name "codeanalysis-csharp")
-    (version "3.2.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.csharp." version ".nupkg"))
-        (sha256 (base32 "02kyh5xsr3ciw71afzyis91m18iys1kpndl6h6ykayg9w36z9rz7"))
-      )
-    )
-    (build-system binary-build-system)
-    (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (replace 'unpack
-            (lambda* (#:key source #:allow-other-keys)
-              (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.csharp.3.2.1.nupkg"))
-            )
-          )
-        )
-      )
-    )
-    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.CSharp")
-    (synopsis ".NET Compiler Platform (Roslyn).")
-    (description ".NET Compiler Platform (Roslyn).")
-    (license license:expat)
-  )
-)
+; NetCore Loader Dependencies (TODO)
+; (define-public codeanalysis-csharp
+;   (package
+;     (name "codeanalysis-csharp")
+;     (version "3.2.1")
+;     (source
+;       (origin
+;         (method url-fetch)
+;         (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.csharp." version ".nupkg"))
+;         (sha256 (base32 "02kyh5xsr3ciw71afzyis91m18iys1kpndl6h6ykayg9w36z9rz7"))
+;       )
+;     )
+;     (build-system binary-build-system)
+;     (arguments
+;       `(#:phases
+;         (modify-phases %standard-phases
+;           (replace 'unpack
+;             (lambda* (#:key source #:allow-other-keys)
+;               (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.csharp.3.2.1.nupkg"))
+;             )
+;           )
+;         )
+;       )
+;     )
+;     (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.CSharp")
+;     (synopsis ".NET Compiler Platform (Roslyn).")
+;     (description ".NET Compiler Platform (Roslyn).")
+;     (license license:expat)
+;   )
+; )
 
-(define-public codeanalysis-common
-  (package
-    (name "codeanalysis-common")
-    (version "3.2.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.common." version ".nupkg"))
-        (sha256 (base32 "1n3jc5fz78f7smzjanmq00iv3pdifnhkgmmsb9czrfbzc3v4c3d2"))
-      )
-    )
-    (build-system binary-build-system)
-    (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (replace 'unpack
-            (lambda* (#:key source #:allow-other-keys)
-              (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.common.3.2.1.nupkg"))
-            )
-          )
-        )
-      )
-    )
-    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.Common")
-    (synopsis ".NET Compiler Platform (Roslyn).")
-    (description ".NET Compiler Platform (Roslyn).")
-    (license license:expat)
-  )
-)
+; (define-public codeanalysis-common
+;   (package
+;     (name "codeanalysis-common")
+;     (version "3.2.1")
+;     (source
+;       (origin
+;         (method url-fetch)
+;         (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.common." version ".nupkg"))
+;         (sha256 (base32 "1n3jc5fz78f7smzjanmq00iv3pdifnhkgmmsb9czrfbzc3v4c3d2"))
+;       )
+;     )
+;     (build-system binary-build-system)
+;     (arguments
+;       `(#:phases
+;         (modify-phases %standard-phases
+;           (replace 'unpack
+;             (lambda* (#:key source #:allow-other-keys)
+;               (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.common.3.2.1.nupkg"))
+;             )
+;           )
+;         )
+;       )
+;     )
+;     (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.Common")
+;     (synopsis ".NET Compiler Platform (Roslyn).")
+;     (description ".NET Compiler Platform (Roslyn).")
+;     (license license:expat)
+;   )
+; )
 
-(define-public codeanalysis-analyzers
-  (package
-    (name "codeanalysis-analyzers")
-    (version "2.9.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.analyzers." version ".nupkg"))
-        (sha256 (base32 "1kskwc9gyd2sx3zwx52qwfsl7s0xhaclmlnxvjsb4jgvpydv3xii"))
-      )
-    )
-    (build-system binary-build-system)
-    (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (replace 'unpack
-            (lambda* (#:key source #:allow-other-keys)
-              (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.analyzers.2.9.3.nupkg"))
-            )
-          )
-        )
-      )
-    )
-    (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.Analyzers")
-    (synopsis ".NET Compiler Platform (Roslyn).")
-    (description ".NET Compiler Platform (Roslyn).")
-    (license license:expat)
-  )
-)
+; (define-public codeanalysis-analyzers
+;   (package
+;     (name "codeanalysis-analyzers")
+;     (version "2.9.3")
+;     (source
+;       (origin
+;         (method url-fetch)
+;         (uri (string-append "https://globalcdn.nuget.org/packages/microsoft.codeanalysis.analyzers." version ".nupkg"))
+;         (sha256 (base32 "1kskwc9gyd2sx3zwx52qwfsl7s0xhaclmlnxvjsb4jgvpydv3xii"))
+;       )
+;     )
+;     (build-system binary-build-system)
+;     (arguments
+;       `(#:phases
+;         (modify-phases %standard-phases
+;           (replace 'unpack
+;             (lambda* (#:key source #:allow-other-keys)
+;               (invoke "cp" source (string-append (getcwd) "/microsoft.codeanalysis.analyzers.2.9.3.nupkg"))
+;             )
+;           )
+;         )
+;       )
+;     )
+;     (home-page "https://www.nuget.org/packages/Microsoft.CodeAnalysis.Analyzers")
+;     (synopsis ".NET Compiler Platform (Roslyn).")
+;     (description ".NET Compiler Platform (Roslyn).")
+;     (license license:expat)
+;   )
+; )
 
 ; TODO: MetaCall CLI should set some enviroment variables in order to make it work for Guixers
 ; See metacall/install CLI script for knowing the needed variables and paths
@@ -286,38 +286,39 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
                   (("\\$\\{Ruby_LIBRARY\\}") (string-append
                     (assoc-ref inputs "ruby") "/lib/libruby.so")))
                 #t))
-          (add-before 'configure 'dotnet-packages
-           (lambda* (#:key inputs #:allow-other-keys)
-              (let (
-                    (global-pkgs "/tmp/.nuget/packages")
-                    (additional-pkgs "/tmp/.nuget/nupkgs")
-                   )
-                (setenv "NUGET_PACKAGES" global-pkgs)
-                (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
-                (setenv "HOME" "/tmp")
-                (setenv "DOTNET_ROOT" (string-append (assoc-ref inputs "dotnet") "/share/dotnet"))
-                (mkdir-p global-pkgs)
-                (mkdir-p additional-pkgs)
-                ; TODO: Avoid harcoded versions of CodeAnalysis
-                (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-csharp") "/microsoft.codeanalysis.csharp.3.2.1.nupkg") additional-pkgs)
-                (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-common") "/microsoft.codeanalysis.common.3.2.1.nupkg") additional-pkgs)
-                (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-analyzers") "/microsoft.codeanalysis.analyzers.2.9.3.nupkg") additional-pkgs)
-                (with-output-to-file "source/loaders/cs_loader/netcore/source/NuGet.Config"
-                (lambda ()
-                  (format #t "<?xml version=\"1.0\" encoding=\"utf-8\"?>
-<configuration>
-  <trustedSigners>
-    <author name=\"Microsoft\">
-      <certificate fingerprint=\"3F9001EA83C560D712C24CF213C3D312CB3BFF51EE89435D3430BD06B5D0EECE\" hashAlgorithm=\"SHA256\" allowUntrustedRoot=\"false\" />
-      <certificate fingerprint=\"AA12DA22A49BCE7D5C1AE64CC1F3D892F150DA76140F210ABD2CBFFCA2C18A27\" hashAlgorithm=\"SHA256\" allowUntrustedRoot=\"false\" />
-    </author>
-  </trustedSigners>
-  <packageSources>
-    <clear />
-    <add key=\"dotnet-pkgs\" value=\"~a\" />
-  </packageSources>
-</configuration>" (string-append (assoc-ref inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))))
-              #t)))
+; TODO
+;           (add-before 'configure 'dotnet-packages
+;            (lambda* (#:key inputs #:allow-other-keys)
+;               (let (
+;                     (global-pkgs "/tmp/.nuget/packages")
+;                     (additional-pkgs "/tmp/.nuget/nupkgs")
+;                    )
+;                 (setenv "NUGET_PACKAGES" global-pkgs)
+;                 (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
+;                 (setenv "HOME" "/tmp")
+;                 (setenv "DOTNET_ROOT" (string-append (assoc-ref inputs "dotnet") "/share/dotnet"))
+;                 (mkdir-p global-pkgs)
+;                 (mkdir-p additional-pkgs)
+;                 ; TODO: Avoid harcoded versions of CodeAnalysis
+;                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-csharp") "/microsoft.codeanalysis.csharp.3.2.1.nupkg") additional-pkgs)
+;                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-common") "/microsoft.codeanalysis.common.3.2.1.nupkg") additional-pkgs)
+;                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-analyzers") "/microsoft.codeanalysis.analyzers.2.9.3.nupkg") additional-pkgs)
+;                 (with-output-to-file "source/loaders/cs_loader/netcore/source/NuGet.Config"
+;                 (lambda ()
+;                   (format #t "<?xml version=\"1.0\" encoding=\"utf-8\"?>
+; <configuration>
+;   <trustedSigners>
+;     <author name=\"Microsoft\">
+;       <certificate fingerprint=\"3F9001EA83C560D712C24CF213C3D312CB3BFF51EE89435D3430BD06B5D0EECE\" hashAlgorithm=\"SHA256\" allowUntrustedRoot=\"false\" />
+;       <certificate fingerprint=\"AA12DA22A49BCE7D5C1AE64CC1F3D892F150DA76140F210ABD2CBFFCA2C18A27\" hashAlgorithm=\"SHA256\" allowUntrustedRoot=\"false\" />
+;     </author>
+;   </trustedSigners>
+;   <packageSources>
+;     <clear />
+;     <add key=\"dotnet-pkgs\" value=\"~a\" />
+;   </packageSources>
+; </configuration>" (string-append (assoc-ref inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))))
+;               #t)))
           (add-after 'build 'build-node-loader-bootstrap-cherow
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((output (string-append (getcwd) "/node_modules/cherow"))
@@ -395,9 +396,10 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DNODEJS_CMAKE_DEBUG=ON"
           "-DNODEJS_SHARED_UV=ON"
 
-          (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/dotnet")
-          (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/")
-          "-DDOTNET_ADDITIONAL_PACKAGES=/tmp/.nuget/nupkgs/"
+          ; TODO
+          ; (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/dotnet")
+          ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/")
+          ; "-DDOTNET_ADDITIONAL_PACKAGES=/tmp/.nuget/nupkgs/"
 
           (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
           (string-append "-DCOBOL_INCLUDE_DIR=" (assoc-ref %build-inputs "gnucobol") "/include")
@@ -436,10 +438,11 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
         ("typescript" ,typescript) ; TypeScript Loader dependency
         ("gnucobol" ,gnucobol) ; Cobol Loader dependency
         ("gmp" ,gmp) ; Cobol Loader dependency
-        ("dotnet" ,dotnet) ; NetCore Loader dependency
-        ("codeanalysis-csharp" ,codeanalysis-csharp) ; NetCore Loader dependency
-        ("codeanalysis-common" ,codeanalysis-common) ; NetCore Loader dependency
-        ("codeanalysis-analyzers" ,codeanalysis-analyzers) ; NetCore Loader dependency
+        ; TODO
+        ; ("dotnet" ,dotnet) ; NetCore Loader dependency
+        ; ("codeanalysis-csharp" ,codeanalysis-csharp) ; NetCore Loader dependency
+        ; ("codeanalysis-common" ,codeanalysis-common) ; NetCore Loader dependency
+        ; ("codeanalysis-analyzers" ,codeanalysis-analyzers) ; NetCore Loader dependency
         ("libcurl" ,curl-minimal) ; RPC Loader Dependency
       )
     )
