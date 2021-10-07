@@ -379,7 +379,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
           "-DOPTION_BUILD_LOADERS_TS=ON"
-          "-DOPTION_BUILD_LOADERS_CS=ON"
+          "-DOPTION_BUILD_LOADERS_CS=OFF" ; TODO: ON
           "-DOPTION_BUILD_LOADERS_JS=OFF" ; TODO: Implement V8 Loader
           "-DOPTION_BUILD_LOADERS_COB=ON"
           "-DOPTION_BUILD_LOADERS_RPC=ON"
