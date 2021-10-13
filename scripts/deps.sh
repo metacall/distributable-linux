@@ -29,7 +29,7 @@ export GUILE_WARN_DEPRECATED='detailed'
     && apk del git-deps \
 `# Build` && guix build --fallback \
     glibc-utf8-locales nss-certs \
-    `# dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers` \
+    dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers \
     cherow typescript libnode-lts \
     -L /metacall/nonguix -L /metacall/source \
 `# Exit` && exit 0 || exit 1
