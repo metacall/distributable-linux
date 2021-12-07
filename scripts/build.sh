@@ -26,7 +26,7 @@ export GUILE_WARN_DEPRECATED='detailed'
 `# Test` `# && guix package -i metacall -L /metacall/source` \
 `# Lint` `# && guix lint metacall` \
 `# Pack uses --no-grafts option in order to avoid conflicts between duplicated versions` \
-`# Pack` && guix pack --no-grafts -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -RR metacall glibc-utf8-locales nss-certs -L /metacall/nonguix -L /metacall/source | tee build.log \
+`# Pack` && guix pack --no-grafts --target=x86_64-w64-mingw32 -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -RR metacall glibc-utf8-locales nss-certs -L /metacall/nonguix -L /metacall/source | tee build.log \
 `# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack/tarball.tar.gz \
 `# Exit` && exit 0 || exit 1
 
