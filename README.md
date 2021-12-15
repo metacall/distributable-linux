@@ -1,6 +1,6 @@
-# MetaCall Distributable
+# MetaCall Distributable Linux
 
-Cross-platform and multi-arch redistributable for shipping MetaCall Core.
+Linux redistributable for shipping MetaCall Core.
 
 ## How to Generate the Distributable Tarballs
 
