@@ -22,17 +22,17 @@ build:
       # This seems to be needed by GitLab CI
       - chmod 1777 /tmp
       # Build the base image
-      - docker build -t metacall/distributable -f Dockerfile .
+      - docker build -t metacall/distributable_linux -f Dockerfile .
       # Install the additional channels and pull (can't be cached)
-      - docker run --privileged --name tmp metacall/distributable sh -c 'guix pull'
+      - docker run --privileged --name tmp metacall/distributable_linux sh -c 'guix pull'
       # Commit changes
-      - docker commit tmp metacall/distributable && docker rm -f tmp
+      - docker commit tmp metacall/distributable_linux && docker rm -f tmp
       # Build dependencies
-      - docker run -d --privileged --name tmp metacall/distributable /metacall/scripts/deps.sh
+      - docker run -d --privileged --name tmp metacall/distributable_linux /metacall/scripts/deps.sh
       # Commit changes
-      - docker commit tmp metacall/distributable && docker rm -f tmp
+      - docker commit tmp metacall/distributable_linux && docker rm -f tmp
       # Build tarball
-      - docker run --rm -v $PWD/out:/metacall/pack --privileged metacall/distributable /metacall/scripts/build.sh
+      - docker run --rm -v $PWD/out:/metacall/pack --privileged metacall/distributable_linux /metacall/scripts/build.sh
   only:
     - tags
   artifacts:
@@ -45,11 +45,11 @@ test:
   script:
     # Generate a unique id for invalidating the cache of test layers
     - CACHE_INVALIDATE=$(date +%s)
-    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:cli -f tests/cli/Dockerfile .
-    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:c -f tests/c/Dockerfile .
-    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:python -f tests/python/Dockerfile .
-    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:node -f tests/node/Dockerfile .
-    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:typescript -f tests/typescript/Dockerfile .
+    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:cli -f tests/cli/Dockerfile .
+    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:c -f tests/c/Dockerfile .
+    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:python -f tests/python/Dockerfile .
+    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:node -f tests/node/Dockerfile .
+    - docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:typescript -f tests/typescript/Dockerfile .
   only:
     - tags
   needs:
@@ -71,8 +71,8 @@ publish-github:
     - if [[ "${CI_COMMIT_TAG}" == "" ]]; then export CI_COMMIT_TAG=${PREVIOUS_TAG}; fi
     - export RELEASE_DATE=`date '+%Y-%m-%d'`
     - mv ${PWD}/out/tarball.tar.gz ${PWD}/out/${ASSET_NAME}
-    - echo "MetaCall Distributable ${CI_COMMIT_TAG} [${RELEASE_DATE}] - ${GH_REPO_OWNER}/${GH_REPO_NAME}:${CI_COMMIT_SHA}" && echo "${GIT_HISTORY}"
-    - ghr -t ${GH_TOKEN} -u ${GH_REPO_OWNER} -r ${GH_REPO_NAME} -c ${CI_COMMIT_SHA} -n "MetaCall Distributable ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace ${CI_COMMIT_TAG} ${PWD}/out/${ASSET_NAME}
+    - echo "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}] - ${GH_REPO_OWNER}/${GH_REPO_NAME}:${CI_COMMIT_SHA}" && echo "${GIT_HISTORY}"
+    - ghr -t ${GH_TOKEN} -u ${GH_REPO_OWNER} -r ${GH_REPO_NAME} -c ${CI_COMMIT_SHA} -n "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace ${CI_COMMIT_TAG} ${PWD}/out/${ASSET_NAME}
   only:
     - tags
   needs:
