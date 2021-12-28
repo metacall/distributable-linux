@@ -64,58 +64,58 @@ download:
 # Build base Docker image
 base:
 	# Clear the container
-	@docker stop metacall_distributable 2> /dev/null || true
-	@docker rm metacall_distributable 2> /dev/null || true
+	@docker stop metacall_distributable_linux 2> /dev/null || true
+	@docker rm metacall_distributable_linux 2> /dev/null || true
 	# Build the base image
-	@docker build -t metacall/distributable -f Dockerfile .
+	@docker build -t metacall/distributable_linux -f Dockerfile .
 
 # Pull latest version of Guix
 pull:
 	# Clear the container
-	@docker stop metacall_distributable 2> /dev/null || true
-	@docker rm metacall_distributable 2> /dev/null || true
+	@docker stop metacall_distributable_linux 2> /dev/null || true
+	@docker rm metacall_distributable_linux 2> /dev/null || true
 	# Install the additional channels and pull
-	@docker run --privileged --name metacall_distributable metacall/distributable sh -c 'guix pull'
-	@docker commit metacall_distributable metacall/distributable
-	@docker rm -f metacall_distributable
+	@docker run --privileged --name metacall_distributable_linux metacall/distributable_linux sh -c 'guix pull'
+	@docker commit metacall_distributable_linux metacall/distributable_linux
+	@docker rm -f metacall_distributable_linux
 	@echo "Done"
 
 # Build deps
 deps:
 	# Clear the container
-	@docker stop metacall_distributable 2> /dev/null || true
-	@docker rm metacall_distributable 2> /dev/null || true
+	@docker stop metacall_distributable_linux 2> /dev/null || true
+	@docker rm metacall_distributable_linux 2> /dev/null || true
 	# Patch the source (metacall.scm) with latest version
-	@docker run -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable metacall/distributable cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
-	@docker commit metacall_distributable metacall/distributable
-	@docker rm -f metacall_distributable
+	@docker run -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
+	@docker commit metacall_distributable_linux metacall/distributable_linux
+	@docker rm -f metacall_distributable_linux
 	# Patch the script (deps.sh) with latest version
-	@docker run -v `pwd`/scripts:/metacall/patch --privileged --name metacall_distributable metacall/distributable cp /metacall/patch/deps.sh /metacall/scripts/deps.sh
-	@docker commit metacall_distributable metacall/distributable
-	@docker rm -f metacall_distributable
+	@docker run -v `pwd`/scripts:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/deps.sh /metacall/scripts/deps.sh
+	@docker commit metacall_distributable_linux metacall/distributable_linux
+	@docker rm -f metacall_distributable_linux
 	# Build dependencies
-	@docker run --privileged --name metacall_distributable metacall/distributable /metacall/scripts/deps.sh
+	@docker run --privileged --name metacall_distributable_linux metacall/distributable_linux /metacall/scripts/deps.sh
 	# Commit dependencies into the image
-	@docker commit metacall_distributable metacall/distributable
+	@docker commit metacall_distributable_linux metacall/distributable_linux
 	# Clear the container
-	@docker rm -f metacall_distributable
+	@docker rm -f metacall_distributable_linux
 	@echo "Done"
 
 # Build tarball
 build:
 	# Clear the container
-	@docker stop metacall_distributable 2> /dev/null || true
-	@docker rm metacall_distributable 2> /dev/null || true
+	@docker stop metacall_distributable_linux 2> /dev/null || true
+	@docker rm metacall_distributable_linux 2> /dev/null || true
 	# Patch the source (metacall.scm) with latest version
-	@docker run -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable metacall/distributable cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
-	@docker commit metacall_distributable metacall/distributable
-	@docker rm -f metacall_distributable
+	@docker run -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
+	@docker commit metacall_distributable_linux metacall/distributable_linux
+	@docker rm -f metacall_distributable_linux
 	# Patch the script (build.sh) with latest version
-	@docker run -v `pwd`/scripts:/metacall/patch --privileged --name metacall_distributable metacall/distributable cp /metacall/patch/build.sh /metacall/scripts/build.sh
-	@docker commit metacall_distributable metacall/distributable
-	@docker rm -f metacall_distributable
+	@docker run -v `pwd`/scripts:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/build.sh /metacall/scripts/build.sh
+	@docker commit metacall_distributable_linux metacall/distributable_linux
+	@docker rm -f metacall_distributable_linux
 	# Build tarball and store it into out folder
-	@docker run --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable metacall/distributable /metacall/scripts/build.sh
+	@docker run --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable_linux metacall/distributable_linux /metacall/scripts/build.sh
 	@echo "Done"
 
 # Test tarballs
@@ -123,13 +123,13 @@ test:
 	# Generate a unique id for invalidating the cache of test layers
 	$(eval CACHE_INVALIDATE := $(shell date +%s))
 	# Run tests
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:cli -f tests/cli/Dockerfile .
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:c -f tests/c/Dockerfile .
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:python -f tests/python/Dockerfile .
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:node -f tests/node/Dockerfile .
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:typescript -f tests/typescript/Dockerfile .
+	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:cli -f tests/cli/Dockerfile .
+	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:c -f tests/c/Dockerfile .
+	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:python -f tests/python/Dockerfile .
+	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:node -f tests/node/Dockerfile .
+	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:typescript -f tests/typescript/Dockerfile .
 	# TODO:
-	# @docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_test:tsx -f tests/tsx/Dockerfile .
+	# @docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:tsx -f tests/tsx/Dockerfile .
 	@echo "Done"
 
 # Clear images and containers
@@ -137,11 +137,11 @@ clear:
 	# Clear the tarball
 	@rm -rf out/* && touch out/.gitkeep
 	# Clear the container
-	@docker stop metacall_distributable 2> /dev/null || true
-	@docker rm metacall_distributable 2> /dev/null || true
+	@docker stop metacall_distributable_linux 2> /dev/null || true
+	@docker rm metacall_distributable_linux 2> /dev/null || true
 	# Clear the images
-	@docker images | grep metacall/distributable_test | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi metacall/distributable_test:{} 2> /dev/null || true
-	@docker rmi metacall/distributable 2> /dev/null || true
+	@docker images | grep metacall/distributable_linux_test | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi metacall/distributable_linux_test:{} 2> /dev/null || true
+	@docker rmi metacall/distributable_linux 2> /dev/null || true
 
 # Empty target do nothing
 %:
