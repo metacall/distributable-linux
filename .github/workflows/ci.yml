@@ -1,0 +1,101 @@
+name: Build
+
+on:
+  push:
+    tags:
+    - 'v*'
+
+env:
+  ASSET_NAME: metacall-tarball-linux-amd64.tar.gz
+  GHR_VERSION: 0.12.0
+  # GITHUB_TOKEN      - From default secrets
+  # GITHUB_REPOSITORY - Default variable
+
+jobs:
+
+  prep:
+  
+    name: Prepare
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Build the base image
+        run: docker build -t metacall/distributable_linux -f Dockerfile .
+      - name: Install the additional channels and pull
+        run: docker run --privileged --name tmp metacall/distributable_linux sh -c 'guix pull'
+      - name: Commit changes
+        run: docker commit tmp metacall/distributable_linux && docker rm -f tmp
+      - name: Build dependencies
+        run: docker run -d --privileged --name tmp metacall/distributable_linux /metacall/scripts/deps.sh
+      - name: Commit changes
+        run: docker commit tmp metacall/distributable_linux && docker rm -f tmp
+      - name: Build tarball
+        run: docker run --rm -v $PWD/out:/metacall/pack --privileged metacall/distributable_linux /metacall/scripts/build.sh
+      - name: Upload tarball artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-tarball
+          path: out/
+  
+  test:
+
+    name: Test
+    runs-on: ubuntu-latest
+    needs: prep
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+        with:
+          name: built-tarball
+          path: out/
+      - name: Generate a unique id for invalidating the cache of test layers
+        run: echo "CACHE_INVALIDATE=$(date +%s)" >> $GITHUB_ENV
+      - name: Test CLI
+        run: docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:cli -f tests/cli/Dockerfile .
+      - name: Test C
+        run: docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:c -f tests/c/Dockerfile .
+      - name: Test Python
+        run: docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:python -f tests/python/Dockerfile .
+      - name: Test Node
+        run: docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:node -f tests/node/Dockerfile .
+      - name: Test TypeScript
+        run: docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:typescript -f tests/typescript/Dockerfile .
+  
+  publish-github:
+
+    name: Publish on GitHub
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # To fetch all tags
+      - uses: actions/download-artifact@v3
+        with:
+          name: built-tarball
+          path: out/
+      - name: Load GHR binary
+        run: |
+          curl -sL https://github.com/tcnksm/ghr/releases/download/v${GHR_VERSION}/ghr_v${GHR_VERSION}_linux_amd64.tar.gz | tar zx
+          chmod +x ghr_v${GHR_VERSION}_linux_amd64/ghr
+          mv ghr_v${GHR_VERSION}_linux_amd64/ghr /usr/local/bin
+      - name: Export variables
+        run: |
+          echo "GH_REPO_OWNER=${GITHUB_REPOSITORY_OWNER}" >> $GITHUB_ENV
+          echo "GH_REPO_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+          export PREVIOUS_TAG=$(git describe HEAD^1 --abbrev=0 --tags)
+          echo "PREVIOUS_TAG=${PREVIOUS_TAG}" >> $GITHUB_ENV
+          echo "GIT_HISTORY<<EOF" >> $GITHUB_ENV
+          echo "$(git log --no-merges --format="- %s" ${PREVIOUS_TAG}..HEAD)" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+      - name: Publish package to GitHub Releases
+        run: |
+          if [[ "${PREVIOUS_TAG}" == "" ]];  then export GIT_HISTORY=$(git log --no-merges --format="- %s"); fi
+          export CI_COMMIT_TAG="${{ github.ref_name }}"
+          export RELEASE_DATE=$(date '+%Y-%m-%d')
+          mv ${PWD}/out/tarball.tar.gz ${PWD}/out/${ASSET_NAME}
+          echo "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}] - ${GH_REPO_OWNER}/${GH_REPO_NAME}:${CI_COMMIT_SHA}" && echo "${GIT_HISTORY}"
+          ghr -t "${{ secrets.GITHUB_TOKEN }}" -u "${GH_REPO_OWNER}" -r "${GH_REPO_NAME}" -c "${CI_COMMIT_SHA}" -n "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace "${CI_COMMIT_TAG}" ${PWD}/out/${ASSET_NAME}
