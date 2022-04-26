@@ -35,6 +35,8 @@ RUN cd / \
 
 COPY tests/tsx/test.tsx /scripts/
 COPY tests/tsx/tsconfig.json /scripts/
+COPY tests/tsx/package.json /scripts/
+COPY tests/tsx/package-lock.json /scripts/
 
 # Needed in order to load the tsconfig.json
 WORKDIR /scripts/
@@ -43,7 +45,7 @@ ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& export PATH="/gnu/bin:${PATH}" \
-	&& npm install metacall react react-dom
+	&& npm install
 
 RUN export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export METACALL_PATH="/gnu/store/`ls /gnu/store/ | grep metacall | head -n 1`" \
