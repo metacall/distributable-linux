@@ -79,26 +79,26 @@
 
 ; NodeJS Loader Dependencies
 (define-public libnode-lts
-(package/inherit node-lts
-  (name "libnode-lts")
-  (arguments
-   (substitute-keyword-arguments (package-arguments node-lts)
-     ((#:configure-flags flags ''())
-      `(cons* "--shared" "--without-npm" ,flags))
-     ((#:phases phases '%standard-phases)
-      `(modify-phases ,phases
-         (delete 'patch-npm-shebang)
-         (delete 'patch-node-shebang)))))))
+  (package/inherit node-lts
+    (name "libnode-lts")
+    (arguments
+     (substitute-keyword-arguments (package-arguments node-lts)
+       ((#:configure-flags flags ''())
+        `(cons* "--shared" "--without-npm" ,flags))
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (delete 'install-npmrc)
+           (delete 'patch-nested-shebangs)))))))
 
-(define-public cherow
+(define-public espree
   (package
-    (name "cherow")
-    (version "1.6.9")
+    (name "espree")
+    (version "9.4.0")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "https://registry.npmjs.org/cherow/-/cherow-" version ".tgz"))
-        (sha256 (base32 "1m397n6lzj49rhr8742c2cbcyqjrrxa56l197xvrx1sk4jgmzymf"))
+        (uri (string-append "https://github.com/metacall/core-bootstrap.js-guix-package/releases/download/v0.0.4/espree-" version ".tgz"))
+        (sha256 (base32 "1w8iy2wx6v7shr99jafi8mgcx7ma64x2mxx71kp1ixs19dg4pxr7"))
       )
     )
     (build-system node-build-system)
@@ -112,10 +112,12 @@
         )
       )
     )
-    (home-page "https://github.com/cherow/cherow")
-    (synopsis "A very fast and lightweight, self-hosted javascript parser.")
-    (description "A very fast and lightweight, standards-compliant,
-self-hosted javascript parser with high focus on both performance and stability.")
+    (home-page "https://github.com/eslint/espree")
+    (synopsis "An Esprima-compatible JavaScript parser.")
+    (description "Espree started out as a fork of Esprima v1.2.2, the last stable published released
+of Esprima before work on ECMAScript 6 began. Espree is now built on top of Acorn, which has a modular
+architecture that allows extension of core functionality. The goal of Espree is to produce output
+that is similar to Esprima with a similar API so that it can be used in place of Esprima.")
     (license license:expat)
   )
 )
@@ -250,12 +252,12 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.5.20")
+    (version "0.5.35")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "0ks6j8ybfjdly311ygi4hsd3h2z0bw9bzlkymdy40xbwnlasjjqw"))
+        (sha256 (base32 "083awj5x82jnxrinw62ncngrfqxqirrciiwqvk0987jv2dz72gc0"))
       )
     )
     (build-system cmake-build-system)
@@ -319,12 +321,12 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 ;   </packageSources>
 ; </configuration>" (string-append (assoc-ref inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/"))))
 ;               #t)))
-          (add-after 'build 'build-node-loader-bootstrap-cherow
+          (add-after 'build 'build-node-loader-bootstrap-espree
             (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((output (string-append (getcwd) "/node_modules/cherow"))
-                      (cherow (string-append (assoc-ref inputs "cherow") "/lib/node_modules/cherow/dist/commonjs/cherow.min.js")))
+              (let* ((output (string-append (getcwd) "/node_modules/espree"))
+                      (espree (string-append (assoc-ref inputs "espree") "/lib/node_modules/espree")))
                 (mkdir-p output)
-                (copy-file cherow (string-append output "/index.js")))
+                (copy-recursively espree output))
               #t))
           (add-after 'build 'build-ts-loader-bootstrap-typescript
             (lambda* (#:key inputs #:allow-other-keys)
@@ -419,6 +421,9 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DOPTION_BUILD_PORTS_TS=OFF" ; TODO: Not implemented yet
           "-DOPTION_BUILD_PORTS_CS=ON"
 
+          ; TODO: Enable backtrace support
+          "-DOPTION_BUILD_PLUGINS_BACKTRACE=OFF"
+
           ; Disable coverage
           "-DOPTION_COVERAGE=OFF"
 
@@ -434,7 +439,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
         ("node-lts" ,node-lts) ; NodeJS Loader dependency
         ("libnode-lts" ,libnode-lts) ; NodeJS Loader dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
-        ("cherow" ,cherow) ; NodeJS Loader dependency
+        ("espree" ,espree) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency
         ("gnucobol" ,gnucobol) ; Cobol Loader dependency
         ("gmp" ,gmp) ; Cobol Loader dependency

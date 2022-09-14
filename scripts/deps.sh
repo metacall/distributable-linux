@@ -25,11 +25,11 @@ export GUILE_WARN_DEPRECATED='detailed'
     && rm -rf /metacall/nonguix \
     && git clone https://gitlab.com/nonguix/nonguix /metacall/nonguix \
     && cd /metacall/nonguix \
-    && `# Fix nonguix version` git checkout bdad9592bb425647b5535a9758f27127f586bc28 \
+    && `# Fix nonguix version` git checkout e0951349603581895e0ba61f0e7410368ea1902a \
     && apk del git-deps \
 `# Build` && guix build --fallback \
-    glibc-utf8-locales nss-certs \
+    nss-certs \
     `# dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers` \
-    cherow typescript libnode-lts \
+    espree typescript libnode-lts \
     -L /metacall/nonguix -L /metacall/source \
 `# Exit` && exit 0 || exit 1
