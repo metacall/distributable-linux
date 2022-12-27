@@ -252,12 +252,12 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.5.35")
+    (version "0.6.2")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "083awj5x82jnxrinw62ncngrfqxqirrciiwqvk0987jv2dz72gc0"))
+        (sha256 (base32 "1hrvjk39n7lywndjnj58ch498jv429a5hf9dy9jsgw1l1k90i3dj"))
       )
     )
     (build-system cmake-build-system)
