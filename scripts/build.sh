@@ -24,10 +24,22 @@ export GUILE_WARN_DEPRECATED='detailed'
 # Generate a portable package tarball
 # Uses --no-grafts option in order to avoid conflicts between duplicated versions
 
-`# Build` guix build --fallback metacall -L /metacall/nonguix -L /metacall/source \
-`# Install` && echo 'metacall' >> /metacall/source/metacall.scm && guix package --fallback --no-grafts -f /metacall/source/metacall.scm | tee build.log \
-`# Lint` && guix lint -L /metacall/nonguix -L /metacall/source metacall \
-`# Pack` && guix pack --no-grafts -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share -RR metacall nss-certs -L /metacall/nonguix -L /metacall/source | tee build.log \
-`# Env` && guix package --fallback --no-grafts --search-paths -p `readlink -f /root/.guix-profile` &> /metacall/pack/.env \
-`# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack/tarball.tar.gz \
-`# Exit` && exit 0 || exit 1
+`# Build`   guix build metacall --fallback -L /metacall/nonguix -L /metacall/source \
+`# Install` && echo 'metacall' >> /metacall/source/metacall.scm \
+            && guix package --fallback --no-grafts -f /metacall/source/metacall.scm | tee build.log \
+`# Lint`    && guix lint -L /metacall/nonguix -L /metacall/source metacall \
+`# Pack`    && guix pack --no-grafts \
+                -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share \
+                -RR metacall nss-certs \
+                -L /metacall/nonguix -L /metacall/source \
+                -C none| tee build.log \
+`# Env`     && mkdir -p /pack \
+            && guix shell --search-paths --fallback --no-grafts \
+                -f /metacall/source/metacall.scm \
+                -L /metacall/nonguix -L /metacall/source | grep -e export &> /pack/.env \
+`# Copy`    && mv `grep 'tarball-pack.tar$' build.log` /pack/tarball.tar \
+`# Append`  && cd /pack && mkdir -p gnu && mv /pack/.env /pack/gnu/.env \
+            && guix shell tar -- tar -rf /pack/tarball.tar ./gnu && rm -rf gnu \
+`# Zip`     && gzip -9 /pack/tarball.tar \
+            && mv /pack/tarball.tar.gz /metacall/pack/tarball.tar.gz \
+`# Exit`    && exit 0 || exit 1
