@@ -2,7 +2,7 @@
 ;	MetaCall Distributable by Parra Studios
 ;	Distributable infrastructure for MetaCall.
 ;
-;	Copyright (C) 2016 - 2020 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+;	Copyright (C) 2016 - 2023 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 ;
 ;	Licensed under the Apache License, Version 2.0 (the "License");
 ;	you may not use this file except in compliance with the License.
@@ -256,15 +256,16 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1hrvjk39n7lywndjnj58ch498jv429a5hf9dy9jsgw1l1k90i3dj"))
-      )
-    )
+        (uri (string-append
+          "https://github.com/metacall/core/archive/v" version ".tar.gz"))
+        (sha256 (base32 "1hrvjk39n7lywndjnj58ch498jv429a5hf9dy9jsgw1l1k90i3dj"))))
+
     (build-system cmake-build-system)
     (arguments
       `(
         #:phases
-        ; TODO: This may be hidding a CMake bug with rpath on all ports, so this must be reviewed in the future
+        ; TODO: This may be hidding a CMake bug with rpath on all ports,
+        ; so this must be reviewed in the future
         (modify-phases %standard-phases
           (add-before 'configure 'runpath-workaround
             (lambda* (#:key outputs #:allow-other-keys)
@@ -278,13 +279,15 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
               (substitute* "source/loaders/rb_loader/CMakeLists.txt"
                 (("\\$\\{Ruby_INCLUDE_DIRS\\}") (string-append
                   (assoc-ref inputs "ruby") "/include/ruby-2.7.0" "\n"
-                  (assoc-ref inputs "ruby") "/include/ruby-2.7.0/" ,(or (%current-target-system) (%current-system))))
+                  (assoc-ref inputs "ruby") "/include/ruby-2.7.0/"
+                    ,(or (%current-target-system) (%current-system))))
                 (("\\$\\{Ruby_LIBRARY\\}") (string-append
                   (assoc-ref inputs "ruby") "/lib/libruby.so")))
                 (substitute* "source/ports/rb_port/CMakeLists.txt"
                   (("\\$\\{Ruby_INCLUDE_DIRS\\}") (string-append
                     (assoc-ref inputs "ruby") "/include/ruby-2.7.0" "\n"
-                    (assoc-ref inputs "ruby") "/include/ruby-2.7.0/" ,(or (%current-target-system) (%current-system))))
+                    (assoc-ref inputs "ruby") "/include/ruby-2.7.0/"
+                      ,(or (%current-target-system) (%current-system))))
                   (("\\$\\{Ruby_LIBRARY\\}") (string-append
                     (assoc-ref inputs "ruby") "/lib/libruby.so")))
                 #t))
@@ -408,7 +411,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           (string-append "-DCOBOL_LIBRARY=" (assoc-ref %build-inputs "gnucobol") "/lib/libcob.so")
 
           ; RPC Loader
-          (string-append "-DCURL_INCLUDE_DIR=" (assoc-ref %build-inputs "libcurl") "/include/curl")
+          (string-append "-DCURL_INCLUDE_DIR=" (assoc-ref %build-inputs "curl-minimal") "/include/curl")
 
           ; TODO: Finish all loaders
           "-DOPTION_BUILD_SCRIPTS_JS=OFF"
@@ -428,10 +431,8 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DOPTION_COVERAGE=OFF"
 
           ; Python Port (Swig) requires conversion between constant to non-constant char pointer
-          "-DCMAKE_CXX_FLAGS=-fpermissive"
-        )
-      )
-    )
+          "-DCMAKE_CXX_FLAGS=-fpermissive")))
+
     (propagated-inputs
      `(
         ("python" ,python-3.9) ; Python Loader dependency
@@ -448,21 +449,36 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
         ; ("codeanalysis-csharp" ,codeanalysis-csharp) ; NetCore Loader dependency
         ; ("codeanalysis-common" ,codeanalysis-common) ; NetCore Loader dependency
         ; ("codeanalysis-analyzers" ,codeanalysis-analyzers) ; NetCore Loader dependency
-        ("libcurl" ,curl-minimal) ; RPC Loader Dependency
-      )
-    )
+        ("curl-minimal" ,curl-minimal))) ; RPC Loader Dependency
+
     (native-inputs
      `(
         ("rapidjson" ,rapidjson) ; RapidJSON Serial dependency
-        ("swig" ,swig) ; For building ports
-      )
-    )
+        ("swig" ,swig))) ; For building ports
+
+    ; Set all environment variables for subsequent packages
+    (native-search-paths
+      (list (search-path-specification
+              (variable "LOADER_LIBRARY_PATH")
+              (files '("lib")))
+            (search-path-specification
+              (variable "SERIAL_LIBRARY_PATH")
+              (files '("lib")))
+            (search-path-specification
+              (variable "DETOUR_LIBRARY_PATH")
+              (files '("lib")))
+            (search-path-specification
+              (variable "PORT_LIBRARY_PATH")
+              (files '("lib")))
+            (search-path-specification
+              (variable "CONFIGURATION_PATH")
+              (file-type 'regular)
+              (files '("configurations/global.json")))))
+
     (home-page "https://metacall.io/")
-    (synopsis "Inter-language foreign function interface call library.")
+    (synopsis "Inter-language foreign function interface call library")
     (description "METACALL is a library that allows calling functions,
 methods or procedures between programming languages.
 With METACALL you can transparently execute code from / to any
 programming language, for example, call Python code from NodeJS code.")
-    (license license:asl2.0)
-  )
-)
+    (license license:asl2.0)))

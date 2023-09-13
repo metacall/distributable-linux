@@ -19,5 +19,3 @@ jobs:
             workflow_file_name: test-linux.yml
             wait_workflow: true
             ref: master
-  
-

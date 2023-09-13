@@ -4,7 +4,7 @@
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
 #
-#	Copyright (C) 2016 - 2020 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+#	Copyright (C) 2016 - 2023 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 #
 #	Licensed under the Apache License, Version 2.0 (the "License")
 #	you may not use this file except in compliance with the License.
@@ -22,13 +22,12 @@
 export GUILE_WARN_DEPRECATED='detailed'
 
 # Generate a portable package tarball
+# Uses --no-grafts option in order to avoid conflicts between duplicated versions
+
 `# Build` guix build --fallback metacall -L /metacall/nonguix -L /metacall/source \
-`# Test` `# && guix package -i metacall -L /metacall/source` \
-`# Lint` `# && guix lint metacall` \
-`# Pack uses --no-grafts option in order to avoid conflicts between duplicated versions` \
-`# Pack` && guix pack --no-grafts -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -RR metacall nss-certs -L /metacall/nonguix -L /metacall/source | tee build.log \
+`# Install` && echo 'metacall' >> /metacall/source/metacall.scm && guix package --fallback --no-grafts -f /metacall/source/metacall.scm | tee build.log \
+`# Lint` && guix lint -L /metacall/nonguix -L /metacall/source metacall \
+`# Pack` && guix pack --no-grafts -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share -RR metacall nss-certs -L /metacall/nonguix -L /metacall/source | tee build.log \
+`# Env` && guix package --fallback --no-grafts --search-paths -p `readlink -f /root/.guix-profile` &> /metacall/pack/.env \
 `# Copy` && mv `cat build.log | grep "tarball-pack.tar.gz"` /metacall/pack/tarball.tar.gz \
 `# Exit` && exit 0 || exit 1
-
-# TODO: Apparently this should be the standard way of finding the environment variables but it does not work
-# `# Search Paths` && guix package --search-paths &> /metacall/pack/search-paths \
