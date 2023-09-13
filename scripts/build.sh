@@ -31,15 +31,6 @@ export GUILE_WARN_DEPRECATED='detailed'
 `# Pack`    && guix pack --no-grafts \
                 -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share \
                 -RR metacall nss-certs \
-                -L /metacall/nonguix -L /metacall/source \
-                -C none| tee build.log \
-`# Env`     && mkdir -p /pack \
-            && guix shell --search-paths --fallback --no-grafts \
-                -f /metacall/source/metacall.scm \
-                -L /metacall/nonguix -L /metacall/source | grep -e export &> /pack/.env \
-`# Copy`    && mv `grep 'tarball-pack.tar$' build.log` /pack/tarball.tar \
-`# Append`  && cd /pack && mkdir -p gnu && mv /pack/.env /pack/gnu/.env \
-            && guix shell tar -- tar -rf /pack/tarball.tar ./gnu && rm -rf gnu \
-`# Zip`     && gzip -9 /pack/tarball.tar \
-            && mv /pack/tarball.tar.gz /metacall/pack/tarball.tar.gz \
+                -L /metacall/nonguix -L /metacall/source | tee build.log \
+`# Copy`    && mv `grep 'tarball-pack.tar$' build.log` /metacall/pack/tarball.tar.gz \
 `# Exit`    && exit 0 || exit 1
