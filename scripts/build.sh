@@ -32,5 +32,5 @@ export GUILE_WARN_DEPRECATED='detailed'
                 -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share \
                 -RR metacall nss-certs \
                 -L /metacall/nonguix -L /metacall/source | tee build.log \
-`# Copy`    && mv `grep 'tarball-pack.tar$' build.log` /metacall/pack/tarball.tar.gz \
+`# Copy`    && mv `grep 'tarball-pack.tar.gz$' build.log` /metacall/pack/tarball.tar.gz \
 `# Exit`    && exit 0 || exit 1
