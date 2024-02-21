@@ -445,7 +445,9 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 
     ; Set all environment variables for subsequent packages
     (search-paths
-      (list (search-path-specification
+      (list
+            ; MetaCall
+            (search-path-specification
               (variable "LOADER_LIBRARY_PATH")
               (files '("lib")))
             (search-path-specification
@@ -461,6 +463,10 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
               (variable "CONFIGURATION_PATH")
               (file-type 'regular)
               (files '("configurations/global.json")))
+            ; Python
+            (search-path-specification
+              (variable "PYTHONTZPATH")
+              (files (list "share/zoneinfo")))
             ; PYTHONPATH is incompatible with Guix Python
             ; but we require it for tarball installation
             (search-path-specification
@@ -468,14 +474,31 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
               (files (list (string-append
                            "lib/python"
                            (version-major+minor (package-version python-3))
-                           "/site-packages"))))))
-
-            ; TODO: Implement the rest of paths for development
-            ; C_INCLUDE_PATH
-            ; CPLUS_INCLUDE_PATH
-            ; LIBRARY_PATH
-
-    (native-search-paths search-paths)
+                           "/site-packages"))))
+            ; NodeJS
+            (search-path-specification
+              (variable "NODE_PATH")
+              (files '("lib/node_modules")))
+            ; Ruby
+            (search-path-specification
+              (variable "GEM_PATH")
+              (files (list (string-append "lib/ruby/vendor_ruby"))))
+            (search-path-specification
+              (variable "GEM_HOME")
+              (files (list (string-append "lib/ruby/vendor_ruby"))))
+            (search-path-specification
+              (variable "BUNDLE_PATH")
+              (files (list (string-append "lib/ruby/vendor_ruby"))))
+            ; GCC
+            (search-path-specification
+              (variable "C_INCLUDE_PATH")
+              (files '("include")))
+            (search-path-specification
+              (variable "CPLUS_INCLUDE_PATH")
+              (files '("include/c++" "include")))
+            (search-path-specification
+              (variable "LIBRARY_PATH")
+              (files '("lib" "lib64")))))
 
             ; TODO:
             ;
@@ -486,6 +509,8 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
             ;   (variable "GLIBC_LD_LIBRARY_PATH")
             ;   (file-type 'regular)
             ;   (files '(glibc-dynamic-linker)))
+
+    (native-search-paths search-paths)
 
     (home-page "https://metacall.io/")
     (synopsis "Inter-language foreign function interface call library")

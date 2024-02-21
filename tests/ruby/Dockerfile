@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM busybox:1.31.1 AS python_test
+FROM busybox:1.31.1 AS ruby_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -33,9 +33,8 @@ RUN cd / \
 	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-COPY tests/scripts/ /scripts/
-
-COPY tests/python/script.py /scripts/
+COPY tests/ruby/script.rb /scripts/
+COPY tests/ruby/Gemfile /scripts/
 
 WORKDIR /scripts
 
@@ -43,10 +42,13 @@ ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& source /gnu/etc/profile \
-	&& pip3 install metacall \
+	&& gem install open-uri \
+	&& bundle install --verbose \
+	&& bundle config path \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
-	&& printf 'load py script.py\ninspect\ncall test()\nexit' | metacallcli \
-	| grep \
-		-e 'Hello World'
+	&& metacallcli script.rb
+	#  \
+	# | grep \
+	# 	-e 'Hello World'
 
 ENTRYPOINT ["sh", "-c"]
