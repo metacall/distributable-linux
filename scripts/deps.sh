@@ -4,7 +4,7 @@
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
 #
-#	Copyright (C) 2016 - 2023 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+#	Copyright (C) 2016 - 2024 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 #
 #	Licensed under the Apache License, Version 2.0 (the "License")
 #	you may not use this file except in compliance with the License.
@@ -30,6 +30,6 @@ export GUILE_WARN_DEPRECATED='detailed'
 `# Build` && guix build --fallback \
     nss-certs \
     `# dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers` \
-    espree typescript libnode-lts \
+    espree typescript \
     -L /metacall/nonguix -L /metacall/source \
 `# Exit` && exit 0 || exit 1

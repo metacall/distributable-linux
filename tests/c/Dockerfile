@@ -2,7 +2,7 @@
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
 #
-#	Copyright (C) 2016 - 2023 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+#	Copyright (C) 2016 - 2024 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM gcc:9.2.0 AS c_test
+FROM gcc:13-bookworm AS c_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -27,35 +27,34 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	vendor="MetaCall Inc." \
 	version="0.1"
 
+SHELL ["/bin/bash", "-c"]
+
 COPY out/tarball.tar.gz /
 
 RUN cd / \
-	&& tar -xzf tarball.tar.gz \
+	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
 COPY tests/c/test.c /
 
 COPY tests/scripts/ /scripts/
 
+WORKDIR /scripts
+
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
+	&& source /gnu/etc/profile \
+	&& export LDLIB_PATH="`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so*' | head -n 1`" \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
-	&& export METACALL_PATH="/gnu/store/`ls /gnu/store/ | grep metacall | head -n 1`" \
-	&& export LDLIB_PATH="`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so' | head -n 1`" \
-	&& export LOADER_LIBRARY_PATH="${METACALL_PATH}/lib" \
-	&& export SERIAL_LIBRARY_PATH="${METACALL_PATH}/lib" \
-	&& export DETOUR_LIBRARY_PATH="${METACALL_PATH}/lib" \
-	&& export PORT_LIBRARY_PATH="${METACALL_PATH}/lib" \
-	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
 	&& cd / \
 	&& gcc \
-		-I$METACALL_PATH/include \
+		-I/gnu/include \
 		test.c \
 		-B$(dirname ${LDLIB_PATH}) \
 		-Wl,--dynamic-linker=${LDLIB_PATH} \
-		-Wl,-rpath=${METACALL_PATH}/lib \
-		-L$METACALL_PATH/lib \
+		-Wl,-rpath=/gnu/lib \
+		-L/gnu/lib \
 		-lmetacall \
 	&& ./a.out | grep \
 		-e 'Hello World' \

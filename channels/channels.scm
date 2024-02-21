@@ -2,7 +2,7 @@
 ;	MetaCall Distributable by Parra Studios
 ;	Distributable infrastructure for MetaCall.
 ;
-;	Copyright (C) 2016 - 2023 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+;	Copyright (C) 2016 - 2024 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 ;
 ;	Licensed under the Apache License, Version 2.0 (the "License");
 ;	you may not use this file except in compliance with the License.
@@ -17,9 +17,12 @@
 ;	limitations under the License.
 ;
 
+
+
+
 (list (channel
        (name 'guix)
        (url "https://git.savannah.gnu.org/git/guix.git")
        (branch "master")
-       (commit "6311493d7a6271bfbc51f4693857f9a12fe9965d")) ; Wed Apr 5 18:17:00 2023 +0200
+       (commit "67960be52e01f8bd169dcff5985c4af2c5f87f91")) ; Fri Feb 16 11:18:47 2024 +0100
 )

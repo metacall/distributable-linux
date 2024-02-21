@@ -2,7 +2,7 @@
 ;	MetaCall Distributable by Parra Studios
 ;	Distributable infrastructure for MetaCall.
 ;
-;	Copyright (C) 2016 - 2023 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+;	Copyright (C) 2016 - 2024 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 ;
 ;	Licensed under the Apache License, Version 2.0 (the "License");
 ;	you may not use this file except in compliance with the License.
@@ -76,19 +76,6 @@
   ; RPC Dependencies
   #:use-module (gnu packages curl)
 )
-
-; NodeJS Loader Dependencies
-(define-public libnode-lts
-  (package/inherit node-lts
-    (name "libnode-lts")
-    (arguments
-     (substitute-keyword-arguments (package-arguments node-lts)
-       ((#:configure-flags flags ''())
-        `(cons* "--shared" "--without-npm" ,flags))
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (delete 'install-npmrc)
-           (delete 'patch-nested-shebangs)))))))
 
 (define-public espree
   (package
@@ -245,20 +232,17 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 ;   )
 ; )
 
-; TODO: MetaCall CLI should set some enviroment variables in order to make it work for Guixers
-; See metacall/install CLI script for knowing the needed variables and paths
-
 ; MetaCall
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.6.2")
+    (version "0.7.8")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
           "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1hrvjk39n7lywndjnj58ch498jv429a5hf9dy9jsgw1l1k90i3dj"))))
+        (sha256 (base32 "0p61l4dbw0ri4vsyfri2j2vl41kfz3drv21aychp7qnqjpp1i69f"))))
 
     (build-system cmake-build-system)
     (arguments
@@ -272,25 +256,6 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
               (let ((out (assoc-ref outputs "out")))
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath=" out "/lib"))
                 #t)))
-          (add-before 'configure 'ruby-workaround
-            (lambda* (#:key inputs #:allow-other-keys)
-              ; For some reason, FindRuby.cmake is working anymore, patch here
-              ; the lib and include paths here directly meanwhile the problem is solved
-              (substitute* "source/loaders/rb_loader/CMakeLists.txt"
-                (("\\$\\{Ruby_INCLUDE_DIRS\\}") (string-append
-                  (assoc-ref inputs "ruby") "/include/ruby-2.7.0" "\n"
-                  (assoc-ref inputs "ruby") "/include/ruby-2.7.0/"
-                    ,(or (%current-target-system) (%current-system))))
-                (("\\$\\{Ruby_LIBRARY\\}") (string-append
-                  (assoc-ref inputs "ruby") "/lib/libruby.so")))
-                (substitute* "source/ports/rb_port/CMakeLists.txt"
-                  (("\\$\\{Ruby_INCLUDE_DIRS\\}") (string-append
-                    (assoc-ref inputs "ruby") "/include/ruby-2.7.0" "\n"
-                    (assoc-ref inputs "ruby") "/include/ruby-2.7.0/"
-                      ,(or (%current-target-system) (%current-system))))
-                  (("\\$\\{Ruby_LIBRARY\\}") (string-append
-                    (assoc-ref inputs "ruby") "/lib/libruby.so")))
-                #t))
 ; TODO
 ;           (add-before 'configure 'dotnet-packages
 ;            (lambda* (#:key inputs #:allow-other-keys)
@@ -301,14 +266,19 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 ;                 (setenv "NUGET_PACKAGES" global-pkgs)
 ;                 (setenv "DOTNET_SKIP_FIRST_TIME_EXPERIENCE" "true")
 ;                 (setenv "HOME" "/tmp")
-;                 (setenv "DOTNET_ROOT" (string-append (assoc-ref inputs "dotnet") "/share/dotnet"))
+;                 (setenv "DOTNET_ROOT"
+;                   (string-append (assoc-ref inputs "dotnet") "/share/dotnet"))
 ;                 (mkdir-p global-pkgs)
 ;                 (mkdir-p additional-pkgs)
 ;                 ; TODO: Avoid harcoded versions of CodeAnalysis
-;                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-csharp") "/microsoft.codeanalysis.csharp.3.2.1.nupkg") additional-pkgs)
-;                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-common") "/microsoft.codeanalysis.common.3.2.1.nupkg") additional-pkgs)
-;                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-analyzers") "/microsoft.codeanalysis.analyzers.2.9.3.nupkg") additional-pkgs)
-;                 (with-output-to-file "source/loaders/cs_loader/netcore/source/NuGet.Config"
+;                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-csharp")
+;                     "/microsoft.codeanalysis.csharp.3.2.1.nupkg") additional-pkgs)
+;                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-common")
+;                     "/microsoft.codeanalysis.common.3.2.1.nupkg") additional-pkgs)
+;                 (invoke "cp" (string-append (assoc-ref inputs "codeanalysis-analyzers")
+;                     "/microsoft.codeanalysis.analyzers.2.9.3.nupkg") additional-pkgs)
+;                 (with-output-to-file
+;                   "source/loaders/cs_loader/netcore/source/NuGet.Config"
 ;                 (lambda ()
 ;                   (format #t "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 ; <configuration>
@@ -327,14 +297,16 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           (add-after 'build 'build-node-loader-bootstrap-espree
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((output (string-append (getcwd) "/node_modules/espree"))
-                      (espree (string-append (assoc-ref inputs "espree") "/lib/node_modules/espree")))
+                      (espree (string-append
+                        (assoc-ref inputs "espree") "/lib/node_modules/espree")))
                 (mkdir-p output)
                 (copy-recursively espree output))
               #t))
           (add-after 'build 'build-ts-loader-bootstrap-typescript
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((output (string-append (getcwd) "/node_modules/typescript"))
-                      (typescript (string-append (assoc-ref inputs "typescript") "/lib/node_modules/typescript")))
+                      (typescript (string-append
+                        (assoc-ref inputs "typescript") "/lib/node_modules/typescript")))
                 (mkdir-p output)
                 (copy-recursively typescript output))
               #t)))
@@ -351,7 +323,8 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           ; Build wiht release mode
           "-DCMAKE_BUILD_TYPE=Release"
 
-          ; Disable stack-smashing protection and source fortify in order to improve libc portability / compatibility
+          ; Disable stack-smashing protection and source fortify
+          ; in order to improve libc portability / compatibility
           "-DOPTION_BUILD_SECURITY=OFF"
 
           ; Examples
@@ -389,29 +362,42 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DOPTION_BUILD_LOADERS_COB=ON"
           "-DOPTION_BUILD_LOADERS_RPC=ON"
 
-          ; TODO: This stopped working properly, delete the 'ruby-workaround
-          (string-append "-DRUBY_EXECUTABLE=" (assoc-ref %build-inputs "ruby") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIRS=" (assoc-ref %build-inputs "ruby") "/include/ruby-2.7.0")
-          (string-append "-DRUBY_LIBRARY=" (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
+          ; TODO: This stopped working properly for rb_port
+          (string-append "-DRUBY_EXECUTABLE="
+            (assoc-ref %build-inputs "ruby") "/bin/ruby")
+          (string-append "-DRUBY_INCLUDE_DIRS="
+            (assoc-ref %build-inputs "ruby") "/include/ruby-2.7.0")
+          (string-append "-DRUBY_LIBRARY="
+            (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
           (string-append "-DRUBY_VERSION=" "2.7.2")
 
-          (string-append "-DNODEJS_EXECUTABLE=" (assoc-ref %build-inputs "node-lts") "/bin/node")
-          (string-append "-DNODEJS_INCLUDE_DIR=" (assoc-ref %build-inputs "node-lts") "/include/node")
-          (string-append "-DNODEJS_LIBRARY=" (assoc-ref %build-inputs "libnode-lts") "/lib/libnode.so.83")
-          "-DNODEJS_CMAKE_DEBUG=ON"
-          "-DNODEJS_SHARED_UV=ON"
+          (string-append "-DNodeJS_EXECUTABLE="
+            (assoc-ref %build-inputs "node") "/bin/node")
+          (string-append "-DNodeJS_INCLUDE_DIR="
+            (assoc-ref %build-inputs "node") "/include/node")
+          (string-append "-DNodeJS_LIBRARY="
+            (assoc-ref %build-inputs "libnode") "/lib/libnode.so.108")
+          "-DNodeJS_CMAKE_DEBUG=ON"
+          "-DNodeJS_SHARED_UV=ON"
 
           ; TODO
-          ; (string-append "-DDOTNET_COMMAND=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/dotnet")
-          ; (string-append "-DDOTNET_CORE_PATH=" (assoc-ref %build-inputs "dotnet") "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/")
+          ; (string-append "-DDOTNET_COMMAND="
+          ;   (assoc-ref %build-inputs "dotnet") "/share/dotnet/dotnet")
+          ; (string-append "-DDOTNET_CORE_PATH="
+          ;   (assoc-ref %build-inputs "dotnet")
+          ;   "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/")
           ; "-DDOTNET_ADDITIONAL_PACKAGES=/tmp/.nuget/nupkgs/"
 
-          (string-append "-DCOBOL_EXECUTABLE=" (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
-          (string-append "-DCOBOL_INCLUDE_DIR=" (assoc-ref %build-inputs "gnucobol") "/include")
-          (string-append "-DCOBOL_LIBRARY=" (assoc-ref %build-inputs "gnucobol") "/lib/libcob.so")
+          (string-append "-DCOBOL_EXECUTABLE="
+            (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
+          (string-append "-DCOBOL_INCLUDE_DIR="
+            (assoc-ref %build-inputs "gnucobol") "/include")
+          (string-append "-DCOBOL_LIBRARY="
+            (assoc-ref %build-inputs "gnucobol") "/lib/libcob.so")
 
           ; RPC Loader
-          (string-append "-DCURL_INCLUDE_DIR=" (assoc-ref %build-inputs "curl-minimal") "/include/curl")
+          (string-append "-DCURL_INCLUDE_DIR="
+            (assoc-ref %build-inputs "curl") "/include/curl")
 
           ; TODO: Finish all loaders
           "-DOPTION_BUILD_SCRIPTS_JS=OFF"
@@ -419,26 +405,27 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           ; Ports
           "-DOPTION_BUILD_PORTS=ON"
           "-DOPTION_BUILD_PORTS_PY=ON"
-          "-DOPTION_BUILD_PORTS_RB=ON"
           "-DOPTION_BUILD_PORTS_NODE=ON"
           "-DOPTION_BUILD_PORTS_TS=OFF" ; TODO: Not implemented yet
           "-DOPTION_BUILD_PORTS_CS=ON"
+
+          ; TODO: CMake Error at source/ports/rb_port/CMakeLists.txt:23 (message):
+          ;   Ruby libraries not found
+          "-DOPTION_BUILD_PORTS_RB=OFF"
+
 
           ; TODO: Enable backtrace support
           "-DOPTION_BUILD_PLUGINS_BACKTRACE=OFF"
 
           ; Disable coverage
-          "-DOPTION_COVERAGE=OFF"
-
-          ; Python Port (Swig) requires conversion between constant to non-constant char pointer
-          "-DCMAKE_CXX_FLAGS=-fpermissive")))
+          "-DOPTION_COVERAGE=OFF")))
 
     (propagated-inputs
      `(
-        ("python" ,python-3.9) ; Python Loader dependency
+        ("python" ,python-3) ; Python Loader dependency
         ("ruby" ,ruby-2.7) ; Ruby Loader dependency
-        ("node-lts" ,node-lts) ; NodeJS Loader dependency
-        ("libnode-lts" ,libnode-lts) ; NodeJS Loader dependency
+        ("node" ,node-lts) ; NodeJS Loader dependency
+        ("libnode" ,libnode) ; NodeJS Loader dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("espree" ,espree) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency
@@ -449,7 +436,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
         ; ("codeanalysis-csharp" ,codeanalysis-csharp) ; NetCore Loader dependency
         ; ("codeanalysis-common" ,codeanalysis-common) ; NetCore Loader dependency
         ; ("codeanalysis-analyzers" ,codeanalysis-analyzers) ; NetCore Loader dependency
-        ("curl-minimal" ,curl-minimal))) ; RPC Loader Dependency
+        ("curl" ,curl))) ; RPC Loader Dependency
 
     (native-inputs
      `(
@@ -457,7 +444,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
         ("swig" ,swig))) ; For building ports
 
     ; Set all environment variables for subsequent packages
-    (native-search-paths
+    (search-paths
       (list (search-path-specification
               (variable "LOADER_LIBRARY_PATH")
               (files '("lib")))
@@ -473,7 +460,32 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
             (search-path-specification
               (variable "CONFIGURATION_PATH")
               (file-type 'regular)
-              (files '("configurations/global.json")))))
+              (files '("configurations/global.json")))
+            ; PYTHONPATH is incompatible with Guix Python
+            ; but we require it for tarball installation
+            (search-path-specification
+              (variable "PYTHONPATH")
+              (files (list (string-append
+                           "lib/python"
+                           (version-major+minor (package-version python-3))
+                           "/site-packages"))))))
+
+            ; TODO: Implement the rest of paths for development
+            ; C_INCLUDE_PATH
+            ; CPLUS_INCLUDE_PATH
+            ; LIBRARY_PATH
+
+    (native-search-paths search-paths)
+
+            ; TODO:
+            ;
+            ; Dynamic Linker Path
+            ; #:use-module ((gnu packages bootstrap) #:select (glibc-dynamic-linker))
+            ;
+            ; (search-path-specification
+            ;   (variable "GLIBC_LD_LIBRARY_PATH")
+            ;   (file-type 'regular)
+            ;   (files '(glibc-dynamic-linker)))
 
     (home-page "https://metacall.io/")
     (synopsis "Inter-language foreign function interface call library")

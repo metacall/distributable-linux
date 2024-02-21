@@ -2,7 +2,7 @@
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
 #
-#	Copyright (C) 2016 - 2023 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+#	Copyright (C) 2016 - 2024 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM busybox:1.31.1 AS node_test
+FROM busybox:1.31.1 AS tsx_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -30,7 +30,7 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 COPY out/tarball.tar.gz /
 
 RUN cd / \
-	&& tar -xzf tarball.tar.gz \
+	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
 COPY tests/tsx/test.tsx /scripts/
@@ -39,23 +39,16 @@ COPY tests/tsx/package.json /scripts/
 COPY tests/tsx/package-lock.json /scripts/
 
 # Needed in order to load the tsconfig.json
-WORKDIR /scripts/
+WORKDIR /scripts
 
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
-	&& export PATH="/gnu/bin:${PATH}" \
-	&& npm install
-
-RUN export LOADER_SCRIPT_PATH="/scripts/" \
-	&& export METACALL_PATH="/gnu/store/`ls /gnu/store/ | grep metacall | head -n 1`" \
-	&& export LOADER_LIBRARY_PATH="${METACALL_PATH}/lib" \
-	&& export SERIAL_LIBRARY_PATH="${METACALL_PATH}/lib" \
-	&& export DETOUR_LIBRARY_PATH="${METACALL_PATH}/lib" \
-	&& export PORT_LIBRARY_PATH="${METACALL_PATH}/lib" \
-	&& export CONFIGURATIONS_PATH="${METACALL_PATH}/configurations/global.json" \
+	&& source /gnu/etc/profile \
+	&& export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export NODE_ENV=debug \
-	&& printf 'load ts test.tsx\ninspect\ncall hello("world")\nexit' | ${METACALL_PATH}/metacallcli \
+	&& npm install \
+	&& printf 'load ts test.tsx\ninspect\ncall hello("world")\nexit' | metacallcli \
 	| grep \
 		-e '<h1>Hello world</h1>'
 
