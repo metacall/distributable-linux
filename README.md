@@ -29,3 +29,21 @@ Make sure to increase the job timeout to 2h+ (build job takes about a litle over
 
 * `GH_TOKEN` - a GitHub access token (select repo scope)
 * `GH_REPO` - a GitHub repo in the format of **OWNER/REPO** e.g. `metacall/distributable-linux`
+
+
+## Troubleshooting
+
+
+### Missed loader shared library
+After installation using the way mentioned [here](https://github.com/metacall/core?tab=readme-ov-file#install), you may face an error that notifies you missed a shared library similar to this when trying to run your project:
+
+```
+Error: DynLink error: /usr/lib/libnode_loader.so: cannot open shared object file: No such file or directory
+Error: Failed to load library from plugin descriptor
+Error: Plugin loader from manager 'loader' failed to load plugin: node
+```
+
+You can fix it by using this command and run your project again:
+```
+source /gnu/etc/profile
+```
