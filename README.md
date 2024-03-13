@@ -10,6 +10,14 @@ This will generate all tarballs in the `out` directory. All logs will be stored 
 make &> dist.log & tail -f dist.log
 ```
 
+## How to Embed MetaCall as a Library from Distributable
+
+In order to use MetaCall as a library in your applications, you can easily link `libmetacall.so` from the folder `/gnu/lib`. In order to set up additional environment variables required by the runtimes or MetaCall itself, run the following command before your application:
+
+```sh
+source /gnu/etc/profile
+```
+
 ## How to Get the Hash from a Package
 
 Replace `$URL` by the URL of the source code tarball, for example: `https://registry.npmjs.org/typescript/-/typescript-3.9.7.tgz`. Then paste the resulting hash into the package definition in the `.scm` file.
