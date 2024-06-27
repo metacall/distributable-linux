@@ -59,7 +59,7 @@ download:
 #	Update MetaCall source with latest version
 	@sed -i '/(name "metacall")/!b;n;c\    (version "${LATEST_VERSION}")' source/metacall.scm
 #	Update MetaCall source with checksum
-	@sed -i '/(uri (string-append "https:\/\/github.com\/metacall\/core\/archive\/v" version ".tar.gz"))/!b;n;c\        (sha256 (base32 "${CHECKSUM}"))' source/metacall.scm
+	@sed -i '/"https:\/\/github.com\/metacall\/core\/archive\/v" version ".tar.gz"))/!b;n;c\        (sha256 (base32 "${CHECKSUM}"))))' source/metacall.scm
 
 # Build base Docker image
 base:
