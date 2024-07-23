@@ -1,10 +1,11 @@
-name: Test Linux Install Script with new release
+name: Test Linux Install Script with new Release
 
 on:
   workflow_run:
     workflows: ["MetaCall Distributable Linux Release"]
     types:
       - completed
+    branches: ['v*.*.*']
   
 jobs:
     test:
