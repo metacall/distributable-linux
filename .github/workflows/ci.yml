@@ -1,8 +1,7 @@
 name: "MetaCall Distributable Linux Release"
 
 on:
-  repository_dispatch:
-    types: [test-trigger]
+  workflow_dispatch:
   pull_request:
   push:
     tags:
