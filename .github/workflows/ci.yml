@@ -104,3 +104,19 @@ jobs:
           mv ${PWD}/out/tarball.tar.gz ${PWD}/out/${ASSET_NAME}
           echo "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}] - ${GH_REPO_OWNER}/${GH_REPO_NAME}:${CI_COMMIT_SHA}" && echo "${GIT_HISTORY}"
           ghr -t "${{ secrets.GITHUB_TOKEN }}" -u "${GH_REPO_OWNER}" -r "${GH_REPO_NAME}" -c "${CI_COMMIT_SHA}" -n "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace "${CI_COMMIT_TAG}" ${PWD}/out/${ASSET_NAME}
+
+    install-test:
+
+      name: Trigger Install Test Workflow
+      runs-on: ubuntu-latest
+      needs: publish-github
+      if: startsWith(github.ref, 'refs/tags/v')
+      steps:
+        - uses: convictional/trigger-workflow-and-wait@v1.6.1
+          with:
+            owner: metacall
+            repo: install
+            github_token: ${{ secrets.G_PERSONAL_ACCESS_TOKEN }}
+            workflow_file_name: test-linux.yml
+            wait_workflow: true
+            ref: master
