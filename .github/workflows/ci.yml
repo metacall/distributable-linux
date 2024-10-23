@@ -62,8 +62,7 @@ jobs:
 
       - name: Build tarball for ${{ matrix.arch }}
         run: |
-          echo "ARCH=${{ matrix.arch }}" >> $GITHUB_ENV
-          docker run --rm -v $PWD/out:/metacall/pack --privileged metacall/distributable_linux:${{ matrix.arch }} /metacall/scripts/build.sh
+          docker run --rm -e ARCH=${{ matrix.arch }} -v $PWD/out:/metacall/pack --privileged metacall/distributable_linux:${{ matrix.arch }} /metacall/scripts/build.sh
           
       - name: Verify tarball creation
         run: ls -lh out/
