@@ -62,7 +62,10 @@ jobs:
 
       - name: Build tarball for ${{ matrix.arch }}
         run: |
+          mkdir -p $PWD/out
           docker run --rm -v $PWD/out:/metacall/pack --privileged metacall/distributable_linux:${{ matrix.arch }} /metacall/scripts/build.sh
+          echo "Contents of out directory after build:"
+          ls -l $PWD/out
 
       - name: Upload tarball artifact for ${{ matrix.arch }}
         uses: actions/upload-artifact@v4
