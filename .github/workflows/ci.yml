@@ -21,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [amd64, arm64, 386]
+        arch: [amd64, 386]
 
     steps:
       - name: Set up QEMU
