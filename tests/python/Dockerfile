@@ -33,7 +33,7 @@ COPY out/metacall-tarball-linux-${ARCH}.tar.gz /
 
 RUN cd / \
 	&& tar --no-same-owner --no-same-permissions -xzf metacall-tarball-linux-${ARCH}.tar.gz \
-	&& rm metacall-tarball-linux-${ARCH}.tar.g
+	&& rm metacall-tarball-linux-${ARCH}.tar.gz
 
 COPY tests/scripts/ /scripts/
 
