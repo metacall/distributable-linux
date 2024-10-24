@@ -27,11 +27,11 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	vendor="MetaCall Inc." \
 	version="0.1"
 
-COPY out/tarball.tar.gz /
+COPY out/metacall-tarball-linux-${ARCH}.tar.gz /
 
 RUN cd / \
-	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz \
-	&& rm tarball.tar.gz
+	&& tar --no-same-owner --no-same-permissions -xzf metacall-tarball-linux-${ARCH}.tar.gz \
+	&& rm metacall-tarball-linux-${ARCH}.tar.gz
 
 COPY tests/scripts/ /scripts/
 
