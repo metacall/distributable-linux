@@ -19,6 +19,8 @@
 
 FROM busybox:1.31.1 AS cli_test
 
+ARG ARCH
+
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	copyright.address="vic798@gmail.com" \
