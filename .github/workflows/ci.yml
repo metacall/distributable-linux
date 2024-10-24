@@ -136,7 +136,7 @@ jobs:
             --platform linux/${{ matrix.arch }} \
             --build-arg ARCH=${{ matrix.arch }} \
             --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:typescript-${{{ matrix.arch }} \
+            -t metacall/distributable_linux_test:typescript-${{ matrix.arch }} \
             -f tests/typescript/Dockerfile .
 
   publish-github:
