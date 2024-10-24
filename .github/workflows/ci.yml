@@ -180,7 +180,7 @@ jobs:
           export RELEASE_DATE=$(date '+%Y-%m-%d')
           mv ${PWD}/out/${{ env.ASSET_NAME }} ${PWD}/out/${{ env.ASSET_NAME }}
           echo "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}] - ${GH_REPO_OWNER}/${GH_REPO_NAME}:${CI_COMMIT_SHA}" && echo "${GIT_HISTORY}"
-          ghr -t "${{ secrets.GITHUB_TOKEN }}" -u "${GH_REPO_OWNER}" -r "${GH_REPO_NAME}" -c "${CI_COMMIT_SHA}" -n "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace "${CI_COMMIT_TAG}" ${PWD}/out/${{ env.ASSET_NAME }}
+          ghr -t "${{ secrets.PERSONAL_ACCESS_TOKEN }}" -u "${GH_REPO_OWNER}" -r "${GH_REPO_NAME}" -c "${CI_COMMIT_SHA}" -n "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace "${CI_COMMIT_TAG}" ${PWD}/out/${{ env.ASSET_NAME }}
 
   install-test:
     name: Trigger Install Test Workflow
