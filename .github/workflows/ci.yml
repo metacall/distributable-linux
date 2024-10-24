@@ -79,7 +79,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        arch: [amd64]
+        arch: [amd64] 
 
     steps:
       - name: Check out the repo
@@ -95,19 +95,49 @@ jobs:
         run: echo "CACHE_INVALIDATE=$(date +%s)" >> $GITHUB_ENV
 
       - name: Test CLI for ${{ matrix.arch }}
-        run: docker buildx build --platform linux/${{ matrix.arch }} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:cli-${{ matrix.arch }} -f tests/cli/Dockerfile .
+        run: |
+          docker buildx build \
+            --platform linux/${{ matrix.arch }} \
+            --build-arg ARCH=${{ matrix.arch }} \
+            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+            -t metacall/distributable_linux_test:cli-${{ matrix.arch }} \
+            -f tests/cli/Dockerfile .
 
       - name: Test C for ${{ matrix.arch }}
-        run: docker buildx build --platform linux/${{ matrix.arch }} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:c-${{ matrix.arch }} -f tests/c/Dockerfile .
+        run: |
+          docker buildx build \
+            --platform linux/${{ matrix.arch }} \
+            --build-arg ARCH=${{ matrix.arch }} \
+            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+            -t metacall/distributable_linux_test:c-${{ matrix.arch }} \
+            -f tests/c/Dockerfile .
 
       - name: Test Python for ${{ matrix.arch }}
-        run: docker buildx build --platform linux/${{ matrix.arch }} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:python-${{ matrix.arch }} -f tests/python/Dockerfile .
+        run: |
+          docker buildx build \
+            --platform linux/${{ matrix.arch }} \
+            --build-arg ARCH=${{ matrix.arch }} \
+            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+            -t metacall/distributable_linux_test:python-${{ matrix.arch }} \
+            -f tests/python/Dockerfile .
 
       - name: Test Node for ${{ matrix.arch }}
-        run: docker buildx build --platform linux/${{ matrix.arch }} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:node-${{ matrix.arch }} -f tests/node/Dockerfile .
+        run: |
+          docker buildx build \
+            --platform linux/${{ matrix.arch }} \
+            --build-arg ARCH=${{ matrix.arch }} \
+            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+            -t metacall/distributable_linux_test:node-${{ matrix.arch }} \
+            -f tests/node/Dockerfile .
 
       - name: Test TypeScript for ${{ matrix.arch }}
-        run: docker buildx build --platform linux/${{ matrix.arch }} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:typescript-${{ matrix.arch }} -f tests/typescript/Dockerfile .
+        run: |
+          docker buildx build \
+            --platform linux/${{ matrix.arch }} \
+            --build-arg ARCH=${{ matrix.arch }} \
+            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+            -t metacall/distributable_linux_test:typescript-${{{ matrix.arch }} \
+            -f tests/typescript/Dockerfile .
 
   publish-github:
     name: Publish on GitHub
