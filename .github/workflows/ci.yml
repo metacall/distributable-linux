@@ -23,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [amd64, 386]
+        arch: [amd64]
 
     steps:
       - name: Set up QEMU
@@ -79,7 +79,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        arch: [amd64, 386]
+        arch: [amd64]
 
     steps:
       - name: Check out the repo
