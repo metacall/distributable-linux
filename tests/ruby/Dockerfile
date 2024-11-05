@@ -31,7 +31,7 @@ COPY out/tarball.tar.gz /
 
 RUN cd / \
 	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz \
-	&& rm tarball.tar.gzz
+	&& rm tarball.tar.gz
 
 COPY tests/ruby/script.rb /scripts/
 COPY tests/ruby/Gemfile /scripts/
