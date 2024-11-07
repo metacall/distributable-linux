@@ -40,6 +40,7 @@ jobs:
           docker buildx build \
             --platform linux/${{ matrix.arch }} \
             -t metacall/distributable_linux \
+            --load \
             -f Dockerfile .
 
       - name: Install additional channels and pull for ${{ matrix.arch }}
