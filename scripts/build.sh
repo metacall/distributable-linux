@@ -21,8 +21,6 @@
 
 export GUILE_WARN_DEPRECATED='detailed'
 
-ASSET_NAME="metacall-tarball-linux-${ARCH}.tar.gz"
-PACK_DIR="/metacall/pack"
 # Generate a portable package tarball
 # Uses --no-grafts option in order to avoid conflicts between duplicated versions
 
@@ -34,5 +32,5 @@ PACK_DIR="/metacall/pack"
                 -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share \
                 -RR metacall nss-certs \
                 -L /metacall/nonguix -L /metacall/source | tee build.log \
-`# Copy`    && mv "$(grep 'tarball-pack.tar.gz$' build.log)" "$PACK_DIR/$ASSET_NAME" \
+`# Copy`    && mv `grep 'tarball-pack.tar.gz$' build.log` /metacall/pack/tarball.tar.gz \
 `# Exit`    && exit 0 || exit 1

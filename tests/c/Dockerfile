@@ -19,8 +19,6 @@
 
 FROM gcc:13-bookworm AS c_test
 
-ARG ARCH
-
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	copyright.address="vic798@gmail.com" \
@@ -31,11 +29,11 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 
 SHELL ["/bin/bash", "-c"]
 
-COPY out/metacall-tarball-linux-${ARCH}.tar.gz /
+COPY out/tarball.tar.gz /
 
 RUN cd / \
-	&& tar --no-same-owner --no-same-permissions -xzf metacall-tarball-linux-${ARCH}.tar.gz \
-	&& rm metacall-tarball-linux-${ARCH}.tar.gz
+	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz \
+	&& rm tarball.tar.gz
 
 COPY tests/c/test.c /
 

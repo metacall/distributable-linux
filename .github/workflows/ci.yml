@@ -1,4 +1,4 @@
-name: "MetaCall Distributable Linux Release"
+name: MetaCall Distributable Linux
 
 on:
   workflow_dispatch:
@@ -18,7 +18,6 @@ jobs:
   build:
     name: Build and Package
     runs-on: ubuntu-latest
-    timeout-minutes: 360
 
     strategy:
       matrix:
@@ -36,38 +35,48 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Set asset name
-        run: echo "ASSET_NAME=metacall-tarball-linux-${{ matrix.arch }}.tar.gz" >> $GITHUB_ENV
-
-      - name: Build the Docker image for ${{ matrix.arch }}
+      - name: Build the base image for ${{ matrix.arch }}
         run: |
           docker buildx build \
             --platform linux/${{ matrix.arch }} \
-            -t metacall/distributable_linux:${{ matrix.arch }} \
-            --load \
+            -t metacall/distributable_linux \
             -f Dockerfile .
 
       - name: Install additional channels and pull for ${{ matrix.arch }}
         run: |
-          docker run --privileged --name tmp metacall/distributable_linux:${{ matrix.arch }} sh -c 'guix pull'
-          docker commit tmp metacall/distributable_linux:${{ matrix.arch }}
+          docker run \
+            --platform linux/${{ matrix.arch }} \
+            --privileged \
+            --name tmp \
+            metacall/distributable_linux sh -c 'guix pull'
+          docker commit tmp metacall/distributable_linux
           docker rm -f tmp
 
       - name: Build dependencies for ${{ matrix.arch }}
         run: |
-          docker run -d --privileged --name tmp metacall/distributable_linux:${{ matrix.arch }} /metacall/scripts/deps.sh
-          docker commit tmp metacall/distributable_linux:${{ matrix.arch }}
+          docker run \
+            --platform linux/${{ matrix.arch }} \
+            --privileged \
+            --name tmp \
+            metacall/distributable_linux /metacall/scripts/deps.sh
+          docker commit tmp metacall/distributable_linux
           docker rm -f tmp
 
       - name: Build tarball for ${{ matrix.arch }}
         run: |
-          docker run --rm -e ARCH=${{ matrix.arch }} -v $PWD/out:/metacall/pack --privileged metacall/distributable_linux:${{ matrix.arch }} /metacall/scripts/build.sh
+          docker run \
+            --platform linux/${{ matrix.arch }} \
+            --rm \
+            -v `pwd`/out:/metacall/pack \
+            --privileged \
+            metacall/distributable_linux /metacall/scripts/build.sh
+          mv out/tarball.tar.gz out/metacall-tarball-linux-${{ matrix.arch }}.tar.gz
 
       - name: Upload tarball artifact for ${{ matrix.arch }}
         uses: actions/upload-artifact@v4
         with:
           name: built-tarball-${{ matrix.arch }}
-          path: out/${{ env.ASSET_NAME }}
+          path: out/metacall-tarball-linux-${{ matrix.arch }}.tar.gz
 
   test:
     name: Test
@@ -87,6 +96,9 @@ jobs:
           name: built-tarball-${{ matrix.arch }}
           path: out/
 
+      - name: Prepare tarball for ${{ matrix.arch }}
+        run: mv out/metacall-tarball-linux-${{ matrix.arch }}.tar.gz out/tarball.tar.gz
+
       - name: Generate a unique ID for invalidating the cache of test layers
         run: echo "CACHE_INVALIDATE=$(date +%s)" >> $GITHUB_ENV
 
@@ -94,45 +106,40 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/${{ matrix.arch }} \
-            --build-arg ARCH=${{ matrix.arch }} \
             --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:cli-${{ matrix.arch }} \
+            -t metacall/distributable_linux_test:cli \
             -f tests/cli/Dockerfile .
 
       - name: Test C for ${{ matrix.arch }}
         run: |
           docker buildx build \
             --platform linux/${{ matrix.arch }} \
-            --build-arg ARCH=${{ matrix.arch }} \
             --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:c-${{ matrix.arch }} \
+            -t metacall/distributable_linux_test:c \
             -f tests/c/Dockerfile .
 
       - name: Test Python for ${{ matrix.arch }}
         run: |
           docker buildx build \
             --platform linux/${{ matrix.arch }} \
-            --build-arg ARCH=${{ matrix.arch }} \
             --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:python-${{ matrix.arch }} \
+            -t metacall/distributable_linux_test:python \
             -f tests/python/Dockerfile .
 
       - name: Test Node for ${{ matrix.arch }}
         run: |
           docker buildx build \
             --platform linux/${{ matrix.arch }} \
-            --build-arg ARCH=${{ matrix.arch }} \
             --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:node-${{ matrix.arch }} \
+            -t metacall/distributable_linux_test:node \
             -f tests/node/Dockerfile .
 
       - name: Test TypeScript for ${{ matrix.arch }}
         run: |
           docker buildx build \
             --platform linux/${{ matrix.arch }} \
-            --build-arg ARCH=${{ matrix.arch }} \
             --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:typescript-${{ matrix.arch }} \
+            -t metacall/distributable_linux_test:typescript \
             -f tests/typescript/Dockerfile .
 
   publish-github:
@@ -140,9 +147,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     if: startsWith(github.ref, 'refs/tags/v')
-    strategy:
-      matrix:
-        arch: [amd64, 386]
 
     steps:
       - name: Check out the repo
@@ -153,7 +157,7 @@ jobs:
       - name: Download tarball artifacts for all architectures
         uses: actions/download-artifact@v4
         with:
-          name: built-tarball-${{ matrix.arch }}
+          merge-multiple: true
           path: out/
 
       - name: Load GHR binary
@@ -178,7 +182,7 @@ jobs:
           export CI_COMMIT_TAG="${{ github.ref_name }}"
           export RELEASE_DATE=$(date '+%Y-%m-%d')
           echo "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}] - ${GH_REPO_OWNER}/${GH_REPO_NAME}:${CI_COMMIT_SHA}" && echo "${GIT_HISTORY}"
-          ghr -t "${{ secrets.GITHUB_TOKEN }}" -u "${GH_REPO_OWNER}" -r "${GH_REPO_NAME}" -c "${CI_COMMIT_SHA}" -n "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace "${CI_COMMIT_TAG}" ${PWD}/out/${{ env.ASSET_NAME }}
+          ghr -t "${{ secrets.GITHUB_TOKEN }}" -u "${GH_REPO_OWNER}" -r "${GH_REPO_NAME}" -c "${CI_COMMIT_SHA}" -n "MetaCall Distributable Linux ${CI_COMMIT_TAG} [${RELEASE_DATE}]" -b "${GIT_HISTORY}" -replace "${CI_COMMIT_TAG}" `pwd`/out/*
 
   install-test:
     name: Trigger Install Test Workflow
