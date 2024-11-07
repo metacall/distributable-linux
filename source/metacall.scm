@@ -456,9 +456,9 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 
         ; NodeJS Loader dependency (TODO: Fix the tests errors for 386 architecture)
         ,@(if (target-x86?)
-          '(("node" ,node-lts-386)
+          `(("node" ,node-lts-386)
             ("libnode" ,libnode-386))
-          '(("node" ,node-lts)
+          `(("node" ,node-lts)
             ("libnode" ,libnode)))
 
         ("libuv" ,libuv) ; NodeJS Loader dependency
