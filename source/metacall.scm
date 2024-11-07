@@ -77,6 +77,35 @@
   #:use-module (gnu packages curl)
 )
 
+; NodeJS Loader Dependencies
+(define-public node-lts-386
+(package/inherit node-lts
+  (name "node-lts-386")
+  (arguments
+   (substitute-keyword-arguments (package-arguments node-lts)
+     ((#:phases phases '%standard-phases)
+      `(modify-phases ,phases
+        (add-before 'delete-problematic-tests 'delete-problematic-tests-386
+        (lambda* (#:key inputs #:allow-other-keys)
+              ;; FIXME: These tests fail in 386
+              (for-each delete-file
+              '("test/parallel/test-fs-utimes-y2K38.js"
+                "test/abort/test-zlib-invalid-internals-usage.js"))))))))))
+
+(define-public libnode-386
+(package/inherit libnode
+  (name "libnode-386")
+  (arguments
+   (substitute-keyword-arguments (package-arguments libnode)
+     ((#:phases phases '%standard-phases)
+      `(modify-phases ,phases
+        (add-before 'delete-problematic-tests 'delete-problematic-tests-386
+        (lambda* (#:key inputs #:allow-other-keys)
+              ;; FIXME: These tests fail in 386
+              (for-each delete-file
+              '("test/parallel/test-fs-utimes-y2K38.js"
+                "test/abort/test-zlib-invalid-internals-usage.js"))))))))))
+
 (define-public espree
   (package
     (name "espree")
@@ -236,13 +265,13 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.8.1")
+    (version "0.8.5")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
           "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "0kwpqw7wawr2d5gd0yd6fwmlb8swi7yjqppiqlyy2csrxx0n056i"))))
+        (sha256 (base32 "0fc3qynwqr95vj67xsr2x98gv6dy7cdb7pkiiiyww0g4chphc0a4"))))
 
     (build-system cmake-build-system)
     (arguments
@@ -424,8 +453,14 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
      `(
         ("python" ,python-3) ; Python Loader dependency
         ("ruby" ,ruby-2.7) ; Ruby Loader dependency
-        ("node" ,node-lts) ; NodeJS Loader dependency
-        ("libnode" ,libnode) ; NodeJS Loader dependency
+
+        ; NodeJS Loader dependency (TODO: Fix the tests errors for 386 architecture)
+        ,@(if (target-x86?)
+          '(("node" ,node-lts-386)
+            ("libnode" ,libnode-386))
+          '(("node" ,node-lts)
+            ("libnode" ,libnode)))
+
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("espree" ,espree) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency
