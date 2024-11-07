@@ -1,4 +1,4 @@
-name: MetaCall Distributable Linux
+name: "MetaCall Distributable Linux Release"
 
 on:
   workflow_dispatch:
