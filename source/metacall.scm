@@ -78,25 +78,33 @@
 )
 
 ; NodeJS Loader Dependencies
-
-; TODO: Try with version 20
-(define-public node-20
+(define-public node-lts-386
 (package/inherit node-lts
-  (name "node-20")
+  (name "node-lts-386")
   (arguments
    (substitute-keyword-arguments (package-arguments node-lts)
      ((#:phases phases '%standard-phases)
       `(modify-phases ,phases
-        (delete 'check))))))) ; Tests in 386 architecture fail on upstream
+        (add-before 'delete-problematic-tests 'delete-problematic-tests-386
+        (lambda* (#:key inputs #:allow-other-keys)
+              ;; FIXME: These tests fail in 386
+              (for-each delete-file
+              '("test/parallel/test-fs-utimes-y2K38.js"
+                "test/abort/test-zlib-invalid-internals-usage.js"))))))))))
 
-(define-public libnode-20
+(define-public libnode-386
 (package/inherit libnode
-  (name "libnode-20")
+  (name "libnode-386")
   (arguments
    (substitute-keyword-arguments (package-arguments libnode)
      ((#:phases phases '%standard-phases)
       `(modify-phases ,phases
-         (delete 'check))))))) ; Tests in 386 architecture fail on upstream
+        (add-before 'delete-problematic-tests 'delete-problematic-tests-386
+        (lambda* (#:key inputs #:allow-other-keys)
+              ;; FIXME: These tests fail in 386
+              (for-each delete-file
+              '("test/parallel/test-fs-utimes-y2K38.js"
+                "test/abort/test-zlib-invalid-internals-usage.js"))))))))))
 
 (define-public espree
   (package
@@ -445,8 +453,8 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
      `(
         ("python" ,python-3) ; Python Loader dependency
         ("ruby" ,ruby-2.7) ; Ruby Loader dependency
-        ("node" ,node-20) ; NodeJS Loader dependency
-        ("libnode" ,libnode-20) ; NodeJS Loader dependency
+        ("node" ,node-lts-386) ; NodeJS Loader dependency
+        ("libnode" ,libnode-386) ; NodeJS Loader dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("espree" ,espree) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency
