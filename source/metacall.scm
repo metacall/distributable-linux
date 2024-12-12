@@ -85,7 +85,7 @@
    (substitute-keyword-arguments (package-arguments node-lts)
      ((#:phases phases '%standard-phases)
       `(modify-phases ,phases
-        (add-before 'delete-problematic-tests 'delete-problematic-tests-386
+        (add-before 'check 'delete-problematic-tests-386
         (lambda* (#:key inputs #:allow-other-keys)
           ;; FIXME: These tests fail in 386
           (delete-file "test/parallel/test-fs-utimes-y2K38.js")))))))))
@@ -97,7 +97,7 @@
    (substitute-keyword-arguments (package-arguments libnode)
      ((#:phases phases '%standard-phases)
       `(modify-phases ,phases
-        (add-before 'delete-problematic-tests 'delete-problematic-tests-386
+        (add-before 'check 'delete-problematic-tests-386
         (lambda* (#:key inputs #:allow-other-keys)
           ;; FIXME: These tests fail in 386
           (delete-file "test/parallel/test-fs-utimes-y2K38.js")))))))))
