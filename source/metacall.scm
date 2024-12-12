@@ -87,10 +87,8 @@
       `(modify-phases ,phases
         (add-before 'delete-problematic-tests 'delete-problematic-tests-386
         (lambda* (#:key inputs #:allow-other-keys)
-              ;; FIXME: These tests fail in 386
-              (for-each delete-file
-              '("test/parallel/test-fs-utimes-y2K38.js"
-                "test/abort/test-zlib-invalid-internals-usage.js"))))))))))
+          ;; FIXME: These tests fail in 386
+          (delete-file "test/parallel/test-fs-utimes-y2K38.js")))))))))
 
 (define-public libnode-386
 (package/inherit libnode
@@ -101,10 +99,8 @@
       `(modify-phases ,phases
         (add-before 'delete-problematic-tests 'delete-problematic-tests-386
         (lambda* (#:key inputs #:allow-other-keys)
-              ;; FIXME: These tests fail in 386
-              (for-each delete-file
-              '("test/parallel/test-fs-utimes-y2K38.js"
-                "test/abort/test-zlib-invalid-internals-usage.js"))))))))))
+          ;; FIXME: These tests fail in 386
+          (delete-file "test/parallel/test-fs-utimes-y2K38.js")))))))))
 
 (define-public espree
   (package
