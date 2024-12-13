@@ -78,30 +78,6 @@
 )
 
 ; NodeJS Loader Dependencies
-(define-public node-lts-386
-(package/inherit node-lts
-  (name "node-lts-386")
-  (arguments
-   (substitute-keyword-arguments (package-arguments node-lts)
-     ((#:phases phases '%standard-phases)
-      `(modify-phases ,phases
-        (add-before 'check 'delete-problematic-tests-386
-        (lambda* (#:key inputs #:allow-other-keys)
-          ;; FIXME: These tests fail in 386
-          (delete-file "test/parallel/test-fs-utimes-y2K38.js")))))))))
-
-(define-public libnode-386
-(package/inherit libnode
-  (name "libnode-386")
-  (arguments
-   (substitute-keyword-arguments (package-arguments libnode)
-     ((#:phases phases '%standard-phases)
-      `(modify-phases ,phases
-        (add-before 'check 'delete-problematic-tests-386
-        (lambda* (#:key inputs #:allow-other-keys)
-          ;; FIXME: These tests fail in 386
-          (delete-file "test/parallel/test-fs-utimes-y2K38.js")))))))))
-
 (define-public espree
   (package
     (name "espree")
@@ -449,8 +425,8 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
      `(
         ("python" ,python-3) ; Python Loader dependency
         ("ruby" ,ruby-2.7) ; Ruby Loader dependency
-        ("node" ,node-lts-386) ; NodeJS Loader dependency
-        ("libnode" ,libnode-386) ; NodeJS Loader dependency
+        ("node" ,node-lts) ; NodeJS Loader dependency
+        ("libnode" ,libnode) ; NodeJS Loader dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("espree" ,espree) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency

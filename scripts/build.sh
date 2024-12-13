@@ -19,18 +19,28 @@
 #	limitations under the License.
 #
 
+set -euxo pipefail
+
 export GUILE_WARN_DEPRECATED='detailed'
 
 # Generate a portable package tarball
 # Uses --no-grafts option in order to avoid conflicts between duplicated versions
 
-`# Build`   guix build metacall --fallback -L /metacall/nonguix -L /metacall/source \
-`# Install` && echo 'metacall' >> /metacall/source/metacall.scm \
-            && guix package --fallback --no-grafts -f /metacall/source/metacall.scm | tee build.log \
-`# Lint`    && guix lint -L /metacall/nonguix -L /metacall/source metacall \
-`# Pack`    && guix pack --no-grafts \
-                -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share \
-                -RR metacall nss-certs \
-                -L /metacall/nonguix -L /metacall/source | tee build.log \
-`# Copy`    && mv `grep 'tarball-pack.tar.gz$' build.log` /metacall/pack/tarball.tar.gz \
-`# Exit`    && exit 0 || exit 1
+# Build
+guix build metacall --fallback -L /metacall/nonguix -L /metacall/source
+
+# Install
+echo 'metacall' >> /metacall/source/metacall.scm
+guix package --fallback --no-grafts -f /metacall/source/metacall.scm | tee build.log
+
+# Lint
+guix lint -L /metacall/nonguix -L /metacall/source metacall
+
+# Pack
+guix pack --no-grafts \
+    -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share \
+    -RR metacall nss-certs \
+    -L /metacall/nonguix -L /metacall/source | tee build.log
+
+# Copy
+mv `grep 'tarball-pack.tar.gz$' build.log` /metacall/pack/tarball.tar.gz
