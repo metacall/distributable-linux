@@ -61,6 +61,7 @@ jobs:
             --platform linux/${{ matrix.arch }} \
             --privileged \
             --name tmp \
+            -e TARGETPLATFORM="linux/${{ matrix.arch }}" \
             metacall/distributable_linux /metacall/scripts/deps.sh
           docker commit tmp metacall/distributable_linux
           docker rm -f tmp
