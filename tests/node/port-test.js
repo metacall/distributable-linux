@@ -11,11 +11,4 @@
 
 const { metacall } = require('metacall');
 
-function testPort() {
-    console.log("Node.js port works");
-    return "Node.js port works";
-}
-
-module.exports = {
-    testPort
-};
+console.log("Node.js port works");
