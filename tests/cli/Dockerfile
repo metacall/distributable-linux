@@ -55,11 +55,15 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	| metacallcli \
 	| grep -e 'function sum(a, b, c)' \
 	&& printf "Running port tests\n" \
-    && metacallcli port-test.py \
-    | grep "Python port works" \
-    && metacallcli port-test.js \
-    | grep "Node.js port works" \
-    && metacallcli port-test.rb \
-    | grep "Ruby port works"
+	&& metacallcli port-test.py \
+	| grep "Python port works" \
+	&& metacallcli port-test.js \
+	| grep "Node.js port works" \
+	&& metacallcli port-test.rb \
+	| grep "Ruby port works"
+
+#	| grep "Ruby port works" \
+#	&& printf "load cs say.cs\ninspect\nexit" \
+#	| metacallcli || cat /root/metacall.log
 
 ENTRYPOINT ["sh", "-c"]
