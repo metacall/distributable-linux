@@ -27,7 +27,7 @@ export GUILE_WARN_DEPRECATED='detailed'
 # Uses --no-grafts option in order to avoid conflicts between duplicated versions
 
 # Build
-guix build metacall --fallback -L /metacall/nonguix -L /metacall/source
+guix build metacall metacall-python-port --fallback -L /metacall/nonguix -L /metacall/source
 
 # Install
 echo 'metacall' >> /metacall/source/metacall.scm
@@ -39,7 +39,7 @@ guix lint -L /metacall/nonguix -L /metacall/source metacall
 # Pack
 guix pack --no-grafts \
     -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share \
-    -RR metacall nss-certs \
+    -RR metacall metacall-python-port nss-certs \
     -L /metacall/nonguix -L /metacall/source | tee build.log
 
 # Copy

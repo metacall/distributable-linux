@@ -29,6 +29,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system node)
+  #:use-module (guix build-system python)
   #:use-module (guix build json)
   #:use-module (guix build union)
   #:use-module ((guix licenses) #:prefix license:)
@@ -520,3 +521,20 @@ methods or procedures between programming languages.
 With METACALL you can transparently execute code from / to any
 programming language, for example, call Python code from NodeJS code.")
     (license license:asl2.0)))
+
+; MetaCall Python Port
+; TODO: Can it be unified with metacall package?
+; https://www.futurile.net/2024/07/23/guix-package-structure-build-system-phases/
+(define-public metacall-python-port
+  (package
+    (inherit metacall)
+    (name "metacall-python-port")
+    (build-system python-build-system)
+    (arguments
+    `(#:tests? #f
+      #:phases (modify-phases %standard-phases
+                  (add-before 'build 'change-directory
+                    (lambda _
+                      (chdir "source/ports/py_port")))
+                  (delete 'test))))
+    (inputs (list metacall))))

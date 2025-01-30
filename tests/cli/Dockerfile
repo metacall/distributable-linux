@@ -53,10 +53,18 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	| grep -e 'function add(a, b)' -e 'function mult(a, b)' \
 	&& printf "load py sum.py\ninspect\nexit" \
 	| metacallcli \
-	| grep -e 'function sum(a, b, c)'
+	| grep -e 'function sum(a, b, c)' \
+	&& metacallcli port-test.js \
+	| grep "Node.js port works" \
+	&& metacallcli port-test.py \
+	| grep "Python port works"
 
-#	| grep -e 'function sum(a, b, c)' \
+# TODO: C# Loader
 #	&& printf "load cs say.cs\ninspect\nexit" \
-#	| metacallcli || cat /root/metacall.log
+#	| metacallcli
+
+# TODO: Ruby Port
+#	&& metacallcli port-test.rb \
+#	| grep "Ruby port works"
 
 ENTRYPOINT ["sh", "-c"]
