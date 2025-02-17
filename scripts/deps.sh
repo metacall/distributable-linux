@@ -41,6 +41,8 @@ apk del git-deps
 # Build
 guix build --fallback \
     nss-certs \
-    `# dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers` \
+     `# dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers` \
     espree typescript \
-    -L /metacall/nonguix -L /metacall/source
+    --without-tests=node-lts --without-tests=libnode \
+    -L /metacall/nonguix -L /metacall/source 
+
