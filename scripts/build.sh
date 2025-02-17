@@ -27,7 +27,7 @@ export GUILE_WARN_DEPRECATED='detailed'
 # Uses --no-grafts option in order to avoid conflicts between duplicated versions
 
 # Build
-guix build metacall metacall-python-port --fallback -L /metacall/nonguix -L /metacall/source --without-tests=node-lts --without-tests=libnode
+guix build metacall metacall-python-port --fallback -L /metacall/nonguix -L /metacall/source --without-tests=node-lts --without-tests=libnode --without-tests=espree
 
 # Install
 echo 'metacall' >> /metacall/source/metacall.scm
