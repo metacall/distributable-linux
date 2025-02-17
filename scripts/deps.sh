@@ -43,6 +43,6 @@ guix build --fallback \
     nss-certs \
      `# dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers` \
     espree typescript \
-    --without-tests=node-lts --without-tests=libnode --without-tests=espree \
+    --without-tests=node-lts --without-tests=libnode  --without-tests=node-18.19.0 \
     -L /metacall/nonguix -L /metacall/source 
 
