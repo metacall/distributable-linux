@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [amd64] # TODO: [amd64, 386]
+        arch: [amd64, 386]
 
     steps:
       - name: Set up QEMU
@@ -90,7 +90,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [amd64] # TODO: [amd64, 386]
+        arch: [amd64, 386]
 
     steps:
       - name: Set up QEMU
