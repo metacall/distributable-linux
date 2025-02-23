@@ -60,7 +60,7 @@ jobs:
             --platform linux/${{ matrix.arch }} \
             --privileged \
             --name tmp \
-            metacall/distributable_linux sh -c 'guix pull'
+            metacall/distributable_linux sh -c 'export LANG=en_US.UTF-8 && guix pull'
           docker commit tmp metacall/distributable_linux
           docker rm -f tmp
 
