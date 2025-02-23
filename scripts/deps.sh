@@ -39,9 +39,9 @@ apk del git-deps
 # fi
 
 # Build
-guix build --fallback \
+guix build --fallback --keep-failed -L . V=1 \
     nss-certs \
      `# dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers` \
     espree typescript \
-    -L /metacall/nonguix -L /metacall/source 
+    -L /metacall/nonguix -L /metacall/source
 
