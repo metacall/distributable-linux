@@ -417,7 +417,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 
 
           ; TODO: Enable backtrace support
-          "-DOPTION_BUILD_PLUGINS_BACKTRACE=ON"
+          "-DOPTION_BUILD_PLUGINS_BACKTRACE=OFF"
 
           ; Disable coverage
           "-DOPTION_COVERAGE=OFF")))
