@@ -1,4 +1,4 @@
-name: MetaCall Distributable Linux Release
+name: "MetaCall Distributable Linux Release"
 
 on:
   workflow_dispatch:
@@ -8,7 +8,6 @@ on:
       - 'v*.*.*'
     branches:
       - master
-      - automation
 
 env:
   GHR_VERSION: 0.17.0
