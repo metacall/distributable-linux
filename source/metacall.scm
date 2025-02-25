@@ -60,6 +60,9 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
 
+  ; C Dependencies
+  #:use-module (gnu packages libffi)
+
   ; Swig
   #:use-module (gnu packages swig)
 
@@ -359,6 +362,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DOPTION_BUILD_LOADERS_FILE=ON"
           "-DOPTION_BUILD_LOADERS_NODE=ON"
           "-DOPTION_BUILD_LOADERS_TS=ON"
+          "-DOPTION_BUILD_LOADERS_C=ON"
           "-DOPTION_BUILD_LOADERS_CS=OFF" ; TODO: ON
           "-DOPTION_BUILD_LOADERS_JS=OFF" ; TODO: Implement V8 Loader
           "-DOPTION_BUILD_LOADERS_COB=ON"
@@ -431,6 +435,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
         ("libuv" ,libuv) ; NodeJS Loader dependency
         ("espree" ,espree) ; NodeJS Loader dependency
         ("typescript" ,typescript) ; TypeScript Loader dependency
+        ("libffi", libffi) ; C Loader dependency
         ("gnucobol" ,gnucobol) ; Cobol Loader dependency
         ("gmp" ,gmp) ; Cobol Loader dependency
         ; TODO
