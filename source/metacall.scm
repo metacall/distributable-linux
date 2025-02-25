@@ -378,7 +378,7 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           (string-append "-DNodeJS_INCLUDE_DIR="
             (assoc-ref %build-inputs "node") "/include/node")
           (string-append "-DNodeJS_LIBRARY="
-            (assoc-ref %build-inputs "libnode") "/lib/libnode.so.108")
+            (assoc-ref %build-inputs "libnode") "/lib/libnode.so.127")
           "-DNodeJS_CMAKE_DEBUG=ON"
           "-DNodeJS_SHARED_UV=ON"
 
