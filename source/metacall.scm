@@ -332,8 +332,12 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           ; Examples
           "-DOPTION_BUILD_EXAMPLES=ON"
 
+          ; TODO: Enable detours for allowing to run it from node.exe
+          "-DOPTION_BUILD_DETOURS=OFF"
+
           ; TODO: Enable fork safety
           "-DOPTION_FORK_SAFE=OFF"
+
           ; TODO: Enable tests
           "-DOPTION_BUILD_TESTS=OFF"
 
