@@ -25,10 +25,7 @@
 
 static int cleanup(int code)
 {
-	if (metacall_destroy() != 0)
-	{
-		return code != 0 ? -code : -255;
-	}
+	metacall_destroy();
 
 	return code;
 }
@@ -37,7 +34,7 @@ int main(int argc, char *argv[])
 {
 	struct metacall_log_stdio_type log_stdio = { stdout };
 
-	printf(metacall_print_info());
+	printf("%s\n", metacall_print_info());
 
 	if (metacall_log(METACALL_LOG_STDIO, (void *)&log_stdio) != 0)
 	{
