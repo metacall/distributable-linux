@@ -56,7 +56,8 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 		-Wl,-rpath=/gnu/lib \
 		-L/gnu/lib \
 		-lmetacall \
-	&& ./a.out | grep \
-		-e 'Stack trace (most recent call last)'
+	&& ./a.out &> output.txt \
+		|| grep output.txt \
+			-e 'Stack trace (most recent call last)'
 
 ENTRYPOINT ["sh", "-c"]
