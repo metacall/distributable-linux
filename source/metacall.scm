@@ -76,6 +76,13 @@
 
   ; RPC Dependencies
   #:use-module (gnu packages curl)
+
+  ; ; Backtrace Dependencies
+  ; #:use-module (gnu packages debug)
+  #:use-module (guix git-download)
+  #:use-module (guix gexp)
+  #:use-module (gnu packages libunwind)
+  ; #:use-module (gnu packages elf)
 )
 
 ; NodeJS Loader Dependencies
@@ -233,6 +240,34 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
 ;     (license license:expat)
 ;   )
 ; )
+
+(define-public backward-cpp
+  (package
+    (name "backward-cpp")
+    (version "1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bombela/backward-cpp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b2h03iwfhcsg8i4f125mlrjf8l1y7qsr2gsbkv0z03i067lykns"))))
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list
+          "-DBACKWARD_TESTS=OFF"
+          "-DBACKWARD_SHARED=OFF")))
+    (build-system cmake-build-system)
+    (synopsis "Stack trace pretty printer for C++")
+    (description
+     "Backward-cpp is a stack trace pretty printer for C++.
+It can print annotated stack traces using debug info in the executable.")
+    (home-page "https://github.com/bombela/backward-cpp")
+    (license license:expat)))
 
 ; MetaCall
 (define-public metacall
@@ -420,8 +455,23 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
           "-DOPTION_BUILD_PORTS_RB=OFF"
 
 
-          ; TODO: Enable backtrace support
-          "-DOPTION_BUILD_PLUGINS_BACKTRACE=OFF"
+          ; Enable backtrace support
+          "-DBACKWARD_TESTS=OFF"
+          "-DSTACK_DETAILS_AUTO_DETECT=OFF"
+          "-DSTACK_WALKING_UNWIND=OFF"
+          "-DSTACK_WALKING_LIBUNWIND=ON"
+          (string-append "-DBACKWARD_LIBRARIES=" (assoc-ref %build-inputs "libunwind") "/lib/libunwind.so")
+          (string-append "-DBACKWARD_INCLUDE_DIRS=" (assoc-ref %build-inputs "libunwind") "/include")
+          ; "-DSTACK_DETAILS_DWARF=ON"
+          ; (string-append "-DBACKWARD_LIBRARIES="
+          ;   (assoc-ref %build-inputs "libdwarf") "/lib/libdwarf.so" ";"
+          ;   (assoc-ref %build-inputs "libelf") "/lib/libelf.so")
+          ; (string-append "-DBACKWARD_INCLUDE_DIRS="
+          ;   (assoc-ref %build-inputs "libdwarf") "/include/libdwarf-0" ";"
+          ;   (assoc-ref %build-inputs "libelf") "/include")
+          (string-append "-DBackwardCpp_SOURCE=" (assoc-ref %build-inputs "backward-cpp") "/lib/backward")
+          "-DBACKWARD_SHARED=OFF"
+          "-DOPTION_BUILD_PLUGINS_BACKTRACE=ON"
 
           ; Disable coverage
           "-DOPTION_COVERAGE=OFF")))
@@ -442,12 +492,16 @@ for any host, on any OS. TypeScript compiles to readable, standards-based JavaSc
         ; ("codeanalysis-csharp" ,codeanalysis-csharp) ; NetCore Loader dependency
         ; ("codeanalysis-common" ,codeanalysis-common) ; NetCore Loader dependency
         ; ("codeanalysis-analyzers" ,codeanalysis-analyzers) ; NetCore Loader dependency
-        ("curl" ,curl))) ; RPC Loader Dependency
+        ("curl" ,curl) ; RPC Loader Dependency
+        ("libunwind", libunwind))) ; Backtrace Plugin dependency
+        ; ("libdwarf", libdwarf) ; Backtrace Plugin dependency
+        ; ("libelf", libelf))) ; Backtrace Plugin dependency
 
     (native-inputs
      `(
         ("rapidjson" ,rapidjson) ; RapidJSON Serial dependency
-        ("swig" ,swig))) ; For building ports
+        ("swig" ,swig) ; For building ports
+        ("backward-cpp", backward-cpp))) ; Backtrace Plugin dependency
 
     ; Set all environment variables for subsequent packages
     (search-paths

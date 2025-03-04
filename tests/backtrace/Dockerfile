@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM busybox:1.31.1 AS node_test
+FROM gcc:13-bookworm AS c_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -27,15 +27,17 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	vendor="MetaCall Inc." \
 	version="0.1"
 
+SHELL ["/bin/bash", "-c"]
+
 COPY out/tarball.tar.gz /
 
 RUN cd / \
 	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-COPY tests/scripts/ /scripts/
+COPY tests/backtrace/test.c /
 
-COPY tests/node/test.js /scripts/
+COPY tests/scripts/ /scripts/
 
 WORKDIR /scripts
 
@@ -43,17 +45,18 @@ ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& source /gnu/etc/profile \
-	&& npm install metacall \
+	&& export LDLIB_PATH="`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so*' | head -n 1`" \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
-	&& export NODE_ENV=debug \
-	&& printf 'load node test.js\ncall mock()\nexit' | metacallcli \
-	| grep \
-		-e 'Hello World' \
-	&& printf 'load node test.js\ncall python()\nexit' | metacallcli \
-	| grep \
-		-e '366667' \
-	&& metacallcli port-test.js \
-	| grep \
-		-e 'Node.js port works'
+	&& cd / \
+	&& gcc \
+		-I/gnu/include \
+		test.c \
+		-B$(dirname ${LDLIB_PATH}) \
+		-Wl,--dynamic-linker=${LDLIB_PATH} \
+		-Wl,-rpath=/gnu/lib \
+		-L/gnu/lib \
+		-lmetacall \
+	&& ./a.out | grep \
+		-e 'Stack trace (most recent call last)'
 
 ENTRYPOINT ["sh", "-c"]

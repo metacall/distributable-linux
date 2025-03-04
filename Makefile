@@ -123,6 +123,7 @@ test:
 #	Generate a unique id for invalidating the cache of test layers
 	$(eval CACHE_INVALIDATE := $(shell date +%s))
 #	Run tests
+	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:backtrace -f tests/backtrace/Dockerfile .
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:cli -f tests/cli/Dockerfile .
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:c -f tests/c/Dockerfile .
 	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:python -f tests/python/Dockerfile .
