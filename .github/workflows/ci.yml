@@ -94,7 +94,7 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-        if: ${{ matrix.arch }} != amd64
+        if: ${{ matrix.arch != amd64 }}
         with:
           platforms: all
 
@@ -116,45 +116,56 @@ jobs:
       - name: Generate a unique ID for invalidating the cache of test layers
         run: echo "CACHE_INVALIDATE=$(date +%s)" >> $GITHUB_ENV
 
-      - name: Test CLI for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:cli \
-            -f tests/cli/Dockerfile .
+      - name: Test ${{ matrix.arch }}
+        run: make test
 
-      - name: Test C for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:c \
-            -f tests/c/Dockerfile .
+      # - name: Test Backtrace for ${{ matrix.arch }}
+      #   run: |
+      #     docker buildx build \
+      #       --platform linux/${{ matrix.arch }} \
+      #       --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+      #       -t metacall/distributable_linux_test:backtrace \
+      #       -f tests/backtrace/Dockerfile .
 
-      - name: Test Python for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:python \
-            -f tests/python/Dockerfile .
+      # - name: Test CLI for ${{ matrix.arch }}
+      #   run: |
+      #     docker buildx build \
+      #       --platform linux/${{ matrix.arch }} \
+      #       --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+      #       -t metacall/distributable_linux_test:cli \
+      #       -f tests/cli/Dockerfile .
 
-      - name: Test Node for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:node \
-            -f tests/node/Dockerfile .
+      # - name: Test C for ${{ matrix.arch }}
+      #   run: |
+      #     docker buildx build \
+      #       --platform linux/${{ matrix.arch }} \
+      #       --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+      #       -t metacall/distributable_linux_test:c \
+      #       -f tests/c/Dockerfile .
 
-      - name: Test TypeScript for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:typescript \
-            -f tests/typescript/Dockerfile .
+      # - name: Test Python for ${{ matrix.arch }}
+      #   run: |
+      #     docker buildx build \
+      #       --platform linux/${{ matrix.arch }} \
+      #       --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+      #       -t metacall/distributable_linux_test:python \
+      #       -f tests/python/Dockerfile .
+
+      # - name: Test Node for ${{ matrix.arch }}
+      #   run: |
+      #     docker buildx build \
+      #       --platform linux/${{ matrix.arch }} \
+      #       --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+      #       -t metacall/distributable_linux_test:node \
+      #       -f tests/node/Dockerfile .
+
+      # - name: Test TypeScript for ${{ matrix.arch }}
+      #   run: |
+      #     docker buildx build \
+      #       --platform linux/${{ matrix.arch }} \
+      #       --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
+      #       -t metacall/distributable_linux_test:typescript \
+      #       -f tests/typescript/Dockerfile .
 
   publish-github:
     name: Publish on GitHub
