@@ -357,8 +357,13 @@ It can print annotated stack traces using debug info in the executable.")
           ; Disable all unreproductible operations
           "-DOPTION_BUILD_GUIX=ON"
 
-          ; Build wiht release mode
-          "-DCMAKE_BUILD_TYPE=Release"
+          ; ; Build with release mode
+          ; "-DCMAKE_BUILD_TYPE=Release"
+          ; "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+
+          ; Build with debug mode
+          "-DCMAKE_BUILD_TYPE=Debug"
+          "-DOPTION_BUILD_ADDRESS_SANITIZER=ON"
 
           ; Disable stack-smashing protection and source fortify
           ; in order to improve libc portability / compatibility
@@ -453,7 +458,6 @@ It can print annotated stack traces using debug info in the executable.")
           ; TODO: CMake Error at source/ports/rb_port/CMakeLists.txt:23 (message):
           ;   Ruby libraries not found
           "-DOPTION_BUILD_PORTS_RB=OFF"
-
 
           ; Enable backtrace support
           "-DBACKWARD_TESTS=OFF"
