@@ -94,7 +94,7 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-        if: ${{ matrix.arch != amd64 }}
+        if: ${{ matrix.arch }} != amd64
         with:
           platforms: all
 
