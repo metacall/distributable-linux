@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM gcc:13-bookworm AS c_test
+FROM debian:trixie-slim AS c_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -28,6 +28,9 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	version="0.1"
 
 SHELL ["/bin/bash", "-c"]
+
+RUN apt-get update \
+	&& apt-get install --no-install-recommends -y build-essential
 
 COPY out/tarball.tar.gz /
 
@@ -57,7 +60,8 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 		-L/gnu/lib \
 		-lmetacall \
 	&& ./a.out &> output.txt \
-		|| grep output.txt \
+		|| cat output.txt \
+		&& grep output.txt \
 			-e 'Stack trace (most recent call last)'
 
 ENTRYPOINT ["sh", "-c"]
