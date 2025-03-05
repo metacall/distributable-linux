@@ -44,7 +44,7 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& export NODE_ENV=debug \
 	&& source /gnu/etc/profile \
 	&& npm install metacall \
-	&& printf 'load ts fib.ts\ncall fibonacci(10)\nexit' | metacallclid \
+	&& printf 'load ts fib.ts\ncall fibonacci(10)\nexit' | metacallcli \
 	| grep \
 		-e '89'
 

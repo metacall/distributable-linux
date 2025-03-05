@@ -45,7 +45,7 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& source /gnu/etc/profile \
 	&& pip3 install metacall \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
-	&& printf 'load py script.py\ninspect\ncall test()\nexit' | metacallclid \
+	&& printf 'load py script.py\ninspect\ncall test()\nexit' | metacallcli \
 	| grep \
 		-e 'Hello World'
 

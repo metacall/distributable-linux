@@ -60,7 +60,7 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 		-Wl,--dynamic-linker=${LDLIB_PATH} \
 		-Wl,-rpath=/gnu/lib \
 		-L/gnu/lib \
-		-lmetacalld \
+		-lmetacall \
 	&& export LD_PRELOAD="${LIBASAN_PATH} ${LIBUBSAN_PATH}" \
 	&& ./a.out | grep \
 		-e 'Hello World' \

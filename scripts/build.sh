@@ -26,6 +26,20 @@ export GUILE_WARN_DEPRECATED='detailed'
 # Generate a portable package tarball
 # Uses --no-grafts option in order to avoid conflicts between duplicated versions
 
+# Debug
+if [ "$1" == "debug" ]; then
+    PACK_SYMLINK_ARGS="-S /gnu/bin/metacallcli=bin/metacallclid -S /gnu/lib/libmetacall.so=lib/libmetacalld.so"
+
+    # Patch the metacall.scm with debug build type and sanitizers
+    sed -i 's/"-DCMAKE_BUILD_TYPE/; "-DCMAKE_BUILD_TYPE/g' /metacall/source/metacall.scm
+    sed -i \
+        -e '/"-DOPTION_BUILD_GUIX=ON"/a\' \
+        -e '          "-DCMAKE_BUILD_TYPE=Debug" "-DOPTION_BUILD_ADDRESS_SANITIZER=ON"' \
+        /metacall/source/metacall.scm
+else
+    PACK_SYMLINK_ARGS=""
+fi
+
 # Build
 guix build metacall metacall-python-port --fallback -L /metacall/nonguix -L /metacall/source
 
@@ -39,6 +53,7 @@ guix lint -L /metacall/nonguix -L /metacall/source metacall
 # Pack
 guix pack --no-grafts \
     -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share \
+    ${PACK_SYMLINK_ARGS} \
     -RR metacall metacall-python-port nss-certs \
     -L /metacall/nonguix -L /metacall/source | tee build.log
 

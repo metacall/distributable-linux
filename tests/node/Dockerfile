@@ -46,13 +46,13 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& npm install metacall \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export NODE_ENV=debug \
-	&& printf 'load node test.js\ncall mock()\nexit' | metacallclid \
+	&& printf 'load node test.js\ncall mock()\nexit' | metacallcli \
 	| grep \
 		-e 'Hello World' \
-	&& printf 'load node test.js\ncall python()\nexit' | metacallclid \
+	&& printf 'load node test.js\ncall python()\nexit' | metacallcli \
 	| grep \
 		-e '366667' \
-	&& metacallclid port-test.js \
+	&& metacallcli port-test.js \
 	| grep \
 		-e 'Node.js port works'
 

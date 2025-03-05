@@ -357,13 +357,13 @@ It can print annotated stack traces using debug info in the executable.")
           ; Disable all unreproductible operations
           "-DOPTION_BUILD_GUIX=ON"
 
-          ; ; Build with release mode
-          ; "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
-          ; ; "-DCMAKE_BUILD_TYPE=Release"
+          ; Build with release mode
+          "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+          ; "-DCMAKE_BUILD_TYPE=Release"
 
-          ; Build with debug mode
-          "-DCMAKE_BUILD_TYPE=Debug"
-          "-DOPTION_BUILD_ADDRESS_SANITIZER=ON"
+          ; ; Build with debug mode
+          ; "-DCMAKE_BUILD_TYPE=Debug"
+          ; "-DOPTION_BUILD_ADDRESS_SANITIZER=ON"
 
           ; Disable stack-smashing protection and source fortify
           ; in order to improve libc portability / compatibility

@@ -24,6 +24,13 @@ ifdef PLATFORM
 PLATFORM_ARGS := --platform=linux/${PLATFORM}
 endif
 
+# Define build mode (debug or release, by default release)
+ifdef BUILD
+BUILD_ARGS := ${BUILD}
+else
+BUILD_ARGS := release
+endif
+
 # Default target
 default: all
 
@@ -118,7 +125,7 @@ build:
 	@docker commit metacall_distributable_linux metacall/distributable_linux
 	@docker rm -f metacall_distributable_linux
 #	Build tarball and store it into out folder
-	@docker run ${PLATFORM_ARGS} --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable_linux metacall/distributable_linux /metacall/scripts/build.sh
+	@docker run ${PLATFORM_ARGS} --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable_linux metacall/distributable_linux /metacall/scripts/build.sh ${BUILD_ARGS}
 	@echo "Done"
 
 # Test tarballs

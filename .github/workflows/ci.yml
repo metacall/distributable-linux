@@ -22,6 +22,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        build: [
+          { mode: debug, suffix: "-dbg" },
+          { mode: release, suffix: "" }
+        ]
         arch: [amd64, 386]
 
     steps:
@@ -37,68 +41,38 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Build tarball for ${{ matrix.arch }}
+      - name: Build tarball
         run: |
-          make PLATFORM=${{ matrix.arch }} base pull deps build
-          mv out/tarball.tar.gz out/metacall-tarball-linux-${{ matrix.arch }}.tar.gz
+          make PLATFORM=${{ matrix.arch }} BUILD=${{ matrix.build.mode }} base pull deps build
+          mv out/tarball.tar.gz out/metacall-tarball-linux-${{ matrix.arch }}${{ matrix.build.suffix }}.tar.gz
 
-      - name: Upload tarball artifact for ${{ matrix.arch }}
+      - name: Upload tarball artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tarball-${{ matrix.arch }}
-          path: out/metacall-tarball-linux-${{ matrix.arch }}.tar.gz
+          name: tarball-${{ matrix.arch }}-${{ matrix.build.mode }}
+          path: out/metacall-tarball-linux-${{ matrix.arch }}${{ matrix.build.suffix }}.tar.gz
+
+      - name: Test
+        run: |
+          mv out/metacall-tarball-linux-${{ matrix.arch }}${{ matrix.build.suffix }}.tar.gz out/tarball.tar.gz
+          make PLATFORM=${{ matrix.arch }} test
 
       - name: Clear
         run: |
           set -exuo pipefail
           make clear
 
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: [amd64, 386]
-
-    steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        if: ${{ matrix.arch != 'amd64' }}
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Check out the repo
-        uses: actions/checkout@v4
-
-      - name: Download tarball artifact for ${{ matrix.arch }}
-        uses: actions/download-artifact@v4
-        with:
-          name: tarball-${{ matrix.arch }}
-          path: out/
-
-      - name: Prepare tarball for ${{ matrix.arch }}
-        run: mv out/metacall-tarball-linux-${{ matrix.arch }}.tar.gz out/tarball.tar.gz
-
-      - name: Test Backtrace for ${{ matrix.arch }}
-        run: |
-          make PLATFORM=${{ matrix.arch }} test
-
   publish-github:
     name: Publish on GitHub
     runs-on: ubuntu-latest
-    needs: test
+    needs: build
     if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 
+          fetch-depth: 0
 
       - name: Download tarball artifacts for all architectures
         uses: actions/download-artifact@v4
