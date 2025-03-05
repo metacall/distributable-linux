@@ -21,7 +21,7 @@
 
 # Define platform
 ifdef PLATFORM
-PLATFORM_ARGS := --platform/${PLATFORM}
+PLATFORM_ARGS := --platform=linux/${PLATFORM}
 endif
 
 # Default target

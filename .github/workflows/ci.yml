@@ -48,6 +48,11 @@ jobs:
           name: tarball-${{ matrix.arch }}
           path: out/metacall-tarball-linux-${{ matrix.arch }}.tar.gz
 
+      - name: Clear
+        run: |
+          set -exuo pipefail
+          make clear
+
   test:
     name: Test
     runs-on: ubuntu-latest
