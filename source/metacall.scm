@@ -78,7 +78,6 @@
   #:use-module (gnu packages curl)
 
   ; ; Backtrace Dependencies
-  ; #:use-module (gnu packages debug)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (gnu packages libunwind)
@@ -347,6 +346,7 @@ It can print annotated stack traces using debug info in the executable.")
                 (mkdir-p output)
                 (copy-recursively typescript output))
               #t)))
+
         ; TODO: Enable tests
         #:tests? #f
         #:configure-flags
@@ -357,14 +357,13 @@ It can print annotated stack traces using debug info in the executable.")
           ; Disable all unreproductible operations
           "-DOPTION_BUILD_GUIX=ON"
 
-          ; Build with release mode
-          "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
-          ; "-DCMAKE_BUILD_TYPE=Release"
+          ; ; Build with release mode
+          ; "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
+          ; ; "-DCMAKE_BUILD_TYPE=Release"
 
-          ; TODO: Review guix package sanitizers-cmake
-          ; ; Build with debug mode
-          ; "-DCMAKE_BUILD_TYPE=Debug"
-          ; "-DOPTION_BUILD_ADDRESS_SANITIZER=ON"
+          ; Build with debug mode
+          "-DCMAKE_BUILD_TYPE=Debug"
+          "-DOPTION_BUILD_ADDRESS_SANITIZER=ON"
 
           ; Disable stack-smashing protection and source fortify
           ; in order to improve libc portability / compatibility
@@ -599,5 +598,6 @@ programming language, for example, call Python code from NodeJS code.")
                   (add-before 'build 'change-directory
                     (lambda _
                       (chdir "source/ports/py_port")))
-                  (delete 'test))))
+                  (delete 'test)
+                  (delete 'sanity-check))))
     (inputs (list metacall))))

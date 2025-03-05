@@ -31,13 +31,6 @@ cd /metacall/nonguix
 git checkout e0951349603581895e0ba61f0e7410368ea1902a # Fix nonguix version
 apk del git-deps
 
-# TODO:
-# # Build (i386 workaround for NodeJS)
-# if [[ "${TARGETPLATFORM:-}" == "linux/386" ]]; then
-#     guix install --fallback --without-tests=node node-lts
-#     guix install --fallback --without-tests=node-lts libnode
-# fi
-
 # Build
 guix build --fallback \
     nss-certs \

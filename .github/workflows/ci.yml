@@ -1,4 +1,4 @@
-name: "MetaCall Distributable Linux Release"
+name: "MetaCall Distributable Linux"
 
 on:
   workflow_dispatch:
@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-        if: ${{ matrix.arch }} != amd64
+        if: ${{ matrix.arch != 'amd64' }}
         with:
           platforms: all
 
@@ -37,49 +37,15 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Build the base image for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            -t metacall/distributable_linux \
-            --load \
-            -f Dockerfile .
-
-      - name: Install additional channels and pull for ${{ matrix.arch }}
-        run: |
-          docker run \
-            --platform linux/${{ matrix.arch }} \
-            --privileged \
-            --name tmp \
-            metacall/distributable_linux sh -c 'guix pull'
-          docker commit tmp metacall/distributable_linux
-          docker rm -f tmp
-
-      - name: Build dependencies for ${{ matrix.arch }}
-        run: |
-          docker run \
-            --platform linux/${{ matrix.arch }} \
-            --privileged \
-            --name tmp \
-            -e TARGETPLATFORM="linux/${{ matrix.arch }}" \
-            metacall/distributable_linux /metacall/scripts/deps.sh
-          docker commit tmp metacall/distributable_linux
-          docker rm -f tmp
-
       - name: Build tarball for ${{ matrix.arch }}
         run: |
-          docker run \
-            --platform linux/${{ matrix.arch }} \
-            --rm \
-            -v `pwd`/out:/metacall/pack \
-            --privileged \
-            metacall/distributable_linux /metacall/scripts/build.sh
+          make PLATFORM=${{ matrix.arch }} base pull deps build
           mv out/tarball.tar.gz out/metacall-tarball-linux-${{ matrix.arch }}.tar.gz
 
       - name: Upload tarball artifact for ${{ matrix.arch }}
         uses: actions/upload-artifact@v4
         with:
-          name: built-tarball-${{ matrix.arch }}
+          name: tarball-${{ matrix.arch }}
           path: out/metacall-tarball-linux-${{ matrix.arch }}.tar.gz
 
   test:
@@ -94,7 +60,7 @@ jobs:
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-        if: ${{ matrix.arch }} != amd64
+        if: ${{ matrix.arch != 'amd64' }}
         with:
           platforms: all
 
@@ -107,62 +73,15 @@ jobs:
       - name: Download tarball artifact for ${{ matrix.arch }}
         uses: actions/download-artifact@v4
         with:
-          name: built-tarball-${{ matrix.arch }}
+          name: tarball-${{ matrix.arch }}
           path: out/
 
       - name: Prepare tarball for ${{ matrix.arch }}
         run: mv out/metacall-tarball-linux-${{ matrix.arch }}.tar.gz out/tarball.tar.gz
 
-      - name: Generate a unique ID for invalidating the cache of test layers
-        run: echo "CACHE_INVALIDATE=$(date +%s)" >> $GITHUB_ENV
-
       - name: Test Backtrace for ${{ matrix.arch }}
         run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:backtrace \
-            -f tests/backtrace/Dockerfile .
-
-      - name: Test CLI for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:cli \
-            -f tests/cli/Dockerfile .
-
-      - name: Test C for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:c \
-            -f tests/c/Dockerfile .
-
-      - name: Test Python for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:python \
-            -f tests/python/Dockerfile .
-
-      - name: Test Node for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:node \
-            -f tests/node/Dockerfile .
-
-      - name: Test TypeScript for ${{ matrix.arch }}
-        run: |
-          docker buildx build \
-            --platform linux/${{ matrix.arch }} \
-            --build-arg CACHE_INVALIDATE=${{ env.CACHE_INVALIDATE }} \
-            -t metacall/distributable_linux_test:typescript \
-            -f tests/typescript/Dockerfile .
+          make PLATFORM=${{ matrix.arch }} test
 
   publish-github:
     name: Publish on GitHub

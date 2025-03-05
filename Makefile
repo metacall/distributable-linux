@@ -19,6 +19,11 @@
 
 .PHONY: all download base pull deps build test help default
 
+# Define platform
+ifdef PLATFORM
+PLATFORM_ARGS := --platform/${PLATFORM}
+endif
+
 # Default target
 default: all
 
@@ -67,7 +72,7 @@ base:
 	@docker stop metacall_distributable_linux 2> /dev/null || true
 	@docker rm metacall_distributable_linux 2> /dev/null || true
 #	Build the base image
-	@docker build -t metacall/distributable_linux -f Dockerfile .
+	@docker buildx build ${PLATFORM_ARGS} -t metacall/distributable_linux --load -f Dockerfile .
 
 # Pull latest version of Guix
 pull:
@@ -75,7 +80,7 @@ pull:
 	@docker stop metacall_distributable_linux 2> /dev/null || true
 	@docker rm metacall_distributable_linux 2> /dev/null || true
 #	Install the additional channels and pull
-	@docker run --privileged --name metacall_distributable_linux metacall/distributable_linux sh -c 'guix pull'
+	@docker run ${PLATFORM_ARGS} --privileged --name metacall_distributable_linux metacall/distributable_linux sh -c 'guix pull'
 	@docker commit metacall_distributable_linux metacall/distributable_linux
 	@docker rm -f metacall_distributable_linux
 	@echo "Done"
@@ -86,18 +91,16 @@ deps:
 	@docker stop metacall_distributable_linux 2> /dev/null || true
 	@docker rm metacall_distributable_linux 2> /dev/null || true
 #	Patch the source (metacall.scm) with latest version
-	@docker run -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
+	@docker run ${PLATFORM_ARGS} -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
 	@docker commit metacall_distributable_linux metacall/distributable_linux
 	@docker rm -f metacall_distributable_linux
 #	Patch the script (deps.sh) with latest version
-	@docker run -v `pwd`/scripts:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/deps.sh /metacall/scripts/deps.sh
+	@docker run ${PLATFORM_ARGS} -v `pwd`/scripts:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/deps.sh /metacall/scripts/deps.sh
 	@docker commit metacall_distributable_linux metacall/distributable_linux
 	@docker rm -f metacall_distributable_linux
 #	Build dependencies
-	@docker run --privileged --name metacall_distributable_linux metacall/distributable_linux /metacall/scripts/deps.sh
-#	Commit dependencies into the image
+	@docker run ${PLATFORM_ARGS} --privileged --name metacall_distributable_linux metacall/distributable_linux /metacall/scripts/deps.sh
 	@docker commit metacall_distributable_linux metacall/distributable_linux
-#	Clear the container
 	@docker rm -f metacall_distributable_linux
 	@echo "Done"
 
@@ -107,15 +110,15 @@ build:
 	@docker stop metacall_distributable_linux 2> /dev/null || true
 	@docker rm metacall_distributable_linux 2> /dev/null || true
 #	Patch the source (metacall.scm) with latest version
-	@docker run -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
+	@docker run ${PLATFORM_ARGS} -v `pwd`/source:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/metacall.scm /metacall/source/metacall.scm
 	@docker commit metacall_distributable_linux metacall/distributable_linux
 	@docker rm -f metacall_distributable_linux
 #	Patch the script (build.sh) with latest version
-	@docker run -v `pwd`/scripts:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/build.sh /metacall/scripts/build.sh
+	@docker run ${PLATFORM_ARGS} -v `pwd`/scripts:/metacall/patch --privileged --name metacall_distributable_linux metacall/distributable_linux cp /metacall/patch/build.sh /metacall/scripts/build.sh
 	@docker commit metacall_distributable_linux metacall/distributable_linux
 	@docker rm -f metacall_distributable_linux
 #	Build tarball and store it into out folder
-	@docker run --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable_linux metacall/distributable_linux /metacall/scripts/build.sh
+	@docker run ${PLATFORM_ARGS} --rm -v `pwd`/out:/metacall/pack --privileged --name metacall_distributable_linux metacall/distributable_linux /metacall/scripts/build.sh
 	@echo "Done"
 
 # Test tarballs
@@ -123,15 +126,15 @@ test:
 #	Generate a unique id for invalidating the cache of test layers
 	$(eval CACHE_INVALIDATE := $(shell date +%s))
 #	Run tests
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:backtrace -f tests/backtrace/Dockerfile .
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:cli -f tests/cli/Dockerfile .
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:c -f tests/c/Dockerfile .
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:python -f tests/python/Dockerfile .
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:node -f tests/node/Dockerfile .
-	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:typescript -f tests/typescript/Dockerfile .
+	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:backtrace -f tests/backtrace/Dockerfile .
+	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:c -f tests/c/Dockerfile .
+	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:typescript -f tests/typescript/Dockerfile .
+	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:cli -f tests/cli/Dockerfile .
+	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:python -f tests/python/Dockerfile .
+	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:node -f tests/node/Dockerfile .
 #	TODO:
-#	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:ruby -f tests/ruby/Dockerfile .
-#	@docker build --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:tsx -f tests/tsx/Dockerfile .
+#	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:ruby -f tests/ruby/Dockerfile .
+#	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:tsx -f tests/tsx/Dockerfile .
 	@echo "Done"
 
 # Clear images and containers

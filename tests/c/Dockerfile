@@ -49,6 +49,8 @@ ARG CACHE_INVALIDATE
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& source /gnu/etc/profile \
 	&& export LDLIB_PATH="`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so*' | head -n 1`" \
+	&& export LIBASAN_PATH="`find /gnu/store/ -name 'libasan.so' | head -n 1`" \
+	&& export LIBUBSAN_PATH="`find /gnu/store/ -name 'libubsan.so' | head -n 1`" \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
 	&& cd / \
 	&& gcc \
@@ -58,7 +60,8 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 		-Wl,--dynamic-linker=${LDLIB_PATH} \
 		-Wl,-rpath=/gnu/lib \
 		-L/gnu/lib \
-		-lmetacall \
+		-lmetacalld \
+	&& export LD_PRELOAD="${LIBASAN_PATH} ${LIBUBSAN_PATH}" \
 	&& ./a.out | grep \
 		-e 'Hello World' \
 		-e 'abc' \
