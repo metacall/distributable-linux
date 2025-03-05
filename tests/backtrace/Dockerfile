@@ -47,7 +47,7 @@ WORKDIR /scripts
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
-	&& set -exuo pipefail \
+	&& set -exo pipefail \
 	&& source /gnu/etc/profile \
 	&& export LDLIB_PATH="`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so*' | head -n 1`" \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \

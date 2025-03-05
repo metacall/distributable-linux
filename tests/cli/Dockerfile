@@ -40,7 +40,7 @@ WORKDIR /scripts
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
-	&& set -exuo pipefail \
+	&& set -exo pipefail \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
 	&& source /gnu/etc/profile \
 	&& metacallcli test.mock \

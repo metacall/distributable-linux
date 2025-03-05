@@ -42,7 +42,7 @@ WORKDIR /scripts
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
-	&& set -exuo pipefail \
+	&& set -exo pipefail \
 	&& source /gnu/etc/profile \
 	&& npm install metacall \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \

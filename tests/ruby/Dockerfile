@@ -41,7 +41,7 @@ WORKDIR /scripts
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
-	&& set -exuo pipefail \
+	&& set -exo pipefail \
 	&& source /gnu/etc/profile \
 	&& gem install open-uri \
 	&& bundle install --verbose \
