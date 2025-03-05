@@ -44,6 +44,7 @@ WORKDIR /scripts
 ARG CACHE_INVALIDATE
 
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
+	&& set -exuo pipefail \
 	&& source /gnu/etc/profile \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export NODE_ENV=debug \
