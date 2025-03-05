@@ -345,7 +345,19 @@ It can print annotated stack traces using debug info in the executable.")
                         (assoc-ref inputs "typescript") "/lib/node_modules/typescript")))
                 (mkdir-p output)
                 (copy-recursively typescript output))
-              #t)))
+              #t))
+          (add-after 'install 'symlink-debug-executable
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((source-file (string-append (assoc-ref outputs "out") "/bin/metacallclid"))
+                    (symlink-target (string-append (assoc-ref outputs "out") "/bin/metacallcli")))
+                (when (file-exists? source-file)
+                  (symlink source-file symlink-target)))))
+          (add-after 'install 'symlink-debug-library
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((source-file (string-append (assoc-ref outputs "out") "/lib/libmetacalld.so"))
+                    (symlink-target (string-append (assoc-ref outputs "out") "/lib/libmetacall.so")))
+                (when (file-exists? source-file)
+                  (symlink source-file symlink-target))))))
 
         ; TODO: Enable tests
         #:tests? #f

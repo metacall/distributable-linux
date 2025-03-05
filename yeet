@@ -1,0 +1,935 @@
+time="2025-03-05T22:47:08+02:00" level=warning msg="No output specified for docker-container driver. Build result will only remain in the build cache. To push result image into registry use --push or to load image into docker use --load"
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.13kB done
+#1 DONE 0.2s
+
+#2 [internal] load metadata for docker.io/library/debian:trixie-slim
+#2 ...
+
+#3 [auth] library/debian:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/debian:trixie-slim
+#2 DONE 1.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 32B
+#4 transferring context: 82B 0.2s done
+#4 DONE 0.2s
+
+#11 [internal] load build context
+#11 DONE 0.0s
+#13 [1/8] FROM docker.io/library/debian:trixie-slim@sha256:937705c3b04b221e97b07d6fd9e11da60837eedab1d356c33371e2d433ecbbdf
+#13 resolve docker.io/library/debian:trixie-slim@sha256:937705c3b04b221e97b07d6fd9e11da60837eedab1d356c33371e2d433ecbbdf
+#13 resolve docker.io/library/debian:trixie-slim@sha256:937705c3b04b221e97b07d6fd9e11da60837eedab1d356c33371e2d433ecbbdf 0.2s done
+#13 DONE 0.2s
+
+#11 [internal] load build context
+#11 transferring context: 166.04MB 4.8s
+#11 transferring context: 333.51MB 8.9s done
+#11 DONE 9.0s
+
+#12 [2/8] RUN apt-get update 	&& apt-get install --no-install-recommends -y build-essential
+#12 CACHED
+
+#10 [3/8] COPY out/tarball.tar.gz /
+#10 DONE 1.7s
+
+#9 [4/8] RUN cd / 	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz 	&& rm tarball.tar.gz
+#9 DONE 12.1s
+
+#8 [5/8] COPY tests/backtrace/test.c /
+#8 DONE 1.1s
+
+#7 [6/8] COPY tests/scripts/ /scripts/
+#7 DONE 0.6s
+
+#6 [7/8] WORKDIR /scripts
+#6 DONE 0.5s
+
+#5 [8/8] RUN echo "Running tests 1741207627" 	&& source /gnu/etc/profile 	&& export LDLIB_PATH="`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so*' | head -n 1`" 	&& export LIBASAN_PATH="`find /gnu/store/ -name 'libasan.so' | head -n 1`" 	&& export LIBUBSAN_PATH="`find /gnu/store/ -name 'libubsan.so' | head -n 1`" 	&& export LOADER_SCRIPT_PATH="/scripts/" 	&& cd / 	&& gcc 		-I/gnu/include 		test.c 		-B$(dirname ${LDLIB_PATH}) 		-Wl,--dynamic-linker=${LDLIB_PATH} 		-Wl,-rpath=/gnu/lib 		-L/gnu/lib 		-lmetacall 	&& export LD_PRELOAD="${LIBASAN_PATH} ${LIBUBSAN_PATH}" 	&& ./a.out &> output.txt 		|| cat output.txt 		&& grep output.txt 			-e 'Stack trace (most recent call last)'
+#5 0.501 Running tests 1741207627
+#5 1.088 /usr/bin/ld: /gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6: warning: the use of `tmpnam' is dangerous, better use `mkstemp'
+#5 1.088 /usr/bin/ld: /gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6: warning: the use of `tempnam' is dangerous, better use `mkstemp'
+#5 1.088 /usr/bin/ld: /gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6: warning: the use of `tmpnam_r' is dangerous, better use `mkstemp'
+#5 1.305 /bin/bash: line 1:    23 Segmentation fault      (core dumped) ./a.out &> output.txt
+#5 1.311 MetaCall Library 0.8.8
+#5 1.311 Copyright (C) 2016 - 2024 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+#5 1.311 Compiled as shared library type
+#5 1.311 
+#5 1.311 [32mDebug[0m: Initializing MetaCall
+#5 1.311 [32mDebug[0m: Loading plugin: funchook_detourd
+#5 1.311 [32mError[0m: DynLink error: /gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libfunchook_detourd.so: cannot open shared object file: No such file or directory
+#5 1.311     #0 0x7f1934160fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#5 1.311     #1 0x7f19335bf9a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#5 1.311     #2 0x7f19335b6a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#5 1.311     #3 0x7f19335e5b9d in dynlink_impl_interface_load_unix (/gnu/lib/libmetacalld.so+0xedb9d)#5 1.311     #5 0x7f19335e4b6a in dynlink_load (/gnu/lib/libmetacalld.so+0xecb6a)
+#5 1.311     #6 0x7f19335e6125 in plugin_descriptor_create (/gnu/lib/libmetacalld.so+0xee125)
+#5 1.311     #7 0x7f19335e8207 in plugin_loader_load (/gnu/lib/libmetacalld.so+0xf0207)
+#5 1.311     #8 0x7f19335e9743 in plugin_manager_create (/gnu/lib/libmetacalld.so+0xf1743)
+#5 1.311     #9 0x7f19335eaa6b in detour_create (/gnu/lib/libmetacalld.so+0xf2a6b)
+#5 1.311     #10 0x7f1933636abc in metacall_link_initialize (/gnu/lib/libmetacalld.so+0x13eabc)
+#5 1.311     #11 0x7f1933624184 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c184)
+#5 1.311     #12 0x557fc14001da in main (/a.out+0x11da)
+#5 1.311     #13 0x7f1933343bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 1.311     #14 0x7f1933343cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 1.311     #15 0x557fc14000b0 in _start (/a.out+0x10b0)
+#5 1.311 [32mError[0m: Failed to load library from plugin descriptor
+#5 1.311     #0 0x7f1934160fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#5 1.311     #1 0x7f19335bf9a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#5 1.311     #2 0x7f19335b6a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#5 1.311     #3 0x7f19335e616a in plugin_descriptor_create (/gnu/lib/libmetacalld.so+0xee16a)
+#5 1.311     #4 0x7f19335e8207 in plugin_loader_load (/gnu/lib/libmetacalld.so+0xf0207)
+#5 1.311     #5 0x7f19335e9743 in plugin_manager_create (/gnu/lib/libmetacalld.so+0xf1743)
+#5 1.311     #6 0x7f19335eaa6b in detour_create (/gnu/lib/libmetacalld.so+0xf2a6b)
+#5 1.311     #7 0x7f1933636abc in metacall_link_initialize (/gnu/lib/libmetacalld.so+0x13eabc)
+#5 1.311     #8 0x7f1933624184 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c184)
+#5 1.311     #9 0x557fc14001da in main (/a.out+0x11da)
+#5 1.311     #10 0x7f1933343bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 1.311     #11 0x7f1933343cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 1.311     #12 0x557fc14000b0 in _start (/a.out+0x10b0)
+#5 1.311 
+#5 1.311 [32mError[0m: Plugin loader from manager 'detour' failed to load plugin: funchook
+#5 1.311     #0 0x7f1934160fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#5 1.311     #1 0x7f19335bf9a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#5 1.311     #2 0x7f19335b6a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#5 1.311     #3 0x7f19335e82ec in plugin_loader_load (/gnu/lib/libmetacalld.so+0xf02ec)
+#5 1.311     #4 0x7f19335e9743 in plugin_manager_create (/gnu/lib/libmetacalld.so+0xf1743)
+#5 1.311     #5 0x7f19335eaa6b in detour_create (/gnu/lib/libmetacalld.so+0xf2a6b)
+#5 1.311     #6 0x7f1933636abc in metacall_link_initialize (/gnu/lib/libmetacalld.so+0x13eabc)
+#5 1.311     #7 0x7f1933624184 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c184)
+#5 1.311     #8 0x557fc14001da in main (/a.out+0x11da)
+#5 1.311     #9 0x7f1933343bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 1.311     #10 0x7f1933343cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 1.311     #11 0x557fc14000b0 in _start (/a.out+0x10b0)
+#5 1.311 
+#5 1.311 [32mError[0m: Invalid detour install arguments
+#5 1.311     #0 0x7f1934160fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#5 1.311     #1 0x7f19335bf9a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#5 1.311     #2 0x7f19335b6a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#5 1.311     #3 0x7f19335eabe1 in detour_install (/gnu/lib/libmetacalld.so+0xf2be1)
+#5 1.311     #4 0x7f1933636b41 in metacall_link_initialize (/gnu/lib/libmetacalld.so+0x13eb41)
+#5 1.311     #5 0x7f1933624184 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c184)
+#5 1.311     #6 0x557fc14001da in main (/a.out+0x11da)
+#5 1.311     #7 0x7f1933343bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 1.311     #8 0x7f1933343cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 1.311     #9 0x557fc14000b0 in _start (/a.out+0x10b0)
+#5 1.311 
+#5 1.311 [32mError[0m: MetaCall invalid detour link installation
+#5 1.311     #0 0x7f1934160fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#5 1.311     #1 0x7f19335bf9a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#5 1.311     #2 0x7f19335b6a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#5 1.311     #3 0x7f1933636b8e in metacall_link_initialize (/gnu/lib/libmetacalld.so+0x13eb8e)
+#5 1.311     #4 0x7f1933624184 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c184)
+#5 1.311     #5 0x557fc14001da in main (/a.out+0x11da)
+#5 1.311     #6 0x7f1933343bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 1.311     #7 0x7f1933343cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 1.311     #8 0x557fc14000b0 in _start (/a.out+0x10b0)
+#5 1.311 
+#5 1.311 [32mError[0m: Invalid MetaCall link initialization
+#5 1.311     #0 0x7f1934160fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#5 1.311     #1 0x7f19335bf9a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#5 1.311     #2 0x7f19335b6a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#5 1.311     #3 0x7f19336241c2 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c1c2)
+#5 1.311     #4 0x557fc14001da in main (/a.out+0x11da)
+#5 1.311     #5 0x7f1933343bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 1.311     #6 0x7f1933343cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 1.311     #7 0x557fc14000b0 in _start (/a.out+0x10b0)
+#5 1.311 
+#5 1.311 [32mDebug[0m: Global configuration loaded from /gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/share/metacall/configurations/global.json
+#5 1.311 [32mDebug[0m: Loading plugin: rapid_json_seriald
+#5 1.311 [32mDebug[0m: Loading plugin symbol: rapid_json_serial_impl_interface_singleton
+#5 1.311 [32mDebug[0m: Set MetaCall log level to Debug
+#5 1.311 [32mDebug[0m: Loader script path: /scripts/
+#5 1.311 [32mDebug[0m: Loading plugin: ext_loaderd
+#5 1.311 [32mDebug[0m: Loading plugin symbol: ext_loader_impl_interface_singleton
+#5 1.311 [32mDebug[0m: Loading plugin: /gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/plugins/backtrace_plugin/metacall.json
+#5 1.311 Stack trace (most recent call last):
+#5 1.311 #3    Object "./a.out", at 0x557fc14000b0, in 
+#5 1.311 #2    Object "/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6", at 0x7f1933343cab, in __libc_start_main
+#5 1.311 #1    Object "/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6", at 0x7f1933343bf6, in 
+#5 1.311 #0    Object "./a.out", at 0x557fc14001fa, in 
+#5 1.311 Segmentation fault (Invalid permissions for mapped object [0x557fc1400179])
+#5 1.335 Stack trace (most recent call last):
+#5 DONE 1.5s
+time="2025-03-05T22:47:37+02:00" level=warning msg="No output specified for docker-container driver. Build result will only remain in the build cache. To push result image into registry use --push or to load image into docker use --load"
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.08kB done
+#1 DONE 0.2s
+
+#2 [internal] load metadata for docker.io/library/debian:trixie-slim
+#2 DONE 0.5s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 32B
+#3 transferring context: 82B 0.2s done
+#3 DONE 0.3s
+
+#8 [internal] load build context
+#8 DONE 0.0s
+
+#10 resolve docker.io/library/debian:trixie-slim@sha256:937705c3b04b221e97b07d6fd9e11da60837eedab1d356c33371e2d433ecbbdf
+df
+#10 resolve docker.io/library/debian:trixie-slim@sha256:937705c3b04b221e97b07d6fd9e11da60837eedab1d356c33371e2d433ecbbdf 0.2s done
+#10 DONE 0.2s
+
+#8 [internal] load build context
+#8 transferring context: 4.57kB 0.2s done
+#8 DONE 0.3s
+
+#9 [2/8] RUN apt-get update 	&& apt-get install --no-install-recommends -y build-essential
+#9 CACHED
+
+#7 [3/8] COPY out/tarball.tar.gz /
+#7 CACHED
+
+#6 [4/8] RUN cd / 	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz 	&& rm tarball.tar.gz
+#6 CACHED
+
+#5 [5/8] COPY tests/c/test.c /
+#5 DONE 0.5s
+
+#4 [6/8] COPY tests/scripts/ /scripts/
+#4 DONE 1.1s
+
+#12 [7/8] WORKDIR /scripts
+#12 DONE 0.9s
+
+#11 [8/8] RUN echo "Running tests 1741207627" 	&& source /gnu/etc/profile 	&& export LDLIB_PATH="`find /gnu/store/ -type f -wholename '*-glibc-*/lib/ld-*.so*' | head -n 1`" 	&& export LIBASAN_PATH="`find /gnu/store/ -name 'libasan.so' | head -n 1`" 	&& export LIBUBSAN_PATH="`find /gnu/store/ -name 'libubsan.so' | head -n 1`" 	&& export LOADER_SCRIPT_PATH="/scripts/" 	&& cd / 	&& gcc 		-I/gnu/include 		test.c 		-B$(dirname ${LDLIB_PATH}) 		-Wl,--dynamic-linker=${LDLIB_PATH} 		-Wl,-rpath=/gnu/lib 		-L/gnu/lib 		-lmetacall 	&& export LD_PRELOAD="${LIBASAN_PATH} ${LIBUBSAN_PATH}" 	&& ./a.out | grep 		-e 'Hello World' 		-e 'abc' 		-e '1099'
+#11 0.521 Running tests 1741207627
+#11 1.179 /usr/bin/ld: /gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6: warning: the use of `tmpnam' is dangerous, better use `mkstemp'
+#11 1.179 /usr/bin/ld: /gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6: warning: the use of `tempnam' is dangerous, better use `mkstemp'
+#11 1.180 /usr/bin/ld: /gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6: warning: the use of `tmpnam_r' is dangerous, better use `mkstemp'
+#11 1.240     #0 0x7ff6a6003fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)#11 1.240     #1 0x7ff6a54629a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#11 1.240     #2 0x7ff6a5459a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)#11 1.240     #3 0x7ff6a5488b9d in dynlink_impl_interface_load_unix (/gnu/lib/libmetacalld.so+0xedb9d)
+#11 1.240     #4 0x7ff6a54887f0 in dynlink_impl_load (/gnu/lib/libmetacalld.so+0xed7f0)
+#11 1.240     #5 0x7ff6a5487b6a in dynlink_load (/gnu/lib/libmetacalld.so+0xecb6a)
+#11 1.240     #6 0x7ff6a5489125 in plugin_descriptor_create (/gnu/lib/libmetacalld.so+0xee125)
+#11 1.240     #7 0x7ff6a548b207 in plugin_loader_load (/gnu/lib/libmetacalld.so+0xf0207)
+#11 1.240     #8 0x7ff6a548c743 in plugin_manager_create (/gnu/lib/libmetacalld.so+0xf1743)
+#11 1.240     #9 0x7ff6a548da6b in detour_create (/gnu/lib/libmetacalld.so+0xf2a6b)
+#11 1.240     #10 0x7ff6a54d9abc in metacall_link_initialize (/gnu/lib/libmetacalld.so+0x13eabc)
+#11 1.241     #11 0x7ff6a54c7184 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c184)
+#11 1.241     #12 0x558a61af82a6 in main (/a.out+0x12a6)
+#11 1.241     #13 0x7ff6a51e6bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#11 1.241     #14 0x7ff6a51e6cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#11 1.241     #15 0x558a61af8170 in _start (/a.out+0x1170)
+#11 1.241 
+#11 1.242     #0 0x7ff6a6003fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#11 1.242     #1 0x7ff6a54629a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#11 1.242     #2 0x7ff6a5459a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#11 1.242     #3 0x7ff6a548916a in plugin_descriptor_create (/gnu/lib/libmetacalld.so+0xee16a)
+#11 1.242     #4 0x7ff6a548b207 in plugin_loader_load (/gnu/lib/libmetacalld.so+0xf0207)
+#11 1.242     #5 0x7ff6a548c743 in plugin_manager_create (/gnu/lib/libmetacalld.so+0xf1743)
+#11 1.242     #6 0x7ff6a548da6b in detour_create (/gnu/lib/libmetacalld.so+0xf2a6b)
+#11 1.242     #7 0x7ff6a54d9abc in metacall_link_initialize (/gnu/lib/libmetacalld.so+0x13eabc)
+#11 1.242     #8 0x7ff6a54c7184 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c184)
+#11 1.242     #9 0x558a61af82a6 in main (/a.out+0x12a6)
+#11 1.242     #10 0x7ff6a51e6bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#11 1.242     #11 0x7ff6a51e6cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#11 1.242     #12 0x558a61af8170 in _start (/a.out+0x1170)
+#11 1.242 
+#11 1.243     #0 0x7ff6a6003fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#11 1.243     #1 0x7ff6a54629a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#11 1.243     #2 0x7ff6a5459a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#11 1.243     #3 0x7ff6a548b2ec in plugin_loader_load (/gnu/lib/libmetacalld.so+0xf02ec)
+#11 1.243     #4 0x7ff6a548c743 in plugin_manager_create (/gnu/lib/libmetacalld.so+0xf1743)
+#11 1.243     #5 0x7ff6a548da6b in detour_create (/gnu/lib/libmetacalld.so+0xf2a6b)
+#11 1.243     #6 0x7ff6a54d9abc in metacall_link_initialize (/gnu/lib/libmetacalld.so+0x13eabc)
+#11 1.243     #7 0x7ff6a54c7184 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c184)
+#11 1.243     #8 0x558a61af82a6 in main (/a.out+0x12a6)
+#11 1.243     #9 0x7ff6a51e6bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#11 1.243     #10 0x7ff6a51e6cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#11 1.243     #11 0x558a61af8170 in _start (/a.out+0x1170)
+#11 1.243 
+
+#11 1.243     #1 0x7ff6a54629a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#11 1.243     #2 0x7ff6a5459a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#11 1.243     #3 0x7ff6a548dbe1 in detour_install (/gnu/lib/libmetacalld.so+0xf2be1)
+#11 1.243     #4 0x7ff6a54d9b41 in metacall_link_initialize (/gnu/lib/libmetacalld.so+0x13eb41)
+
+#11 1.244     #6 0x558a61af82a6 in main (/a.out+0x12a6)
+gnu/lib/libmetacalld.so+0x12c184)#11 1.244     #7 0x7ff6a51e6bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#11 1.244     #8 0x7ff6a51e6cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#11 1.244     #9 0x558a61af8170 in _start (/a.out+0x1170)
+#11 1.244 
+#11 1.244     #0 0x7ff6a6003fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#11 1.244     #1 0x7ff6a54629a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#11 1.244     #2 0x7ff6a5459a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#11 1.244     #3 0x7ff6a54d9b8e in metacall_link_initialize (/gnu/lib/libmetacalld.so+0x13eb8e)
+#11 1.244     #4 0x7ff6a54c7184 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c184)
+#11 1.244     #5 0x558a61af82a6 in main (/a.out+0x12a6)
+#11 1.244     #6 0x7ff6a51e6bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#11 1.245     #7 0x7ff6a51e6cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#11 1.245     #8 0x558a61af8170 in _start (/a.out+0x1170)
+#11 1.245 
+#11 1.245     #0 0x7ff6a6003fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#11 1.245     #1 0x7ff6a54629a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#11 1.245     #2 0x7ff6a5459a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#11 1.245     #3 0x7ff6a54c71c2 in metacall_initialize (/gnu/lib/libmetacalld.so+0x12c1c2)
+#11 1.245     #4 0x558a61af82a6 in main (/a.out+0x12a6)
+#11 1.245     #5 0x7ff6a51e6bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#11 1.245     #6 0x7ff6a51e6cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#11 1.245     #7 0x558a61af8170 in _start (/a.out+0x1170)
+#11 1.245 
+#11 1.302     #0 0x7ff6a6003fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xbbfc9)
+#11 1.302     #1 0x7ff6a54629a3 in log_impl_write (/gnu/lib/libmetacalld.so+0xc79a3)
+#11 1.302     #2 0x7ff6a5459a35 in log_write_impl_va (/gnu/lib/libmetacalld.so+0xbea35)
+#11 1.302     #3 0x7ff6a1a76a0b  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libpy_loaderd.so+0x31a0b)
+#11 1.302     #4 0x7ff6a54bb081  (/gnu/lib/libmetacalld.so+0x120081)
+#11 1.302     #5 0x7ff6a54be57a in loader_impl_load_from_file (/gnu/lib/libmetacalld.so+0x12357a)
+#11 1.302     #6 0x7ff6a54b6baf in loader_load_from_file (/gnu/lib/libmetacalld.so+0x11bbaf)
+#11 1.302     #7 0x7ff6a54c8263 in metacall_load_from_file (/gnu/lib/libmetacalld.so+0x12d263)
+#11 1.302     #8 0x558a61af8411 in main (/a.out+0x1411)
+#11 1.302     #9 0x7ff6a51e6bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#11 1.302     #10 0x7ff6a51e6cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#11 1.302     #11 0x558a61af8170 in _start (/a.out+0x1170)
+#11 1.302 
+#11 1.453 
+#11 1.453 =================================================================
+#11 1.453 ==22==ERROR: LeakSanitizer: detected memory leaks
+#11 1.453 
+#11 1.453 Direct leak of 1075531 byte(s) in 58 object(s) allocated from:
+#11 1.453     #0 0x7ff6a5ff8e7f in __interceptor_malloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xb0e7f)
+#11 1.453     #1 0x7ff69ee083d4  (/gnu/store/6669014b1cf15njllsd0ryir5d0gp5ch-ruby-2.7.8/lib/libruby.so.2.7+0xca3d4)
+#11 1.453 
+#11 1.453 Direct leak of 114244 byte(s) in 109 object(s) allocated from:
+#11 1.454     #0 0x7ff6a5ff8e7f in __interceptor_malloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xb0e7f)
+#11 1.454     #1 0x7ff6a04fec44  (/gnu/store/nla5820scsv7ibvr3kwpgkm9wr4prf0q-python-3.10.7/lib/libpython3.10.so.1.0+0x120c44)
+#11 1.454 
+#11 1.454 Direct leak of 64048 byte(s) in 861 object(s) allocated from:
+#11 1.454     #0 0x7ff6a5ff9037 in __interceptor_calloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xb1037)
+#11 1.454     #1 0x7ff69ee08812  (/gnu/store/6669014b1cf15njllsd0ryir5d0gp5ch-ruby-2.7.8/lib/libruby.so.2.7+0xca812)
+#11 1.454 
+#11 1.456 Direct leak of 4609 byte(s) in 9 object(s) allocated from:
+#11 1.456     #0 0x7ff6a5ff91f8 in __interceptor_realloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xb11f8)
+#11 1.456     #1 0x7ff69ee0854f  (/gnu/store/6669014b1cf15njllsd0ryir5d0gp5ch-ruby-2.7.8/lib/libruby.so.2.7+0xca54f)
+#11 1.456 
+#11 1.456 Direct leak of 4008 byte(s) in 1 object(s) allocated from:
+#11 1.456     #0 0x7ff6a5ff8e7f in __interceptor_malloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xb0e7f)
+#11 1.456     #1 0x7ff69ee04260  (/gnu/store/6669014b1cf15njllsd0ryir5d0gp5ch-ruby-2.7.8/lib/libruby.so.2.7+0xc6260)
+#11 1.457 
+#11 1.457 Indirect leak of 34646 byte(s) in 35 object(s) allocated from:
+#11 1.457     #0 0x7ff6a5ff8e7f in __interceptor_malloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xb0e7f)
+#11 1.457     #1 0x7ff6a04fec44  (/gnu/store/nla5820scsv7ibvr3kwpgkm9wr4prf0q-python-3.10.7/lib/libpython3.10.so.1.0+0x120c44)
+#11 1.457 
+#11 1.457 Indirect leak of 33560 byte(s) in 516 object(s) allocated from:
+#11 1.457     #0 0x7ff6a5ff8e7f in __interceptor_malloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xb0e7f)
+#11 1.457     #1 0x7ff69ee083d4  (/gnu/store/6669014b1cf15njllsd0ryir5d0gp5ch-ruby-2.7.8/lib/libruby.so.2.7+0xca3d4)
+#11 1.457 
+#11 1.457 Indirect leak of 28399 byte(s) in 387 object(s) allocated from:
+#11 1.457     #0 0x7ff6a5ff9037 in __interceptor_calloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xb1037)
+#11 1.457     #1 0x7ff69ee08812  (/gnu/store/6669014b1cf15njllsd0ryir5d0gp5ch-ruby-2.7.8/lib/libruby.so.2.7+0xca812)
+#11 1.457 
+#11 1.457 Indirect leak of 12024 byte(s) in 3 object(s) allocated from:
+#11 1.458     #0 0x7ff6a5ff8e7f in __interceptor_malloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xb0e7f)
+#11 1.458     #1 0x7ff69ee04260  (/gnu/store/6669014b1cf15njllsd0ryir5d0gp5ch-ruby-2.7.8/lib/libruby.so.2.7+0xc6260)
+#11 1.458 
+#11 1.458 Indirect leak of 136 byte(s) in 8 object(s) allocated from:
+#11 1.460     #0 0x7ff6a5ff91f8 in __interceptor_realloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so+0xb11f8)
+#11 1.460     #1 0x7ff69ee0854f  (/gnu/store/6669014b1cf15njllsd0ryir5d0gp5ch-ruby-2.7.8/lib/libruby.so.2.7+0xca54f)
+#11 1.460 
+#11 1.460 SUMMARY: AddressSanitizer: 1371205 byte(s) leaked in 1987 allocation(s).
+#11 1.467 Hello World
+#11 1.467 abc
+
+11 1.467 1099#11 DONE 1.6s
+time="2025-03-05T22:47:45+02:00" level=warning msg="No output specified for docker-container driver. Build result will only remain in the build cache. To push result image into registry use --push or to load image into docker use --load"
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 1.53kB 0.0s done
+
+#2 [internal] load metadata for docker.io/library/busybox:1.31.1
+#2 ...
+
+#3 [auth] library/busybox:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/busybox:1.31.1
+#2 DONE 1.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 32B
+#4 transferring context: 82B 0.2s done
+#4 DONE 0.3s
+
+#10 [internal] load build context
+#10 DONE 0.0s
+
+#11 [1/6] FROM docker.io/library/busybox:1.31.1@sha256:95cf004f559831017cdf4628aaf1bb30133677be8702a8c5f2994629f637a209
+#11 resolve docker.io/library/busybox:1.31.1@sha256:95cf004f559831017cdf4628aaf1bb30133677be8702a8c5f2994629f637a209
+#11 resolve docker.io/library/busybox:1.31.1@sha256:95cf004f559831017cdf4628aaf1bb30133677be8702a8c5f2994629f637a209 0.2s done
+#11 DONE 0.2s
+
+#10 [internal] load build context
+#10 transferring context: 160B 0.2s done
+#10 DONE 0.3s
+
+#11 [1/6] FROM docker.io/library/busybox:1.31.1@sha256:95cf004f559831017cdf4628aaf1bb30133677be8702a8c5f2994629f637a209
+#11 CACHED
+
+#9 [2/6] COPY out/tarball.tar.gz /
+#9 DONE 0.9s
+
+#8 [3/6] RUN cd / 	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz 	&& rm tarball.tar.gz
+#8 DONE 17.0s
+
+#7 [4/6] COPY tests/scripts/fib.ts /scripts/
+#7 DONE 1.2s
+
+#6 [5/6] WORKDIR /scripts
+#6 DONE 0.3s
+
+#5 [6/6] RUN echo "Running tests 1741207627" 	&& export LOADER_SCRIPT_PATH="/scripts/" 	&& export NODE_ENV=debug 	&& source /gnu/etc/profile 	&& npm install metacall 	&& printf 'load ts fib.ts\ncall fibonacci(10)\nexit' | metacallcli 	| grep 		-e '89'
+#5 0.622 Running tests 1741207627
+#5 2.003 
+#5 2.003 added 1 package in 1s
+#5 2.004 npm notice
+#5 2.004 npm notice New major version of npm available! 10.9.0 -> 11.2.0
+#5 2.004 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.2.0
+#5 2.004 npm notice To update run: npm install -g npm@11.2.0
+#5 2.004 npm notice
+#5 2.039     #0 0x7f59762f8fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#5 2.039     #1 0x7f59757579a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#5 2.039     #2 0x7f597574ea35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#5 2.039     #3 0x7f597577db9d in dynlink_impl_interface_load_unix (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xedb9d)
+#5 2.039     #4 0x7f597577d7f0 in dynlink_impl_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xed7f0)
+#5 2.039     #5 0x7f597577cb6a in dynlink_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xecb6a)
+#5 2.039     #6 0x7f597577e125 in plugin_descriptor_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xee125)
+#5 2.039     #7 0x7f5975780207 in plugin_loader_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf0207)
+#5 2.039     #8 0x7f5975781743 in plugin_manager_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf1743)
+#5 2.039     #9 0x7f5975782a6b in detour_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf2a6b)
+#5 2.039     #10 0x7f59757ceabc in metacall_link_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13eabc)
+#5 2.039     #11 0x7f59757bc184 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c184)
+#5 2.039     #12 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)#5 2.039     #13 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#5 2.039     #14 0x7f59751cdbf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 2.039     #15 0x7f59751cdcab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 2.039     #16 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#5 2.040 
+#5 2.040     #0 0x7f59762f8fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#5 2.040     #1 0x7f59757579a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#5 2.040     #2 0x7f597574ea35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#5 2.040     #3 0x7f597577e16a in plugin_descriptor_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xee16a)
+
+#5 2.040     #5 0x7f5975781743 in plugin_manager_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf1743)
+#5 2.040     #6 0x7f5975782a6b in detour_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf2a6b)
+#5 2.040     #7 0x7f59757ceabc in metacall_link_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13eabc)
+#5 2.040     #8 0x7f59757bc184 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c184)
+#5 2.040     #9 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+#5 2.040     #10 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#5 2.040     #11 0x7f59751cdbf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 2.040     #12 0x7f59751cdcab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 2.040     #13 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#5 2.040 
+#5 2.041     #0 0x7f59762f8fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#5 2.041     #1 0x7f59757579a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#5 2.041     #2 0x7f597574ea35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#5 2.041     #3 0x7f59757802ec in plugin_loader_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf02ec)
+#5 2.041     #4 0x7f5975781743 in plugin_manager_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf1743)
+#5 2.041     #5 0x7f5975782a6b in detour_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf2a6b)
+#5 2.041     #6 0x7f59757ceabc in metacall_link_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13eabc)
+#5 2.041     #7 0x7f59757bc184 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c184)
+#5 2.041     #8 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+#5 2.041     #9 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#5 2.041     #10 0x7f59751cdbf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 2.041     #11 0x7f59751cdcab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 2.041     #12 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#5 2.041 
+#5 2.041     #0 0x7f59762f8fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#5 2.041     #1 0x7f59757579a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+
+#5 2.041     #3 0x7f5975782be1 in detour_install (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf2be1)
+)#5 2.041     #4 0x7f59757ceb41 in metacall_link_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13eb41)
+#5 2.041     #5 0x7f59757bc184 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c184)
+#5 2.042     #6 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+#5 2.042     #7 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)#5 2.042     #8 0x7f59751cdbf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 2.042     #9 0x7f59751cdcab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 2.042     #10 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#5 2.042 
+#5 2.042     #0 0x7f59762f8fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#5 2.042     #1 0x7f59757579a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#5 2.042     #2 0x7f597574ea35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#5 2.042     #3 0x7f59757ceb8e in metacall_link_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13eb8e)
+#5 2.042     #4 0x7f59757bc184 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c184)
+#5 2.042     #5 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+#5 2.042     #6 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#5 2.042     #7 0x7f59751cdbf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 2.042     #8 0x7f59751cdcab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 2.042     #9 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#5 2.042 
+#5 2.042     #0 0x7f59762f8fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#5 2.042     #1 0x7f59757579a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#5 2.043     #2 0x7f597574ea35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#5 2.043     #3 0x7f59757bc1c2 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c1c2)
+#5 2.043     #4 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+
+#5 2.043     #6 0x7f59751cdbf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 2.043     #7 0x7f59751cdcab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 2.043     #8 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#5 2.043 
+#5 2.108     #0 0x7f59762f8fc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#5 2.108     #1 0x7f59757579a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#5 2.108     #2 0x7f597574ea35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#5 2.108     #3 0x7f5969cc47f5  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6e7f5)
+#5 2.108     #4 0x7f5969cc05ed  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6a5ed)
+#5 2.108     #5 0x7f5969cc062b  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6a62b)
+#5 2.108     #6 0x7f5976c27efd in call_init.part.0 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x4efd)
+#5 2.108     #7 0x7f5976c27fe5 in _dl_init (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x4fe5)
+#5 2.108     #8 0x7f5976c2452d in _dl_catch_exception (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x152d)
+#5 2.108     #9 0x7f5976c2e585 in dl_open_worker (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0xb585)
+#5 2.108     #10 0x7f5976c2449c in _dl_catch_exception (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x149c)
+#5 2.108     #11 0x7f5976c2e907 in _dl_open (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0xb907)
+#5 2.108     #12 0x7f5975226ac7 in dlopen_doit (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x82ac7)
+#5 2.108     #13 0x7f5976c2449c in _dl_catch_exception (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x149c)
+#5 2.108     #14 0x7f5976c245de in _dl_catch_error (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x15de)
+#5 2.108     #15 0x7f5975226605 in _dlerror_run (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x82605)#5 2.108     #16 0x7f5975226b60 in dlopen@@GLIBC_2.34 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x82b60)
+#5 2.108     #17 0x7f597628b0d5  (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0x4e0d5)
+#5 2.108     #18 0x7f597577db48 in dynlink_impl_interface_load_unix (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xedb48)
+
+#5 2.108     #20 0x7f597577cb6a in dynlink_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xecb6a)
+f0)#5 2.108     #21 0x7f597577e125 in plugin_descriptor_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xee125)
+#5 2.108     #22 0x7f5975780207 in plugin_loader_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf0207)
+#5 2.108     #23 0x7f5975781743 in plugin_manager_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf1743)
+#5 2.108     #24 0x7f59757ab96d  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11b96d)
+#5 2.108     #25 0x7f59757abb15 in loader_load_from_file (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11bb15)
+#5 2.108     #26 0x7f59757ac75a in loader_load_from_configuration (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11c75a)
+#5 2.109     #27 0x7f59757bd308 in metacall_load_from_configuration (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d308)
+#5 2.109     #28 0x7f59721c7c08  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libplugin_extensiond.so+0x12c08)
+#5 2.109     #29 0x7f59757b9c78  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x129c78)
+#5 2.109     #30 0x7f597578975d in function_call (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf975d)
+#5 2.109     #31 0x7f59757c40e8 in metacallfv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1340e8)
+#5 2.109     #32 0x7f59757bd55e in metacallhv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d55e)
+#5 2.109     #33 0x41852e  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41852e)
+#5 2.109     #34 0x4170c0  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4170c0)
+#5 2.109     #35 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+
+#5 2.109     #37 0x7f59751cdcab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#5 2.109     #38 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#5 2.109 
+#5 2.287 /gnu/store/86fc8bi3mciljxz7c79jx8zr4wsx7xw8-gcc-11.4.0/include/c++/bits/shared_ptr_base.h:712:26: runtime error: member call on address 0x60300000e590 which does not point to an object of type '_Sp_counted_base'
+#5 2.287 0x60300000e590: note: object has invalid vptr
+#5 2.287  00 00 00 00  b8 b1 9e 70 59 7f 00 00  02 00 00 00 01 00 00 00  70 ad 9e 70 59 7f 00 00  10 01 00 00
+#5 2.287               ^~~~~~~~~~~~~~~~~~~~~~~
+#5 2.287               invalid vptr
+#5 4.127 
+#5 4.127 =================================================================
+#5 4.127 ==19==ERROR: LeakSanitizer: detected memory leaks
+#5 4.127 
+#5 4.127 Direct leak of 8208 byte(s) in 1 object(s) allocated from:
+#5 4.127     #0 0x7f59762ede7f in __interceptor_malloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xb0e7f)
+#5 4.127     #1 0x7f597577cd4d in dynlink_load_absolute (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xecd4d)
+#5 4.127     #2 0x7f59757af7d6 in loader_impl_dependencies (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11f7d6)
+#5 4.127     #3 0x7f59757ab94c  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11b94c)
+#5 4.127     #4 0x7f59757abb15 in loader_load_from_file (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11bb15)
+#5 4.127     #5 0x7f59757ac75a in loader_load_from_configuration (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11c75a)
+#5 4.127     #6 0x7f59757bd308 in metacall_load_from_configuration (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d308)
+#5 4.128     #7 0x7f59721c7c08  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libplugin_extensiond.so+0x12c08)
+#5 4.128     #8 0x7f59757b9c78  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x129c78)
+#5 4.128     #9 0x7f597578975d in function_call (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf975d)
+#5 4.128     #10 0x7f59757c40e8 in metacallfv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1340e8)
+#5 4.128     #11 0x7f59757bd55e in metacallhv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d55e)
+#5 4.128     #12 0x41852e  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41852e)
+#5 4.128     #13 0x4170c0  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4170c0)
+#5 4.128     #14 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#5 4.128     #15 0x7f59751cdbf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#5 4.128 
+#5 4.128 Direct leak of 144 byte(s) in 3 object(s) allocated from:
+#5 4.128     #0 0x7f59762ef5e7 in operator new(unsigned long) (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xb25e7)
+#5 4.128     #1 0x7f5969cab49a  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5549a)
+#5 4.128     #2 0x7f5969ccf123  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x79123)
+#5 4.128     #3 0x7f596d47e39e  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xefb39e)
+#5 4.128     #4 0x7f5971d566c2  (/gnu/store/9ygpsbp5gfbrwrin5jdmkd3m84vdsai5-libuv-1.49.1/lib/libuv.so.1+0x106c2)
+#5 4.131     #5 0x61300001d80f  (<unknown module>)
+#5 4.131 
+#5 4.131 Direct leak of 40 byte(s) in 1 object(s) allocated from:
+#5 4.131     #0 0x7f59762ef5e7 in operator new(unsigned long) (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xb25e7)
+#5 4.131     #1 0x7f596d461d78  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xeded78)#5 4.131     #2 0x7f5969cc0380  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6a380)
+#5 4.131     #3 0x7f5969ca6bec  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x50bec)
+#5 4.131     #4 0x7f5969ca683d  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5083d)
+#5 4.131     #5 0x7f5969ca683d  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5083d)
+#5 4.131     #6 0x7f5969caa40b  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5440b)
+#5 4.131     #7 0x7f5969ca7707  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x51707)
+#5 4.131     #8 0x7f597578975d in function_call (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf975d)
+#5 4.131     #9 0x7f59757c40e8 in metacallfv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1340e8)
+#5 4.131     #10 0x7f59757bd55e in metacallhv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d55e)
+#5 4.131     #11 0x7f5965be4289  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libts_loaderd.so+0x25289)
+#5 4.132     #12 0x7f59757b1869  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x121869)
+#5 4.132     #13 0x7f59757b9352 in loader_impl_destroy_objects (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x129352)#5 4.132     #14 0x7f59757adf4e in loader_unload_children (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11df4e)
+#5 4.132     #15 0x7f5965be5f86  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libts_loaderd.so+0x26f86)
+#5 4.132     #16 0x7f59757b9c78  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x129c78)
+
+#5 4.132     #18 0x7f59757c40e8 in metacallfv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1340e8)
+#5 4.132     #19 0x7f5969ca5bad  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x4fbad)
+#5 4.132     #20 0x7f596d458334  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xed5334)
+#5 4.135     #21 0x7f590d78f5e1  (<unknown module>)
+#5 4.137     #22 0x7f590d78d8dd  (<unknown module>)
+#5 4.140     #23 0x7f590d78d8dd  (<unknown module>)
+#5 4.143     #24 0x7f590d78b4db  (<unknown module>)
+#5 4.145     #25 0x7f590d78b202  (<unknown module>)
+#5 4.145     #26 0x7f596dc41f59  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0x16bef59)
+#5 4.145     #27 0x7f596dc42d52  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0x16bfd52)
+#5 4.145     #28 0x7f596dafc960  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0x1579960)
+#5 4.145     #29 0x7f596d45ec1c  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xedbc1c)
+#5 4.145 
+#5 4.145 Direct leak of 40 byte(s) in 1 object(s) allocated from:
+#5 4.145     #0 0x7f59762ef5e7 in operator new(unsigned long) (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xb25e7)
+#5 4.145     #1 0x7f596d461d78  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xeded78)
+#5 4.145     #2 0x7f5969cc0380  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6a380)
+#5 4.145     #3 0x7f5969ca6bec  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x50bec)
+#5 4.145     #4 0x7f5969caa40b  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5440b)
+#5 4.146     #5 0x7f5969ca7707  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x51707)
+#5 4.146     #6 0x7f597578975d in function_call (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf975d)
+#5 4.146     #7 0x7f59757c40e8 in metacallfv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1340e8)
+#5 4.146     #8 0x7f59757bd55e in metacallhv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d55e)
+#5 4.146     #9 0x7f5965be6213  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libts_loaderd.so+0x27213)
+#5 4.146     #10 0x7f59757b99fe in loader_impl_destroy (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1299fe)
+
+#5 4.146     #12 0x7f597577ee15 in plugin_destroy_delayed (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xeee15)
+#5 4.146     #13 0x7f59757add8e in loader_unload_children (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11dd8e)
+#5 4.146     #14 0x7f5969cbeb22  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x68b22)
+#5 4.146     #15 0x7f5969cbe16f  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6816f)
+#5 4.146     #16 0x7f5969cd00d3  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x7a0d3)
+#5 4.146     #17 0x7f596d47e39e  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xefb39e)
+#5 4.146     #18 0x7f5971d566c2  (/gnu/store/9ygpsbp5gfbrwrin5jdmkd3m84vdsai5-libuv-1.49.1/lib/libuv.so.1+0x106c2)
+#5 4.149     #19 0x7f59698fac6f  (<unknown module>)
+#5 4.149 
+#5 4.149 Direct leak of 40 byte(s) in 1 object(s) allocated from:
+#5 4.149     #0 0x7f59762ef5e7 in operator new(unsigned long) (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xb25e7)
+#5 4.149     #1 0x7f596d461d78  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xeded78)
+#5 4.149     #2 0x7f5969cc0380  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6a380)
+#5 4.149     #3 0x7f5969ca6bec  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x50bec)
+#5 4.149     #4 0x7f5969ca683d  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5083d)
+#5 4.149     #5 0x7f5969ca683d  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5083d)
+#5 4.149     #6 0x7f5969caa40b  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5440b)
+#5 4.149     #7 0x7f5969cced37  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x78d37)
+#5 4.149     #8 0x7f596d47e39e  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xefb39e)
+#5 4.149     #9 0x7f5971d566c2  (/gnu/store/9ygpsbp5gfbrwrin5jdmkd3m84vdsai5-libuv-1.49.1/lib/libuv.so.1+0x106c2)
+#5 4.152     #10 0x61300001d80f  (<unknown module>)
+#5 4.152 
+#5 4.152 Direct leak of 40 byte(s) in 1 object(s) allocated from:
+#5 4.152     #0 0x7f59762ef5e7 in operator new(unsigned long) (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xb25e7)
+#5 4.152     #1 0x7f596d458c26  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xed5c26)
+#5 4.152     #2 0x7f596d4628c0  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xedf8c0)
+#5 4.152     #3 0x7f5969cb1ac8  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5bac8)
+#5 4.152     #4 0x7f5969ca53ef  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x4f3ef)
+#5 4.152     #5 0x7f5969ca526e  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x4f26e)
+#5 4.152     #6 0x7f5969ca526e  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x4f26e)
+#5 4.152     #7 0x7f5969caa9bc  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x549bc)
+#5 4.152     #8 0x7f5969cced37  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x78d37)
+#5 4.152     #9 0x7f596d47e39e  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xefb39e)
+#5 4.152     #10 0x7f5971d566c2  (/gnu/store/9ygpsbp5gfbrwrin5jdmkd3m84vdsai5-libuv-1.49.1/lib/libuv.so.1+0x106c2)
+#5 4.155     #11 0x61300001d80f  (<unknown module>)
+#5 4.155 
+#5 4.155 Direct leak of 40 byte(s) in 1 object(s) allocated from:
+#5 4.155     #0 0x7f59762ef5e7 in operator new(unsigned long) (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xb25e7)
+#5 4.155     #1 0x7f596d461d78  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xeded78)
+#5 4.155     #3 0x7f5969caa40b  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5440b)
+#5 4.156     #5 0x7f597578975d in function_call (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf975d)
+#5 4.156     #6 0x7f59757c40e8 in metacallfv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1340e8)
+#5 4.156     #7 0x7f59757bd55e in metacallhv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d55e)
+#5 4.156     #8 0x7f5965be6213  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libts_loaderd.so+0x27213)
+#5 4.157     #9 0x7f59757b99fe in loader_impl_destroy (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1299fe)
+#5 4.157     #10 0x7f59757b98a9 in loader_impl_destroy_dtor (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1298a9)
+#5 4.157     #11 0x7f597577ee15 in plugin_destroy_delayed (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xeee15)
+#5 4.157     #12 0x7f59757add8e in loader_unload_children (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11dd8e)
+#5 4.157     #13 0x7f5969cbeb22  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x68b22)
+#5 4.157     #14 0x7f5969cbe16f  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6816f)
+#5 4.157     #15 0x7f5969cd00d3  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x7a0d3)
+#5 4.157     #16 0x7f596d47e39e  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xefb39e)
+#5 4.158     #17 0x7f5971d566c2  (/gnu/store/9ygpsbp5gfbrwrin5jdmkd3m84vdsai5-libuv-1.49.1/lib/libuv.so.1+0x106c2)
+#5 4.161     #18 0x7f59698fac6f  (<unknown module>)
+#5 4.161 
+#5 4.161 Direct leak of 40 byte(s) in 1 object(s) allocated from:
+#5 4.161     #0 0x7f59762ef5e7 in operator new(unsigned long) (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xb25e7)
+#5 4.161     #1 0x7f596d461d78  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xeded78)
+#5 4.161     #2 0x7f5969cc0380  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6a380)
+#5 4.161     #3 0x7f5969ca6bec  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x50bec)
+#5 4.161     #4 0x7f5969caa40b  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x5440b)
+#5 4.161     #5 0x7f5969cced37  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x78d37)
+#5 4.161     #6 0x7f596d47e39e  (/gnu/store/3611k5c6iki74mzrp2lj670kv7csp0wh-libnode-22.12.0/lib/libnode.so.127+0xefb39e)
+#5 4.161     #7 0x7f5971d566c2  (/gnu/store/9ygpsbp5gfbrwrin5jdmkd3m84vdsai5-libuv-1.49.1/lib/libuv.so.1+0x106c2)
+#5 4.164     #8 0x61300001d80f  (<unknown module>)
+#5 4.164 
+#5 4.164 SUMMARY: AddressSanitizer: 8592 byte(s) leaked in 10 allocation(s).
+#5 4.195 λ 89
+#5 DONE 4.3s
+time="2025-03-05T22:48:12+02:00" level=warning msg="No output specified for docker-container driver. Build result will only remain in the build cache. To push result image into registry use --push or to load image into docker use --load"
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.08kB 0.0s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/busybox:1.31.1
+#2 DONE 0.6s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 32B
+#3 transferring context: 82B 0.2s done
+#3 DONE 0.3s
+
+#9 [internal] load build context
+#9 DONE 0.0s
+
+#10 [1/6] FROM docker.io/library/busybox:1.31.1@sha256:95cf004f559831017cdf4628aaf1bb30133677be8702a8c5f2994629f637a209
+#10 resolve docker.io/library/busybox:1.31.1@sha256:95cf004f559831017cdf4628aaf1bb30133677be8702a8c5f2994629f637a209
+#10 resolve docker.io/library/busybox:1.31.1@sha256:95cf004f559831017cdf4628aaf1bb30133677be8702a8c5f2994629f637a209 0.2s done
+#10 DONE 0.3s
+
+#9 [internal] load build context
+#9 transferring context: 5.39kB 0.2s done
+#9 DONE 0.3s
+
+#8 [2/6] COPY out/tarball.tar.gz /
+#8 CACHED
+
+#7 [3/6] RUN cd / 	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz 	&& rm tarball.tar.gz
+#7 CACHED
+#6 [4/6] COPY tests/scripts/ /scripts/
+#6 DONE 0.6s
+
+#5 [5/6] WORKDIR /scripts
+#5 DONE 1.2s
+
+#4 [6/6] RUN echo "Running tests 1741207627" 	&& export LOADER_SCRIPT_PATH="/scripts/" 	&& source /gnu/etc/profile 	&& metacallcli test.mock 	&& metacallcli mult.rb 	&& metacallcli sum.py 	&& printf "load mock test.mock\ninspect\nexit" 	| metacallcli 	| grep -e 'function three_str(a_str, b_str, c_str)' 	&& printf "load rb mult.rb\ninspect\nexit" 	| metacallcli 	| grep -e 'function add(a, b)' -e 'function mult(a, b)' 	&& printf "load py sum.py\ninspect\nexit" 	| metacallcli 	| grep -e 'function sum(a, b, c)' 	&& metacallcli port-test.js 	| grep "Node.js port works" 	&& metacallcli port-test.py 	| grep "Python port works"
+#4 0.674 Running tests 1741207627
+#4 0.686 [32mDebug[0m: MetaCall default logger to stdout initialized
+#4 0.686 [32mDebug[0m: Initializing MetaCall
+#4 0.686 [32mDebug[0m: Loading plugin: funchook_detourd
+#4 0.687 [32mError[0m: DynLink error: /gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libfunchook_detourd.so: cannot open shared object file: No such file or directory
+#4 0.695     #0 0x7ff874c0cfc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)#4 0.695     #1 0x7ff87406b9a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#4 0.695     #2 0x7ff874062a35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#4 0.695     #3 0x7ff874091b9d in dynlink_impl_interface_load_unix (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xedb9d)
+#4 0.695     #4 0x7ff8740917f0 in dynlink_impl_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xed7f0)
+#4 0.695     #5 0x7ff874090b6a in dynlink_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xecb6a)
+#4 0.695     #6 0x7ff874092125 in plugin_descriptor_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xee125)
+#4 0.696     #7 0x7ff874094207 in plugin_loader_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf0207)
+#4 0.696     #8 0x7ff874095743 in plugin_manager_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf1743)
+#4 0.696     #9 0x7ff874096a6b in detour_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf2a6b)
+#4 0.696     #10 0x7ff8740e2abc in metacall_link_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13eabc)
+#4 0.696     #11 0x7ff8740d0184 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c184)
+#4 0.696     #12 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+#4 0.696     #13 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#4 0.697     #14 0x7ff873ae1bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#4 0.697     #15 0x7ff873ae1cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#4 0.697     #16 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#4 0.697 
+#4 0.698 [32mError[0m: Failed to load library from plugin descriptor
+#4 0.698     #0 0x7ff874c0cfc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#4 0.698     #1 0x7ff87406b9a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#4 0.698     #2 0x7ff874062a35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#4 0.698     #3 0x7ff87409216a in plugin_descriptor_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xee16a)
+#4 0.698     #4 0x7ff874094207 in plugin_loader_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf0207)
+#4 0.698     #5 0x7ff874095743 in plugin_manager_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf1743)
+#4 0.698     #6 0x7ff874096a6b in detour_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf2a6b)
+#4 0.698     #7 0x7ff8740e2abc in metacall_link_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13eabc)
+#4 0.698     #8 0x7ff8740d0184 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c184)
+#4 0.698     #9 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+#4 0.698     #10 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#4 0.698     #11 0x7ff873ae1bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#4 0.698     #12 0x7ff873ae1cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#4 0.698     #13 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#4 0.698 
+#4 0.699 [32mError[0m: Plugin loader from manager 'detour' failed to load plugin: funchook
+#4 0.699     #0 0x7ff874c0cfc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#4 0.699     #1 0x7ff87406b9a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#4 0.699     #2 0x7ff874062a35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#4 0.699     #3 0x7ff8740942ec in plugin_loader_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf02ec)
+#4 0.699     #4 0x7ff874095743 in plugin_manager_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf1743)
+#4 0.699     #5 0x7ff874096a6b in detour_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf2a6b)
+#4 0.699     #6 0x7ff8740e2abc in metacall_link_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13eabc)
+#4 0.699     #7 0x7ff8740d0184 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c184)
+#4 0.699     #8 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+#4 0.699     #9 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#4 0.700 [32mError[0m: Invalid detour install arguments
+#4 0.700     #10 0x7ff873ae1bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#4 0.700     #11 0x7ff873ae1cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#4 0.700     #12 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)#4 0.700 
+#4 0.700     #0 0x7ff874c0cfc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#4 0.700     #1 0x7ff87406b9a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#4 0.700     #2 0x7ff874062a35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#4 0.700     #3 0x7ff874096be1 in detour_install (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf2be1)
+#4 0.700     #4 0x7ff8740e2b41 in metacall_link_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13eb41)
+#4 0.700     #5 0x7ff8740d0184 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c184)
+#4 0.700     #6 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+#4 0.700     #7 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#4 0.700     #8 0x7ff873ae1bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#4 0.700     #9 0x7ff873ae1cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)#4 0.700     #10 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#4 0.700 
+#4 0.701     #0 0x7ff874c0cfc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#4 0.701     #1 0x7ff87406b9a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#4 0.701     #2 0x7ff874062a35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#4 0.701     #3 0x7ff8740e2b8e in metacall_link_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13eb8e)
+#4 0.701 [32mError[0m: MetaCall invalid detour link installation
+#4 0.701     #4 0x7ff8740d0184 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c184)
+#4 0.701     #5 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+#4 0.701     #6 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#4 0.701     #7 0x7ff873ae1bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#4 0.701     #8 0x7ff873ae1cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#4 0.702     #9 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#4 0.702 
+#4 0.702     #0 0x7ff874c0cfc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#4 0.702     #1 0x7ff87406b9a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#4 0.702 [32mError[0m: Invalid MetaCall link initialization
+#4 0.702     #2 0x7ff874062a35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#4 0.703     #3 0x7ff8740d01c2 in metacall_initialize (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12c1c2)
+#4 0.703     #4 0x41701b  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41701b)
+#4 0.703     #5 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#4 0.703     #6 0x7ff873ae1bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#4 0.703     #7 0x7ff873ae1cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#4 0.703     #8 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#4 0.704 
+#4 0.704 [32mDebug[0m: Global configuration loaded from /gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/share/metacall/configurations/global.json
+#4 0.704 [32mDebug[0m: Loading plugin: rapid_json_seriald
+#4 0.706 [32mDebug[0m: Loading plugin symbol: rapid_json_serial_impl_interface_singleton
+#4 0.707 [32mDebug[0m: Set MetaCall log level to Debug
+#4 0.708 [32mDebug[0m: Loader script path: /scripts/
+#4 0.710 [32mDebug[0m: Loading plugin: ext_loaderd
+#4 0.711 [32mDebug[0m: Loading plugin symbol: ext_loader_impl_interface_singleton
+#4 0.713 [32mDebug[0m: Loading plugin: /gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/plugins/backtrace_plugin/metacall.json
+#4 0.719 [32mDebug[0m: Loading plugin: /gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/plugins/cli/internal/cli_repl_plugin/metacall.json
+#4 0.775 [32mDebug[0m: Loading plugin: node_loaderd#4 0.776 [32mError[0m: Node loader failed register the link hook
+#4 0.780 [32mDebug[0m: Loading plugin symbol: node_loader_impl_interface_singleton
+#4 0.780     #0 0x7ff874c0cfc9 in __sanitizer_print_stack_trace (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xbbfc9)
+#4 0.780     #1 0x7ff87406b9a3 in log_impl_write (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xc79a3)
+#4 0.780     #2 0x7ff874062a35 in log_write_impl_va (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xbea35)
+#4 0.780     #3 0x7ff8685c47f5  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6e7f5)
+#4 0.780     #4 0x7ff8685c05ed  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6a5ed)
+#4 0.780     #5 0x7ff8685c062b  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libnode_loaderd.so+0x6a62b)
+#4 0.780     #6 0x7ff87553befd in call_init.part.0 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x4efd)
+#4 0.780     #7 0x7ff87553bfe5 in _dl_init (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x4fe5)
+#4 0.780     #8 0x7ff87553852d in _dl_catch_exception (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x152d)
+#4 0.780     #9 0x7ff875542585 in dl_open_worker (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0xb585)
+#4 0.780     #10 0x7ff87553849c in _dl_catch_exception (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x149c)
+#4 0.780     #11 0x7ff875542907 in _dl_open (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0xb907)
+#4 0.780     #12 0x7ff873b3aac7 in dlopen_doit (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x82ac7)
+#4 0.780     #13 0x7ff87553849c in _dl_catch_exception (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x149c)
+#4 0.780     #14 0x7ff8755385de in _dl_catch_error (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/ld-linux-x86-64.so.2+0x15de)
+#4 0.780     #15 0x7ff873b3a605 in _dlerror_run (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x82605)
+#4 0.780     #16 0x7ff873b3ab60 in dlopen@@GLIBC_2.34 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x82b60)
+#4 0.780     #17 0x7ff874b9f0d5  (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0x4e0d5)
+#4 0.780     #18 0x7ff874091b48 in dynlink_impl_interface_load_unix (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xedb48)
+#4 0.780     #19 0x7ff8740917f0 in dynlink_impl_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xed7f0)
+#4 0.780     #20 0x7ff874090b6a in dynlink_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xecb6a)
+#4 0.780     #21 0x7ff874092125 in plugin_descriptor_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xee125)
+#4 0.780     #22 0x7ff874094207 in plugin_loader_load (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf0207)
+#4 0.780     #23 0x7ff874095743 in plugin_manager_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf1743)
+#4 0.780     #24 0x7ff8740bf96d  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11b96d)
+#4 0.780     #25 0x7ff8740bfb15 in loader_load_from_file (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11bb15)
+#4 0.780     #26 0x7ff8740c075a in loader_load_from_configuration (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11c75a)
+#4 0.780     #27 0x7ff8740d1308 in metacall_load_from_configuration (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d308)
+#4 0.780     #28 0x7ff870a64c08  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libplugin_extensiond.so+0x12c08)
+#4 0.780     #29 0x7ff8740cdc78  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x129c78)
+#4 0.780     #30 0x7ff87409d75d in function_call (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf975d)
+#4 0.780     #31 0x7ff8740d80e8 in metacallfv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1340e8)
+#4 0.780     #32 0x7ff8740d155e in metacallhv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d55e)
+#4 0.780     #33 0x41852e  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41852e)
+#4 0.780     #34 0x4170c0  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4170c0)
+#4 0.780     #35 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#4 0.780     #36 0x7ff873ae1bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#4 0.780     #37 0x7ff873ae1cab in __libc_start_main_alias_1 (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29cab)
+#4 0.780     #38 0x4147f0 in _start (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4147f0)
+#4 0.780 
+#4 0.967 /gnu/store/86fc8bi3mciljxz7c79jx8zr4wsx7xw8-gcc-11.4.0/include/c++/bits/shared_ptr_base.h:712:26: runtime error: member call on address 0x60300000e590 which does not point to an object of type '_Sp_counted_base'
+#4 0.967 0x60300000e590: note: object has invalid vptr
+#4 0.967  00 00 00 00  b8 b1 2e 6f f8 7f 00 00  02 00 00 00 01 00 00 00  70 ad 2e 6f f8 7f 00 00  10 01 00 00
+#4 0.967               ^~~~~~~~~~~~~~~~~~~~~~~
+#4 0.967               invalid vptr
+#4 1.165 [32mDebug[0m: Loading plugin: /gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/plugins/cli/internal/cli_cmd_plugin/metacall.json
+#4 1.182 [32mDebug[0m: Loading plugin: mock_loaderd
+#4 1.182 [32mDebug[0m: Loading plugin symbol: mock_loader_impl_interface_singleton
+#4 1.182 [32mDebug[0m: Mock module test.mock loaded from file
+#4 1.182 [32mDebug[0m: Mock module 0x60200005c010 discovering
+#4 1.190 [32mDebug[0m: NodeJS execution return status 0
+#4 1.190 [32mDebug[0m: Storing handle: /gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/plugins/backtrace_plugin/backtrace_plugin <0x62500000a100> in destroy list
+#4 1.190 [32mDebug[0m: Storing handle: plugin_extension <0x625000007900> in destroy list
+#4 1.191 [32mDebug[0m: Unloading handle: /gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/plugins/backtrace_plugin/backtrace_plugin <0x62500000a100>
+#4 1.191 [32mDebug[0m: Unloading handle: plugin_extension <0x625000007900>
+#4 1.192 ----------------- FUNCTIONS -----------------
+#4 1.192 Allocations: 19
+#4 1.192 Deallocations: 19
+#4 1.192 Increments: 19
+#4 1.192 Decrements: 19
+#4 1.192 ----------------- CLASSES -----------------
+#4 1.192 Allocations: 0
+#4 1.192 Deallocations: 0
+#4 1.192 Increments: 0
+#4 1.192 Decrements: 0
+#4 1.192 ----------------- OBJECTS -----------------
+#4 1.192 Allocations: 0
+#4 1.192 Deallocations: 0
+#4 1.192 Increments: 0
+#4 1.192 Decrements: 0
+#4 1.192 ----------------- EXCEPTIONS -----------------
+#4 1.192 Allocations: 0
+#4 1.192 Deallocations: 0
+#4 1.192 Increments: 0
+#4 1.192 Decrements: 0
+#4 1.235 
+#4 1.235 =================================================================
+#4 1.235 ==7==ERROR: LeakSanitizer: detected memory leaks
+#4 1.235 
+#4 1.235 Direct leak of 8208 byte(s) in 1 object(s) allocated from:
+#4 1.235     #0 0x7ff874c01e7f in __interceptor_malloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xb0e7f)
+#4 1.235     #1 0x7ff874090d4d in dynlink_load_absolute (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xecd4d)
+#4 1.235     #2 0x7ff8740c37d6 in loader_impl_dependencies (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11f7d6)
+#4 1.235     #3 0x7ff8740bf94c  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11b94c)
+#4 1.235     #4 0x7ff8740bfb15 in loader_load_from_file (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11bb15)
+#4 1.235     #5 0x7ff8740c075a in loader_load_from_configuration (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x11c75a)
+#4 1.235     #6 0x7ff8740d1308 in metacall_load_from_configuration (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d308)#4 1.235     #7 0x7ff870a64c08  (/gnu/store/8rdrs6x2xhf411bfp9gc1qb7nrpz9yph-profile/lib/libplugin_extensiond.so+0x12c08)
+#4 1.235     #8 0x7ff8740cdc78  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x129c78)
+#4 1.235     #9 0x7ff87409d75d in function_call (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0xf975d)
+#4 1.236     #10 0x7ff8740d80e8 in metacallfv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1340e8)
+#4 1.236     #11 0x7ff8740d155e in metacallhv_s (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x12d55e)
+#4 1.236     #12 0x41852e  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x41852e)#4 1.238     #13 0x4170c0  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x4170c0)
+#4 1.238     #14 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#4 1.238     #15 0x7ff873ae1bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#4 1.238 
+#4 1.238 Direct leak of 108 byte(s) in 1 object(s) allocated from:
+#4 1.239     #0 0x7ff874c01e7f in __interceptor_malloc (/gnu/store/zzpbp6rr43smwxzvzd4qd317z5j7qblj-gcc-11.4.0-lib/lib/libasan.so.6+0xb0e7f)
+#4 1.239     #1 0x7ff8740b5693 in value_alloc (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x111693)
+#4 1.239     #2 0x7ff8740b6661 in value_type_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x112661)
+#4 1.239     #3 0x7ff8740b74c1 in value_create_string (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1134c1)
+#4 1.239     #4 0x7ff8740dedc6 in metacall_value_create_string (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13adc6)
+#4 1.239     #5 0x415994  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x415994)
+#4 1.239     #6 0x417237  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x417237)
+
+#4 1.240     #8 0x7ff873ae1bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#4 1.240 
+#4 1.240 SUMMARY: AddressSanitizer: 8316 byte(s) leaked in 2 allocation(s).#4 ERROR: process "/bin/sh -c echo \"Running tests ${CACHE_INVALIDATE}\" \t&& export LOADER_SCRIPT_PATH=\"/scripts/\" \t&& source /gnu/etc/profile \t&& metacallcli test.mock \t&& metacallcli mult.rb \t&& metacallcli sum.py \t&& printf \"load mock test.mock\\ninspect\\nexit\" \t| metacallcli \t| grep -e 'function three_str(a_str, b_str, c_str)' \t&& printf \"load rb mult.rb\\ninspect\\nexit\" \t| metacallcli \t| grep -e 'function add(a, b)' -e 'function mult(a, b)' \t&& printf \"load py sum.py\\ninspect\\nexit\" \t| metacallcli \t| grep -e 'function sum(a, b, c)' \t&& metacallcli port-test.js \t| grep \"Node.js port works\" \t&& metacallcli port-test.py \t| grep \"Python port works\"" did not complete successfully: exit code: 1
+------
+ > [6/6] RUN echo "Running tests 1741207627" 	&& export LOADER_SCRIPT_PATH="/scripts/" 	&& source /gnu/etc/profile 	&& metacallcli test.mock 	&& metacallcli mult.rb 	&& metacallcli sum.py 	&& printf "load mock test.mock\ninspect\nexit" 	| metacallcli 	| grep -e 'function three_str(a_str, b_str, c_str)' 	&& printf "load rb mult.rb\ninspect\nexit" 	| metacallcli 	| grep -e 'function add(a, b)' -e 'function mult(a, b)' 	&& printf "load py sum.py\ninspect\nexit" 	| metacallcli 	| grep -e 'function sum(a, b, c)' 	&& metacallcli port-test.js 	| grep "Node.js port works" 	&& metacallcli port-test.py 	| grep "Python port works":
+#4 1.239     #1 0x7ff8740b5693 in value_alloc (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x111693)
+#4 1.239     #2 0x7ff8740b6661 in value_type_create (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x112661)
+#4 1.239     #3 0x7ff8740b74c1 in value_create_string (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x1134c1)
+#4 1.239     #4 0x7ff8740dedc6 in metacall_value_create_string (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/lib/libmetacalld.so+0x13adc6)
+#4 1.239     #5 0x415994  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x415994)
+#4 1.239     #6 0x417237  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x417237)
+#4 1.240     #7 0x42fa39  (/gnu/store/0ximi3cazrkzxzr1v35xfknj50m0s6hq-metacall-0.8.8/bin/metacallclid+0x42fa39)
+#4 1.240     #8 0x7ff873ae1bf6 in __libc_start_call_main (/gnu/store/zvlp3n8iwa1svxmwv4q22pv1pb1c9pjq-glibc-2.39/lib/libc.so.6+0x29bf6)
+#4 1.240 
+#4 1.240 SUMMARY: AddressSanitizer: 8316 byte(s) leaked in 2 allocation(s).
+------
+Dockerfile:42
+--------------------
+  41 |     
+  42 | >>> RUN echo "Running tests ${CACHE_INVALIDATE}" \
+  43 | >>> 	&& export LOADER_SCRIPT_PATH="/scripts/" \
+  44 | >>> 	&& source /gnu/etc/profile \
+  45 | >>> 	&& metacallcli test.mock \
+  46 | >>> 	&& metacallcli mult.rb \
+  47 | >>> 	&& metacallcli sum.py \
+  48 | >>> 	&& printf "load mock test.mock\ninspect\nexit" \
+  49 | >>> 	| metacallcli \
+  50 | >>> 	| grep -e 'function three_str(a_str, b_str, c_str)' \
+  51 | >>> 	&& printf "load rb mult.rb\ninspect\nexit" \
+  52 | >>> 	| metacallcli \
+  53 | >>> 	| grep -e 'function add(a, b)' -e 'function mult(a, b)' \
+  55 | >>> 	| metacallcli \
+  56 | >>> 	| grep -e 'function sum(a, b, c)' \
+  57 | >>> 	&& metacallcli port-test.js \
+  58 | >>> 	| grep "Node.js port works" \
+  59 | >>> 	&& metacallcli port-test.py \
+  60 | >>> 	| grep "Python port works"
+  61 |     
+--------------------
+error: failed to solve: process "/bin/sh -c echo \"Running tests ${CACHE_INVALIDATE}\" \t&& export LOADER_SCRIPT_PATH=\"/scripts/\" \t&& source /gnu/etc/profile \t&& metacallcli test.mock \t&& metacallcli mult.rb \t&& metacallcli sum.py \t&& printf \"load mock test.mock\\ninspect\\nexit\" \t| metacallcli \t| grep -e 'function three_str(a_str, b_str, c_str)' \t&& printf \"load rb mult.rb\\ninspect\\nexit\" \t| metacallcli \t| grep -e 'function add(a, b)' -e 'function mult(a, b)' \t&& printf \"load py sum.py\\ninspect\\nexit\" \t| metacallcli \t| grep -e 'function sum(a, b, c)' \t&& metacallcli port-test.js \t| grep \"Node.js port works\" \t&& metacallcli port-test.py \t| grep \"Python port works\"" did not complete successfully: exit code: 1
+make: *** [Makefile:138: test] Error 1
