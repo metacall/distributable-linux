@@ -48,7 +48,7 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export NODE_ENV=debug \
 	&& npm install \
-	&& printf 'load ts test.tsx\ninspect\ncall hello("world")\nexit' | metacallcli \
+	&& printf 'load ts test.tsx\ninspect\ncall hello("world")\nexit' | metacallclid \
 	| grep \
 		-e '<h1>Hello world</h1>'
 

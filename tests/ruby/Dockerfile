@@ -46,7 +46,7 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& bundle install --verbose \
 	&& bundle config path \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
-	&& metacallcli script.rb
+	&& metacallclid script.rb
 	#  \
 	# | grep \
 	# 	-e 'Hello World'

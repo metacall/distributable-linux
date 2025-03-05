@@ -42,29 +42,29 @@ ARG CACHE_INVALIDATE
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
 	&& source /gnu/etc/profile \
-	&& metacallcli test.mock \
-	&& metacallcli mult.rb \
-	&& metacallcli sum.py \
+	&& metacallclid test.mock \
+	&& metacallclid mult.rb \
+	&& metacallclid sum.py \
 	&& printf "load mock test.mock\ninspect\nexit" \
-	| metacallcli \
+	| metacallclid \
 	| grep -e 'function three_str(a_str, b_str, c_str)' \
 	&& printf "load rb mult.rb\ninspect\nexit" \
-	| metacallcli \
+	| metacallclid \
 	| grep -e 'function add(a, b)' -e 'function mult(a, b)' \
 	&& printf "load py sum.py\ninspect\nexit" \
-	| metacallcli \
+	| metacallclid \
 	| grep -e 'function sum(a, b, c)' \
-	&& metacallcli port-test.js \
+	&& metacallclid port-test.js \
 	| grep "Node.js port works" \
-	&& metacallcli port-test.py \
+	&& metacallclid port-test.py \
 	| grep "Python port works"
 
 # TODO: C# Loader
 #	&& printf "load cs say.cs\ninspect\nexit" \
-#	| metacallcli
+#	| metacallclid
 
 # TODO: Ruby Port
-#	&& metacallcli port-test.rb \
+#	&& metacallclid port-test.rb \
 #	| grep "Ruby port works"
 
 ENTRYPOINT ["sh", "-c"]
