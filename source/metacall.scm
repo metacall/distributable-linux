@@ -381,14 +381,14 @@ It can print annotated stack traces using debug info in the executable.")
           ; in order to improve libc portability / compatibility
           "-DOPTION_BUILD_SECURITY=OFF"
 
-          ; Examples
-          "-DOPTION_BUILD_EXAMPLES=ON"
+          ; Disable examples
+          "-DOPTION_BUILD_EXAMPLES=OFF"
 
-          ; TODO: Enable detours for allowing to run it from node.exe
-          "-DOPTION_BUILD_DETOURS=OFF"
+          ; Detours
+          "-DOPTION_BUILD_DETOURS=ON"
 
-          ; TODO: Enable fork safety
-          "-DOPTION_FORK_SAFE=OFF"
+          ; Fork safety
+          "-DOPTION_FORK_SAFE=ON"
 
           ; TODO: Enable tests
           "-DOPTION_BUILD_TESTS=OFF"
@@ -466,27 +466,25 @@ It can print annotated stack traces using debug info in the executable.")
           "-DOPTION_BUILD_PORTS_NODE=ON"
           "-DOPTION_BUILD_PORTS_TS=OFF" ; TODO: Not implemented yet
           "-DOPTION_BUILD_PORTS_CS=ON"
+          "-DOPTION_BUILD_PORTS_RB=ON"
 
-          ; TODO: CMake Error at source/ports/rb_port/CMakeLists.txt:23 (message):
-          ;   Ruby libraries not found
-          "-DOPTION_BUILD_PORTS_RB=OFF"
-
-          ; Enable backtrace support
-          "-DBACKWARD_TESTS=OFF"
-          "-DSTACK_DETAILS_AUTO_DETECT=OFF"
-          "-DSTACK_WALKING_UNWIND=OFF"
-          "-DSTACK_WALKING_LIBUNWIND=ON"
-          (string-append "-DBACKWARD_LIBRARIES=" (assoc-ref %build-inputs "libunwind") "/lib/libunwind.so")
-          (string-append "-DBACKWARD_INCLUDE_DIRS=" (assoc-ref %build-inputs "libunwind") "/include")
-          ; "-DSTACK_DETAILS_DWARF=ON"
-          ; (string-append "-DBACKWARD_LIBRARIES="
-          ;   (assoc-ref %build-inputs "libdwarf") "/lib/libdwarf.so" ";"
-          ;   (assoc-ref %build-inputs "libelf") "/lib/libelf.so")
-          ; (string-append "-DBACKWARD_INCLUDE_DIRS="
-          ;   (assoc-ref %build-inputs "libdwarf") "/include/libdwarf-0" ";"
-          ;   (assoc-ref %build-inputs "libelf") "/include")
-          (string-append "-DBackwardCpp_SOURCE=" (assoc-ref %build-inputs "backward-cpp") "/lib/backward")
-          "-DBACKWARD_SHARED=OFF"
+          ; TODO: Enable backtrace support
+          ; "-DBACKWARD_TESTS=OFF"
+          ; "-DSTACK_DETAILS_AUTO_DETECT=OFF"
+          ; "-DSTACK_WALKING_UNWIND=OFF"
+          ; "-DSTACK_WALKING_LIBUNWIND=ON"
+          ; (string-append "-DBACKWARD_LIBRARIES=" (assoc-ref %build-inputs "libunwind") "/lib/libunwind.so")
+          ; (string-append "-DBACKWARD_INCLUDE_DIRS=" (assoc-ref %build-inputs "libunwind") "/include")
+          ; ; "-DSTACK_DETAILS_DWARF=ON"
+          ; ; (string-append "-DBACKWARD_LIBRARIES="
+          ; ;   (assoc-ref %build-inputs "libdwarf") "/lib/libdwarf.so" ";"
+          ; ;   (assoc-ref %build-inputs "libelf") "/lib/libelf.so")
+          ; ; (string-append "-DBACKWARD_INCLUDE_DIRS="
+          ; ;   (assoc-ref %build-inputs "libdwarf") "/include/libdwarf-0" ";"
+          ; ;   (assoc-ref %build-inputs "libelf") "/include")
+          ; (string-append "-DBackwardCpp_SOURCE=" (assoc-ref %build-inputs "backward-cpp") "/lib/backward")
+          ; "-DBACKWARD_SHARED=OFF"
+          ; "-DOPTION_BUILD_PLUGINS_BACKTRACE=ON"
           "-DOPTION_BUILD_PLUGINS_BACKTRACE=OFF"
 
           ; Disable coverage
