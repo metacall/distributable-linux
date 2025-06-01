@@ -303,13 +303,13 @@ or IAT (Import Address Table) entries in PE format used on Windows.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.9.1")
+    (version "0.9.3")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
           "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "19jb6gz35zr6f7kd4dba18hs0aqag1mf4igjxqnmxj19gi3bmd69"))))
+        (sha256 (base32 "1jg2jaf0z3andk7qmw0wwmikjm089y254692y6bpr8q9pr4pb0qf"))))
 
     (build-system cmake-build-system)
     (arguments
@@ -503,24 +503,23 @@ or IAT (Import Address Table) entries in PE format used on Windows.")
           "-DOPTION_BUILD_PORTS_CS=ON"
           "-DOPTION_BUILD_PORTS_RB=ON"
 
-          ; TODO: Enable backtrace support
-          ; "-DBACKWARD_TESTS=OFF"
-          ; "-DSTACK_DETAILS_AUTO_DETECT=OFF"
-          ; "-DSTACK_WALKING_UNWIND=OFF"
-          ; "-DSTACK_WALKING_LIBUNWIND=ON"
-          ; (string-append "-DBACKWARD_LIBRARIES=" (assoc-ref %build-inputs "libunwind") "/lib/libunwind.so")
-          ; (string-append "-DBACKWARD_INCLUDE_DIRS=" (assoc-ref %build-inputs "libunwind") "/include")
-          ; ; "-DSTACK_DETAILS_DWARF=ON"
-          ; ; (string-append "-DBACKWARD_LIBRARIES="
-          ; ;   (assoc-ref %build-inputs "libdwarf") "/lib/libdwarf.so" ";"
-          ; ;   (assoc-ref %build-inputs "libelf") "/lib/libelf.so")
-          ; ; (string-append "-DBACKWARD_INCLUDE_DIRS="
-          ; ;   (assoc-ref %build-inputs "libdwarf") "/include/libdwarf-0" ";"
-          ; ;   (assoc-ref %build-inputs "libelf") "/include")
-          ; (string-append "-DBackwardCpp_SOURCE=" (assoc-ref %build-inputs "backward-cpp") "/lib/backward")
-          ; "-DBACKWARD_SHARED=OFF"
-          ; "-DOPTION_BUILD_PLUGINS_BACKTRACE=ON"
-          "-DOPTION_BUILD_PLUGINS_BACKTRACE=OFF"
+          ; Enable backtrace support
+          "-DBACKWARD_TESTS=OFF"
+          "-DSTACK_DETAILS_AUTO_DETECT=OFF"
+          "-DSTACK_WALKING_UNWIND=OFF"
+          "-DSTACK_WALKING_LIBUNWIND=ON"
+          (string-append "-DBACKWARD_LIBRARIES=" (assoc-ref %build-inputs "libunwind") "/lib/libunwind.so")
+          (string-append "-DBACKWARD_INCLUDE_DIRS=" (assoc-ref %build-inputs "libunwind") "/include")
+          ; "-DSTACK_DETAILS_DWARF=ON"
+          ; (string-append "-DBACKWARD_LIBRARIES="
+          ;   (assoc-ref %build-inputs "libdwarf") "/lib/libdwarf.so" ";"
+          ;   (assoc-ref %build-inputs "libelf") "/lib/libelf.so")
+          ; (string-append "-DBACKWARD_INCLUDE_DIRS="
+          ;   (assoc-ref %build-inputs "libdwarf") "/include/libdwarf-0" ";"
+          ;   (assoc-ref %build-inputs "libelf") "/include")
+          (string-append "-DBackwardCpp_SOURCE=" (assoc-ref %build-inputs "backward-cpp") "/lib/backward")
+          "-DBACKWARD_SHARED=OFF"
+          "-DOPTION_BUILD_PLUGINS_BACKTRACE=ON"
 
           ; Disable coverage
           "-DOPTION_COVERAGE=OFF")))
