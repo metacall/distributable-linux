@@ -272,13 +272,13 @@ It can print annotated stack traces using debug info in the executable.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.8.8")
+    (version "0.9.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
           "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "090xs58f3azxb8222wirmyn5486nvxgs8l845s4d01i0q8fs5a3n"))))
+        (sha256 (base32 "1n7h2m23b7v6msr7198ch6i6jxawjlb166mxjwmpxi6rxn38nzix"))))
 
     (build-system cmake-build-system)
     (arguments
@@ -487,7 +487,7 @@ It can print annotated stack traces using debug info in the executable.")
           ;   (assoc-ref %build-inputs "libelf") "/include")
           (string-append "-DBackwardCpp_SOURCE=" (assoc-ref %build-inputs "backward-cpp") "/lib/backward")
           "-DBACKWARD_SHARED=OFF"
-          "-DOPTION_BUILD_PLUGINS_BACKTRACE=ON"
+          "-DOPTION_BUILD_PLUGINS_BACKTRACE=OFF"
 
           ; Disable coverage
           "-DOPTION_COVERAGE=OFF")))
