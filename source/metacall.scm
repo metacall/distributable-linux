@@ -29,6 +29,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system node)
+  #:use-module (guix build-system trivial)
   #:use-module (guix build-system python)
   #:use-module (guix build json)
   #:use-module (guix build union)
@@ -59,9 +60,6 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
-
-  ; Swig
-  #:use-module (gnu packages swig)
 
   ; RapidJSON
   #:use-module (gnu packages web)
@@ -268,17 +266,50 @@ It can print annotated stack traces using debug info in the executable.")
     (home-page "https://github.com/bombela/backward-cpp")
     (license license:expat)))
 
+(define-public plthook
+  (package
+    (name "plthook")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/metacall/plthook")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07fxkd5mv6v02a4if2lz7rq236m5nfifrly8vjy6774zhn8zzs61"))))
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let ((out #$output)
+                (src #$source))
+            (mkdir-p out)
+            (copy-recursively src out))
+          #t)))
+    (synopsis "Hook function calls by replacing PLT (Procedure Linkage Table) entries.")
+    (description
+     "A utility library to hook library function calls issued by specified object files (executable and libraries).
+This modifies PLT (Procedure Linkage Table) entries in ELF format used on most Unixes
+or IAT (Import Address Table) entries in PE format used on Windows.")
+    (home-page "https://github.com/metacall/plthook")
+    (license license:expat)))
+
 ; MetaCall
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
           "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1n7h2m23b7v6msr7198ch6i6jxawjlb166mxjwmpxi6rxn38nzix"))))
+        (sha256 (base32 "19jb6gz35zr6f7kd4dba18hs0aqag1mf4igjxqnmxj19gi3bmd69"))))
 
     (build-system cmake-build-system)
     (arguments
@@ -386,6 +417,8 @@ It can print annotated stack traces using debug info in the executable.")
 
           ; Detours
           "-DOPTION_BUILD_DETOURS=ON"
+          "-DOPTION_BUILD_DETOURS_PLTHOOK=ON"
+          (string-append "-DPLTHook_SOURCE_DIR=" (assoc-ref %build-inputs "plthook"))
 
           ; Fork safety
           "-DOPTION_FORK_SAFE=ON"
@@ -420,15 +453,16 @@ It can print annotated stack traces using debug info in the executable.")
           "-DOPTION_BUILD_LOADERS_COB=ON"
           "-DOPTION_BUILD_LOADERS_RPC=ON"
 
-          ; TODO: This stopped working properly for rb_port
-          (string-append "-DRUBY_EXECUTABLE="
+          ; Ruby Loader
+          (string-append "-DRuby_EXECUTABLE="
             (assoc-ref %build-inputs "ruby") "/bin/ruby")
-          (string-append "-DRUBY_INCLUDE_DIRS="
+          (string-append "-DRuby_INCLUDE_DIRS="
             (assoc-ref %build-inputs "ruby") "/include/ruby-2.7.0")
-          (string-append "-DRUBY_LIBRARY="
+          (string-append "-DRuby_LIBRARY="
             (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
-          (string-append "-DRUBY_VERSION=" "2.7.2")
+          (string-append "-DRuby_VERSION=" "2.7.8")
 
+          ; NodeJS Loader
           (string-append "-DNodeJS_EXECUTABLE="
             (assoc-ref %build-inputs "node") "/bin/node")
           (string-append "-DNodeJS_INCLUDE_DIR="
@@ -446,6 +480,7 @@ It can print annotated stack traces using debug info in the executable.")
           ;   "/share/dotnet/shared/Microsoft.NETCore.App/5.0.4/")
           ; "-DDOTNET_ADDITIONAL_PACKAGES=/tmp/.nuget/nupkgs/"
 
+          ; Cobol Loader
           (string-append "-DCOBOL_EXECUTABLE="
             (assoc-ref %build-inputs "gnucobol") "/bin/cobc")
           (string-append "-DCOBOL_INCLUDE_DIR="
@@ -514,7 +549,7 @@ It can print annotated stack traces using debug info in the executable.")
     (native-inputs
      `(
         ("rapidjson" ,rapidjson) ; RapidJSON Serial dependency
-        ("swig" ,swig) ; For building ports
+        ("plthook" ,plthook) ; PLTHook dependency
         ("backward-cpp", backward-cpp))) ; Backtrace Plugin dependency
 
     ; Set all environment variables for subsequent packages
