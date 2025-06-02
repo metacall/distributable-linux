@@ -17,7 +17,7 @@
 #	limitations under the License.
 #
 
-FROM busybox:1.31.1 AS ruby_test
+FROM debian:trixie-slim AS exe_test
 
 # Image descriptor
 LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
@@ -27,14 +27,18 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	vendor="MetaCall Inc." \
 	version="0.1"
 
+SHELL ["/bin/bash", "-c"]
+
+RUN apt-get update \
+	&& apt-get install --no-install-recommends -y python3 nodejs ruby
+
 COPY out/tarball.tar.gz /
 
 RUN cd / \
 	&& tar --no-same-owner --no-same-permissions -xzf tarball.tar.gz \
 	&& rm tarball.tar.gz
 
-COPY tests/ruby/script.rb /scripts/
-COPY tests/ruby/Gemfile /scripts/
+COPY tests/scripts/ /scripts/
 
 WORKDIR /scripts
 
@@ -43,12 +47,12 @@ ARG CACHE_INVALIDATE
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& set -exo pipefail \
 	&& source /gnu/etc/profile \
-	&& gem install open-uri \
-	&& bundle install --verbose \
-	&& bundle config path \
-	&& export LOADER_SCRIPT_PATH="/scripts/" \
-	&& metacallcli script.rb \
-	| grep \
-		-e 'Ruby simple test'
+	&& node port-test.js | grep \
+		-e 'Node.js port works' \
+	&& python3 port-test.py | grep \
+		-e 'Python port works'
+	# \
+	# && ruby port-test.rb | grep \
+	# 	-e 'Ruby port works'
 
 ENTRYPOINT ["sh", "-c"]

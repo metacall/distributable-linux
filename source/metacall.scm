@@ -303,13 +303,13 @@ or IAT (Import Address Table) entries in PE format used on Windows.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.9.3")
+    (version "0.9.5")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
           "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "1jg2jaf0z3andk7qmw0wwmikjm089y254692y6bpr8q9pr4pb0qf"))))
+        (sha256 (base32 "0ag8qmj2z8wwv72nxh9vzz5ybj14f0fv8bb625pwl2zg7nxy8zkz"))))
 
     (build-system cmake-build-system)
     (arguments
@@ -457,10 +457,10 @@ or IAT (Import Address Table) entries in PE format used on Windows.")
           (string-append "-DRuby_EXECUTABLE="
             (assoc-ref %build-inputs "ruby") "/bin/ruby")
           (string-append "-DRuby_INCLUDE_DIRS="
-            (assoc-ref %build-inputs "ruby") "/include/ruby-2.7.0")
+            (assoc-ref %build-inputs "ruby") "/include/ruby-3.3.0")
           (string-append "-DRuby_LIBRARY="
             (assoc-ref %build-inputs "ruby") "/lib/libruby.so")
-          (string-append "-DRuby_VERSION=" "2.7.8")
+          (string-append "-DRuby_VERSION=" "3.3.3")
 
           ; NodeJS Loader
           (string-append "-DNodeJS_EXECUTABLE="
@@ -527,7 +527,7 @@ or IAT (Import Address Table) entries in PE format used on Windows.")
     (propagated-inputs
      `(
         ("python" ,python-3) ; Python Loader dependency
-        ("ruby" ,ruby-2.7) ; Ruby Loader dependency
+        ("ruby" ,ruby-3.3) ; Ruby Loader dependency
         ("node" ,node-lts) ; NodeJS Loader dependency
         ("libnode" ,libnode) ; NodeJS Loader dependency
         ("libuv" ,libuv) ; NodeJS Loader dependency
