@@ -143,7 +143,7 @@ test:
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:node -f tests/node/Dockerfile .
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:ruby -f tests/ruby/Dockerfile .
 #	Skip executable tests on debug because node, python, ruby... are compiled without address sanitizer and they produce false positives
-	@if [ "${BUILD_ARGS}" != "debug" ]; then \
+	@if [ "${BUILD_ARGS}" = "release" ]; then \
 		docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:exe -f tests/exe/Dockerfile . ; \
 	fi
 	@echo "Done"
