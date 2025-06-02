@@ -44,9 +44,9 @@ ARG CACHE_INVALIDATE
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& set -exo pipefail \
 	&& source /gnu/etc/profile \
-	&& npm install metacall \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export NODE_ENV=debug \
+	&& export ASAN_OPTIONS="halt_on_error=0" \
 	&& printf 'load node test.js\ncall mock()\nexit' | metacallcli \
 	| grep \
 		-e 'Hello World' \

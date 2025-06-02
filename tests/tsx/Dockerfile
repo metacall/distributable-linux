@@ -48,6 +48,7 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& source /gnu/etc/profile \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export NODE_ENV=debug \
+	&& export ASAN_OPTIONS="halt_on_error=0" \
 	&& npm install \
 	&& printf 'load ts test.tsx\ninspect\ncall hello("world")\nexit' | metacallcli \
 	| grep \

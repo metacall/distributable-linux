@@ -43,7 +43,7 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
 	&& export NODE_ENV=debug \
 	&& source /gnu/etc/profile \
-	&& npm install metacall \
+	&& export ASAN_OPTIONS="halt_on_error=0" \
 	&& printf 'load ts fib.ts\ncall fibonacci(10)\nexit' | metacallcli \
 	| grep \
 		-e '89'

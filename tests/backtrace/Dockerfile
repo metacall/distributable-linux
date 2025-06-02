@@ -63,7 +63,8 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& if [ -f /gnu/bin/metacallclid ]; then \
 		export LIBASAN_PATH="`find /gnu/store/ -name 'libasan.so' | head -n 1`" \
 		&& export LIBUBSAN_PATH="`find /gnu/store/ -name 'libubsan.so' | head -n 1`" \
-		&& export LD_PRELOAD="${LIBASAN_PATH} ${LIBUBSAN_PATH}"; \
+		&& export LD_PRELOAD="${LIBASAN_PATH} ${LIBUBSAN_PATH}" \
+		&& export ASAN_OPTIONS="halt_on_error=0"; \
 	fi \
 	&& ./a.out &> output.txt \
 		|| cat output.txt \

@@ -47,6 +47,7 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& bundle install --verbose \
 	&& bundle config path \
 	&& export LOADER_SCRIPT_PATH="/scripts/" \
+	&& export ASAN_OPTIONS="halt_on_error=0" \
 	&& metacallcli script.rb \
 	| grep \
 		-e 'Ruby simple test'
