@@ -142,7 +142,7 @@ test:
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:ruby -f tests/ruby/Dockerfile .
 #	TODO:
 #	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:tsx -f tests/tsx/Dockerfile .
-#	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:exe -f tests/exe/Dockerfile .
+	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:exe -f tests/exe/Dockerfile .
 	@echo "Done"
 
 # Clear images and containers

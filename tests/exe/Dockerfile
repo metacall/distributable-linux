@@ -47,9 +47,13 @@ ARG CACHE_INVALIDATE
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& set -exo pipefail \
 	&& source /gnu/etc/profile \
-	&& node port-test.js | grep \
+	&& whereis node \
+	&& ls -la /usr/bin/node \
+	&& /usr/bin/node port-test.js | grep \
 		-e 'Node.js port works' \
-	&& python3 port-test.py | grep \
+	&& whereis python3 \
+	&& ls -la /usr/bin/python3 \
+	&& /usr/bin/python3 port-test.py | grep \
 		-e 'Python port works'
 	# \
 	# && ruby port-test.rb | grep \
