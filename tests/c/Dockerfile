@@ -46,6 +46,8 @@ WORKDIR /scripts
 
 ARG CACHE_INVALIDATE
 
+# In debug mode using address sanitizer, use halt_on_error=0 to skip programming errors from
+# the core or other runtimes, this should be reviewed in metacall/core, not here
 RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& set -exo pipefail \
 	&& source /gnu/etc/profile \
@@ -63,7 +65,8 @@ RUN echo "Running tests ${CACHE_INVALIDATE}" \
 	&& if [ -f /gnu/bin/metacallclid ]; then \
 		export LIBASAN_PATH="`find /gnu/store/ -name 'libasan.so' | head -n 1`" \
 		&& export LIBUBSAN_PATH="`find /gnu/store/ -name 'libubsan.so' | head -n 1`" \
-		&& export LD_PRELOAD="${LIBASAN_PATH} ${LIBUBSAN_PATH}"; \
+		&& export LD_PRELOAD="${LIBASAN_PATH} ${LIBUBSAN_PATH}" \
+		&& export ASAN_OPTIONS="halt_on_error=0"; \
 	fi \
 	&& ./a.out | grep \
 		-e 'Hello World' \

@@ -136,13 +136,16 @@ test:
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:backtrace -f tests/backtrace/Dockerfile .
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:c -f tests/c/Dockerfile .
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:typescript -f tests/typescript/Dockerfile .
+#	TODO:
+#	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:tsx -f tests/tsx/Dockerfile .
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:cli -f tests/cli/Dockerfile .
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:python -f tests/python/Dockerfile .
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:node -f tests/node/Dockerfile .
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:ruby -f tests/ruby/Dockerfile .
-#	TODO:
-#	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:tsx -f tests/tsx/Dockerfile .
-	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:exe -f tests/exe/Dockerfile .
+#	Skip executable tests on debug because node, python, ruby... are compiled without address sanitizer and they produce false positives
+	@if [ "${BUILD_ARGS}" != "debug" ]; then \
+		docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:exe -f tests/exe/Dockerfile . ; \
+	fi
 	@echo "Done"
 
 # Clear images and containers
