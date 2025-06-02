@@ -55,7 +55,7 @@ jobs:
       - name: Test
         run: |
           mv out/metacall-tarball-linux-${{ matrix.arch }}${{ matrix.build.suffix }}.tar.gz out/tarball.tar.gz
-          make PLATFORM=${{ matrix.arch }} test
+          make PLATFORM=${{ matrix.arch }} BUILD=${{ matrix.build.mode }} test
 
       - name: Clear
         run: |
