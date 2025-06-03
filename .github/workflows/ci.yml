@@ -91,6 +91,7 @@ jobs:
           set -exo pipefail
           echo "GH_REPO_OWNER=${GITHUB_REPOSITORY_OWNER}" >> $GITHUB_ENV
           echo "GH_REPO_NAME=${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+          echo "CI_COMMIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
           export PREVIOUS_TAG=$(git describe HEAD^1 --abbrev=0 --tags)
           echo "PREVIOUS_TAG=${PREVIOUS_TAG}" >> $GITHUB_ENV
           echo "GIT_HISTORY<<EOF" >> $GITHUB_ENV
@@ -116,7 +117,7 @@ jobs:
         with:
           owner: metacall
           repo: install
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          github_token: ${{ secrets.G_PERSONAL_ACCESS_TOKEN }}
           workflow_file_name: test-linux.yml
           wait_workflow: true
           ref: master
