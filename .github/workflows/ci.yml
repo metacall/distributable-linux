@@ -9,6 +9,18 @@ on:
     branches:
       - master
 
+# TODO: Implement support to automatically update the version of
+# metacall/core when there is a tag on that repo that triggers this one
+inputs:
+  ref:
+    description: "Version of metacall/core that triggered this workflow"
+    required: false
+    default: ""
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   GHR_VERSION: 0.17.0
   # GITHUB_TOKEN      - From default secrets
