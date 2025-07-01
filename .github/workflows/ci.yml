@@ -1,21 +1,20 @@
 name: "MetaCall Distributable Linux"
 
 on:
-  workflow_dispatch:
   pull_request:
   push:
     tags:
       - 'v*.*.*'
     branches:
       - master
-
-# TODO: Implement support to automatically update the version of
-# metacall/core when there is a tag on that repo that triggers this one
-inputs:
-  ref:
-    description: "Version of metacall/core that triggered this workflow"
-    required: false
-    default: ""
+  workflow_dispatch:
+    # TODO: Implement support to automatically update the version of
+    # metacall/core when there is a tag on that repo that triggers this one
+    inputs:
+      ref:
+        description: "Version of metacall/core that triggered this workflow"
+        required: false
+        default: ""
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
