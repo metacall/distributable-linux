@@ -303,13 +303,13 @@ or IAT (Import Address Table) entries in PE format used on Windows.")
 (define-public metacall
   (package
     (name "metacall")
-    (version "0.9.12")
+    (version "0.9.13")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
           "https://github.com/metacall/core/archive/v" version ".tar.gz"))
-        (sha256 (base32 "0nqh2lppd55pk2dnrwjrmyy4l1gzwglrl8wyarkgd3z0c1imbchj"))))
+        (sha256 (base32 "0fgv9gnvlcx92h8bzs25b2jzyyil61r4fzb33a2ljp890iij20i7"))))
 
     (build-system cmake-build-system)
     (arguments
