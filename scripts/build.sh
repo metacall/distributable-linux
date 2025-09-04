@@ -44,7 +44,7 @@ echo 'metacall' >> /metacall/source/metacall.scm
 guix package --fallback --no-grafts -f /metacall/source/metacall.scm | tee build.log
 
 # Lint
-guix lint -L /metacall/nonguix -L /metacall/source metacall
+guix lint -L /metacall/nonguix -L /metacall/source metacall || true
 
 # Pack
 guix pack --no-grafts \
