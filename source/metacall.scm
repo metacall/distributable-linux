@@ -392,6 +392,8 @@ or IAT (Import Address Table) entries in PE format used on Windows.")
 
         ; TODO: Enable tests
         #:tests? #f
+        ; Disable/Enable stripping in order to let debug symbols for debugging
+        #:strip-binaries? #t
         #:configure-flags
         (list
           ; Disable developer warnings

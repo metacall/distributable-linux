@@ -28,12 +28,17 @@ export GUILE_WARN_DEPRECATED='detailed'
 
 # Debug
 if [ "$1" == "debug" ]; then
-    # Patch the metacall.scm with debug build type and sanitizers
+    # Comment out the current CMAKE_BUILD_TYPE
     sed -i 's/"-DCMAKE_BUILD_TYPE/; "-DCMAKE_BUILD_TYPE/g' /metacall/source/metacall.scm
+
+    # Patch the metacall.scm with debug build type and sanitizers
     sed -i \
         -e '/"-DOPTION_BUILD_GUIX=ON"/a\' \
         -e '          "-DCMAKE_BUILD_TYPE=Debug" "-DOPTION_BUILD_ADDRESS_SANITIZER=ON"' \
         /metacall/source/metacall.scm
+
+    # Remove the strip phase for maintaining the debug symbols
+    sed -i 's/#:strip-binaries? #t/#:strip-binaries? #f/' /metacall/source/metacall.scm
 fi
 
 # Build
