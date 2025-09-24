@@ -34,7 +34,9 @@ if [ "$1" == "debug" ]; then
     # Patch the metacall.scm with debug build type and sanitizers
     sed -i \
         -e '/"-DOPTION_BUILD_GUIX=ON"/a\' \
-        -e '          "-DCMAKE_BUILD_TYPE=Debug" "-DOPTION_BUILD_ADDRESS_SANITIZER=ON"' \
+        -e '          "-DCMAKE_BUILD_TYPE=Debug"' \
+        `# TODO: Add support for preloading address sanitizer in executables using MetaCall` \
+        `# -e '          "-DCMAKE_BUILD_TYPE=Debug" "-DOPTION_BUILD_ADDRESS_SANITIZER=ON"'` \
         /metacall/source/metacall.scm
 
     # Remove the strip phase for maintaining the debug symbols
