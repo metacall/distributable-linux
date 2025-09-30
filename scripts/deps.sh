@@ -23,17 +23,9 @@ set -euxo pipefail
 
 export GUILE_WARN_DEPRECATED='detailed'
 
-# Clone nonguix
-apk --update-cache add --virtual git-deps git
-rm -rf /metacall/nonguix
-git clone https://gitlab.com/nonguix/nonguix /metacall/nonguix
-cd /metacall/nonguix
-git checkout e0951349603581895e0ba61f0e7410368ea1902a # Fix nonguix version
-apk del git-deps
-
 # Build
 guix build --fallback \
     nss-certs \
     `# dotnet codeanalysis-csharp codeanalysis-common codeanalysis-analyzers` \
     espree typescript \
-    -L /metacall/nonguix -L /metacall/source
+    -L /metacall/source

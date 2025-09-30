@@ -27,7 +27,7 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	vendor="MetaCall Inc." \
 	version="0.1"
 
-COPY / /metacall/
+COPY . /metacall/
 
 RUN chmod +x /metacall/scripts/build.sh \
 	&& chmod +x /metacall/scripts/deps.sh \
