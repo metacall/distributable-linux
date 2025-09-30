@@ -44,20 +44,20 @@ if [ "$1" == "debug" ]; then
 fi
 
 # Build
-guix build metacall metacall-python-port --fallback -L /metacall/source
+guix build metacall metacall-python-port --fallback -L /metacall/nonguix -L /metacall/source
 
 # Install
 echo 'metacall' >> /metacall/source/metacall.scm
 guix package --fallback --no-grafts -f /metacall/source/metacall.scm | tee build.log
 
 # Lint
-guix lint -L /metacall/source metacall || true
+guix lint -L /metacall/nonguix -L /metacall/source metacall || true
 
 # Pack
 guix pack --no-grafts \
     -S /gnu/bin=bin -S /gnu/etc=etc -S /gnu/lib=lib -S /gnu/include=include -S /gnu/share=share \
     -RR metacall metacall-python-port nss-certs \
-    -L /metacall/source | tee build.log
+    -L /metacall/nonguix -L /metacall/source | tee build.log
 
 # Copy
 mv `grep 'tarball-pack.tar.gz$' build.log` /metacall/pack/tarball.tar.gz

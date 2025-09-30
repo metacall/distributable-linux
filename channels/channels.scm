@@ -28,15 +28,4 @@
                 "f0d4daa13f0b57f5c03af73d449b2c6dd3160d08" ; Tue May 26 22:30:51 2020 +0200
             (openpgp-fingerprint
                 "BCA6 89B6 3655 3801 C3C6  2150 197A 5888 235F ACAC")))) ; git verify-commit <commit-hash>
-
-    (channel
-        (name 'nonguix)
-        (url "https://gitlab.com/nonguix/nonguix.git")
-        (branch "master")
-        (commit "e0951349603581895e0ba61f0e7410368ea1902a") ; Sun Sep 11 20:03:39 2022 -0400
-        (introduction
-            (make-channel-introduction
-                "89f0dca2eb8472359deab18f10f7ba0aed3b31bb" ; Sun Sep 28 20:10:32 2025 -0400
-            (openpgp-fingerprint
-                "A420 7B56 C255 109F 2CB3  157E 4990 97AE 5EA8 15D9")))) ; git verify-commit <commit-hash>
 )
