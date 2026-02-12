@@ -17,7 +17,6 @@
 #	limitations under the License.
 #
 
-# FROM metacall/guix:latest AS distributable
 FROM metacall/guix:latest AS distributable
 
 # Image descriptor
