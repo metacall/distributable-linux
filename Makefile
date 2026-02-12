@@ -49,6 +49,7 @@ help:
 	@echo
 	@echo 'Usage:'
 	@echo '    make download     Downloads MetaCall latest version, extracts the checksum and updates it in metacall.scm.'
+	@echo '    make style        Formats metacall.scm.'
 	@echo '    make base         Builds base image with MetaCall scripts.'
 	@echo '    make pull         Updates Guix repository to the latest version.'
 	@echo '    make deps         Build dependency images for caching the runtimes.'
@@ -63,7 +64,7 @@ download:
 #	Get latest tag from the repository
 	$(eval LATEST_TAG := $(shell git ls-remote --tags https://github.com/metacall/core.git | sort -t '/' -k 3 -V | tail -n1 | sed 's/.*\///; s/\^{}//'))
 #	Download the source and extract the checksum
-	$(eval CHECKSUM := $(shell docker run --rm --privileged -it metacall/guix guix download https://github.com/metacall/core/archive/${LATEST_TAG}.tar.gz | tail -n1))
+	$(eval CHECKSUM := $(shell docker run --rm --privileged -it metacall/guix guix download https://github.com/metacall/core/archive/${LATEST_TAG}.tar.gz | grep -v '^\+' | tail -n1))
 #	Get latest version
 	$(eval LATEST_VERSION := $(shell printf "${LATEST_TAG}" | tail -c +2))
 #	Print version and checksum
@@ -72,6 +73,10 @@ download:
 	@sed -i '/(name "metacall")/!b;n;c\    (version "${LATEST_VERSION}")' source/metacall.scm
 #	Update MetaCall source with checksum
 	@sed -i '/"https:\/\/github.com\/metacall\/core\/archive\/v" version ".tar.gz"))/!b;n;c\        (sha256 (base32 "${CHECKSUM}"))))' source/metacall.scm
+
+# Style MetaCall source
+style:
+	@docker run --rm --privileged -v `pwd`/source:/source -it metacall/guix guix style -f /source/metacall.scm
 
 # Build base Docker image
 base:

@@ -34,10 +34,10 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { mode: debug, suffix: "-dbg" },
-          { mode: release, suffix: "" }
+          { mode: "debug", suffix: "-dbg" },
+          { mode: "release", suffix: "" }
         ]
-        arch: [amd64, 386]
+        arch: ["amd64", "386", "arm/v7", "arm64/v8", "ppc64le"]
 
     steps:
       - name: Set up QEMU

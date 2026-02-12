@@ -17,6 +17,7 @@
 #	limitations under the License.
 #
 
+# FROM metacall/guix:latest AS distributable
 FROM metacall/guix:latest AS distributable
 
 # Image descriptor
@@ -28,10 +29,5 @@ LABEL copyright.name="Vicente Eduardo Ferrer Garcia" \
 	version="0.1"
 
 COPY . /metacall/
-
-RUN chmod +x /metacall/scripts/build.sh \
-	&& chmod +x /metacall/scripts/deps.sh \
-	&& mkdir -p /metacall/pack \
-	&& mv /metacall/channels/channels.scm /root/.config/guix/channels.scm
 
 CMD ["sh"]
