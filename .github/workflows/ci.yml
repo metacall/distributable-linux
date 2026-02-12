@@ -54,23 +54,23 @@ jobs:
 
       - name: Define architecture name (remove dash)
         run: |
-          ARCHITECTURE="${{ matrix.arch//-/}}"
-          echo "ARCHITECTURE=$ARCHITECTURE" >> $GITHUB_ENV
+          arch=$(echo "${{ matrix.arch }}" | tr -d '-')
+          echo "arch=$arch" >> $GITHUB_ENV
 
       - name: Build tarball
         run: |
           make PLATFORM=${{ matrix.arch }} BUILD=${{ matrix.build.mode }} base pull deps build
-          mv out/tarball.tar.gz out/metacall-tarball-linux-${{ env.ARCHITECTURE }}${{ matrix.build.suffix }}.tar.gz
+          mv out/tarball.tar.gz out/metacall-tarball-linux-${{ env.arch }}${{ matrix.build.suffix }}.tar.gz
 
       - name: Upload tarball artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tarball-${{ env.ARCHITECTURE }}-${{ matrix.build.mode }}
-          path: out/metacall-tarball-linux-${{ env.ARCHITECTURE }}${{ matrix.build.suffix }}.tar.gz
+          name: tarball-${{ env.arch }}-${{ matrix.build.mode }}
+          path: out/metacall-tarball-linux-${{ env.arch }}${{ matrix.build.suffix }}.tar.gz
 
       - name: Test
         run: |
-          mv out/metacall-tarball-linux-${{ env.ARCHITECTURE }}${{ matrix.build.suffix }}.tar.gz out/tarball.tar.gz
+          mv out/metacall-tarball-linux-${{ env.arch }}${{ matrix.build.suffix }}.tar.gz out/tarball.tar.gz
           make PLATFORM=${{ matrix.arch }} BUILD=${{ matrix.build.mode }} test
 
       - name: Clear
