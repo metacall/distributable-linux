@@ -138,7 +138,10 @@ test:
 #	Generate a unique id for invalidating the cache of test layers
 	$(eval CACHE_INVALIDATE := $(shell date +%s))
 #	Run tests
-	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:backtrace -f tests/backtrace/Dockerfile .
+#	TODO: arm64 does not work well with segfaults on QEMU
+	@if [ "${PLATFORM}" != "arm64" ]; then \
+		docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:backtrace -f tests/backtrace/Dockerfile . ; \
+	fi
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:c -f tests/c/Dockerfile .
 	@docker buildx build ${PLATFORM_ARGS} --build-arg CACHE_INVALIDATE=${CACHE_INVALIDATE} -t metacall/distributable_linux_test:typescript -f tests/typescript/Dockerfile .
 #	TODO:
